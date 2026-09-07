@@ -1,0 +1,27 @@
+/* --- css/components/playlist.css --- */
+
+/* Stile generale riga tracklist */
+.playlist-item {
+    background-color: var(--box-bg);
+    color: var(--text-main);
+    border-left: 4px solid transparent;
+}
+.playlist-item:hover {
+    background-color: var(--box-border-color);
+}
+
+/* Stile per la traccia corrente nella playlist (Dark/Light Mode) */
+#playlist .playlist-item.active {
+    background-color: var(--accent-red);
+    color: var(--bg-main);
+    border-left-color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Override per Punk Mode */
+[data-theme="punk"] #playlist .playlist-item.active {
+    background-color: var(--acid-green);
+    color: black; /* Better contrast on acid green */
+    border-left-color: var(--acid-pink);
+    box-shadow: 0 4px 6px -1px var(--acid-green), 0 2px 4px -2px var(--acid-green);
+}

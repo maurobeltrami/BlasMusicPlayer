@@ -1,0 +1,143 @@
+/* --- css/themes/modern.css --- */
+
+/* Sovrascritture specifiche per Dark (default) e Light theme (entrambi NON punk) */
+
+body:not([data-theme="punk"]) {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+body:not([data-theme="punk"]) ::selection {
+    background-color: var(--accent-red);
+    color: white;
+}
+
+/* Rimuovi rotazioni caotiche e allinea gli elementi */
+body:not([data-theme="punk"]) .rotate-scuff-1,
+body:not([data-theme="punk"]) .rotate-scuff-2,
+body:not([data-theme="punk"]) .rotate-scuff-3,
+body:not([data-theme="punk"]) header h1,
+body:not([data-theme="punk"]) aside,
+body:not([data-theme="punk"]) .graffiti-title,
+body:not([data-theme="punk"]) #currentTrack,
+body:not([data-theme="punk"]) label.transform {
+    transform: none !important;
+}
+
+body:not([data-theme="punk"]) .graffiti-title {
+    text-shadow: none !important;
+}
+
+/* Rendi i box puliti: rimuovi lo stile stencil e i bordi spessi */
+body:not([data-theme="punk"]) .stencil-box,
+body:not([data-theme="punk"]) .border-black,
+body:not([data-theme="punk"]) .border-2,
+body:not([data-theme="punk"]) .border-4 {
+    border-color: var(--box-border-color) !important;
+    border-width: var(--box-border-width) !important;
+    border-radius: 8px; /* Aggiunge angoli morbidi */
+}
+
+/* Drop shadow moderna al posto della shadow rigida */
+body:not([data-theme="punk"]) .stencil-box,
+body:not([data-theme="punk"]) .leopard-bg,
+body:not([data-theme="punk"]) .shadow-\[2px_2px_0px_black\] {
+    box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+body:not([data-theme="punk"]) .leopard-bg {
+    background-color: var(--box-bg) !important;
+    background-image: none !important;
+}
+
+/* Adatta lo schermo del player centrale */
+body:not([data-theme="punk"]) #displayScreen {
+    background-color: var(--box-bg);
+    box-shadow: none !important;
+    border-radius: 12px;
+}
+
+body:not([data-theme="punk"]) #visualizerContainer {
+    border-radius: 8px;
+    border-color: var(--box-border-color) !important;
+    outline: none !important;
+}
+
+/* Etichette e bottoni modernizzati */
+body:not([data-theme="punk"]) label.bg-acid-blue,
+body:not([data-theme="punk"]) label.bg-acid-green,
+body:not([data-theme="punk"]) label.bg-acid-pink {
+    background-color: transparent !important;
+    color: var(--text-muted) !important;
+    border: none !important;
+    padding-left: 0;
+    font-weight: 600;
+}
+
+/* Rimuovi effetti strappo e scotch */
+body:not([data-theme="punk"]) .torn-paper::before {
+    clip-path: none; /* Rimuove lo strappo */
+    border-radius: 8px;
+}
+
+body:not([data-theme="punk"]) .tape {
+    display: none; /* Nasconde lo scotch */
+}
+
+/* Il badge 'TRAX' o simili */
+body:not([data-theme="punk"]) aside .absolute.-top-3 {
+    border-radius: 4px;
+    box-shadow: none;
+    transform: none;
+    font-family: var(--font-primary);
+    background-color: var(--accent-red);
+}
+
+/* Rendi la barra del volume e progress bar di stile moderno */
+body:not([data-theme="punk"]) #volumeSlider::-webkit-slider-thumb {
+    background: var(--text-main);
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    width: 12px;
+    height: 12px;
+}
+
+body:not([data-theme="punk"]) #volumeSlider {
+    background: var(--box-border-color);
+}
+
+body:not([data-theme="punk"]) #progressBar,
+body:not([data-theme="punk"]) #progressBarBottom {
+    background-color: var(--text-main) !important; /* Bianca su scuro, Scura su chiaro */
+    border-radius: 4px;
+}
+
+body:not([data-theme="punk"]) #progressControl,
+body:not([data-theme="punk"]) #progressControlBottom {
+    background-color: var(--box-border-color);
+    border: none !important;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Hover sul progressbar per far spuntare il colore rosso/verde spotify */
+body:not([data-theme="punk"]) #progressControl:hover #progressBar {
+    background-color: var(--accent-red) !important;
+}
+
+/* Stili puliti per input, select e placeholder */
+body:not([data-theme="punk"]) #audioPlayer, 
+body:not([data-theme="punk"]) select, 
+body:not([data-theme="punk"]) input {
+    color: var(--text-main);
+    background-color: var(--bg-main);
+}
+
+body:not([data-theme="punk"]) select option {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+body:not([data-theme="punk"]) ::placeholder {
+    color: var(--text-muted) !important;
+}

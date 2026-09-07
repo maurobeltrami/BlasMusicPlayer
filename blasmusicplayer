@@ -1,0 +1,17 @@
+#!/bin/bash
+DIR="$(cd "$(dirname "$0")" && pwd)"
+open "$DIR/src-tauri/target/debug/bundle/macos/BlasMusicPlayer.app"
+
+# Se avviato con doppio click da Finder (che apre Terminale), chiudi automaticamente la finestra
+if [ -n "$TERM_PROGRAM" ]; then
+    (sleep 0.8 && osascript -e 'tell application "Terminal"
+        repeat with w in (every window)
+            if name of w contains "blasmusicplayer" then
+                close w
+            end if
+        end repeat
+        if (count of windows) is 0 then
+            quit
+        end if
+    end tell' &>/dev/null) &
+fi

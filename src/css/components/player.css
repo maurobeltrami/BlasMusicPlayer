@@ -1,0 +1,94 @@
+/* --- css/components/player.css --- */
+
+/* Aggiustamento colori hover bottoni */
+#shuffleBtn.active, 
+#shuffleBtn.active i {
+    color: var(--acid-pink);
+}
+
+#prevBtn:disabled,
+#nextBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#progressControl:hover .absolute {
+    --progress-percent: var(--current-percentage, 0%);
+}
+
+/* Stile barra Volume Standard (Orizzontale per tutti i temi) */
+#volumeSlider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 6px;
+    margin: 0;
+    background: var(--box-border-color);
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--text-main); /* Punk usa black, Moden usa text-main dinamico */
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+/* Override per Punk Mode per mantenere il cerchio rosso col bordo dello slider */
+[data-theme="punk"] #volumeSlider::-webkit-slider-thumb {
+    background: var(--accent-red);
+    border: 2px solid black;
+    box-shadow: 0 0 0 2px white;
+    width: 20px;
+    height: 20px;
+}
+
+[data-theme="punk"] #volumeSlider {
+    background: #000;
+    border: 1px solid white;
+}
+
+/* Stile per il pulsante Mute se presente */
+#muteToggleBtn {
+    transition: color 0.15s;
+}
+
+#muteToggleBtn.active #volumeSlider::-webkit-slider-thumb,
+#volumeSlider:disabled::-webkit-slider-thumb {
+    background: #FF0000;
+}
+
+#progressControl {
+    cursor: pointer;
+}
+
+.progress-thumb {
+    display: none !important;
+}
+
+.progress-control-wrapper {
+    position: relative;
+}
+
+.progress-control-wrapper::before,
+.progress-control-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    pointer-events: none;
+}
+
+.progress-control-wrapper::before {
+    left: 0;
+}
+
+.progress-control-wrapper::after {
+    right: 0;
+}

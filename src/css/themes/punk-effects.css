@@ -1,0 +1,110 @@
+/* --- css/themes/punk.css --- */
+
+/* --- DIRTY PUNK ADDITIONS --- */
+
+/* Torn Paper Effect */
+.torn-paper {
+    position: relative;
+    border: none !important;
+    filter: drop-shadow(4px 4px 0px var(--box-border-color));
+}
+
+.torn-paper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--box-bg);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%,
+            0% 95%, 2% 90%, 0% 85%, 3% 80%, 0% 75%, 2% 70%, 0% 65%, 3% 60%, 0% 55%, 2% 50%, 0% 45%, 3% 40%, 0% 35%, 2% 30%, 0% 25%, 3% 20%, 0% 15%, 2% 10%, 0% 5%);
+    z-index: -1;
+    border: var(--box-border-width) solid var(--box-border-color);
+}
+
+.torn-top {
+    clip-path: polygon(0% 5%, 5% 0%, 10% 5%, 15% 0%, 20% 5%, 25% 0%, 30% 5%, 35% 0%, 40% 5%, 45% 0%, 50% 5%, 55% 0%, 60% 5%, 65% 0%, 70% 5%, 75% 0%, 80% 5%, 85% 0%, 90% 5%, 95% 0%, 100% 5%,
+            100% 100%, 0% 100%);
+}
+
+/* Tape Effect */
+.tape {
+    position: absolute;
+    width: 100px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transform: rotate(-3deg);
+    border-left: 2px dashed rgba(0, 0, 0, 0.1);
+    border-right: 2px dashed rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    backdrop-filter: blur(2px);
+}
+
+.tape::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255, 255, 255, 0.3) 3px);
+}
+
+/* --- RANCID 'WOLVES' STYLE --- */
+
+/* Graffiti Title */
+.graffiti-title {
+    font-family: var(--font-title);
+    color: var(--accent-red);
+    text-shadow: 2px 2px 0px var(--text-main);
+    transform: rotate(-2deg);
+}
+
+/* Distressed Typewriter Text */
+.typewriter-text {
+    font-family: var(--font-primary);
+    color: var(--text-main);
+}
+
+/* Stencil/Spray Paint Box */
+.stencil-box {
+    background-color: var(--box-bg);
+    border: var(--box-border-width) solid var(--box-border-color);
+    box-shadow: 5px 5px 0px var(--shadow-color);
+    background-image: var(--concrete-pattern);
+}
+
+/* Spray Paint Accent */
+.spray-accent {
+    position: relative;
+    z-index: 1;
+}
+
+.spray-accent::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110%;
+    height: 110%;
+    background: var(--accent-red);
+    z-index: -1;
+    filter: blur(4px);
+    opacity: 0.2;
+    border-radius: 50%;
+}
+
+/* High Contrast Filter for Images */
+.street-filter {
+    filter: grayscale(100%) contrast(170%) brightness(120%);
+}
+
+/* Concrete Background */
+.concrete-bg {
+    background-color: #eee;
+    background-image: var(--concrete-pattern);
+}
+

@@ -1,0 +1,6 @@
+/* --- src/css/style.css --- */
+@import url('variables.css');
+@import url('themes/punk.css');
+@import url('themes/modern.css');
+@import url('components/player.css');
+@import url('components/playlist.css');

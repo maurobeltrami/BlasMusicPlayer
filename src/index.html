@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlasMusicPlayer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Special+Elite&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        theme: { bg: 'var(--bg-main)', text: 'var(--text-main)', accent: 'var(--accent-red)' },
+                        box: { bg: 'var(--box-bg)', border: 'var(--box-border-color)' }
+                    },
+                    fontFamily: { primary: ['var(--font-primary)'], title: ['var(--font-title)'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-theme-bg text-theme-text min-h-screen font-primary custom-scrollbar transition-colors duration-300">
+    <div class="w-full relative z-10 px-2 md:px-8">
+        <!-- Navigazione SPA -->
+        <nav class="w-full bg-theme-bg text-theme-text p-4 mb-4 flex flex-col md:flex-row items-center justify-center gap-4 border-b-4 border-theme-accent sticky top-0 z-50 shadow-lg font-title text-xl transition-colors duration-300">
+            <div class="flex gap-6 justify-center flex-wrap w-full md:w-auto">
+                <button class="nav-btn text-theme-accent hover:scale-110 transition-transform" data-target="view-home">HOME</button>
+                <button class="nav-btn hover:text-theme-accent hover:scale-110 transition-transform" data-target="view-playlists">PLAYLIST</button>
+                <button class="nav-btn hover:text-theme-accent hover:scale-110 transition-transform" data-target="view-equalizer">EQUALIZER</button>
+            </div>
+            <!-- Selettore Tema -->
+            <div class="md:absolute md:right-4 flex items-center gap-2 font-primary text-sm bg-theme-bg p-1 border-2 border-theme-accent rotate-scuff-2 z-50">
+                <label for="themeSelector" class="font-bold text-theme-text px-1 uppercase hidden md:block">Tema:</label>
+                <select id="themeSelector" class="bg-theme-bg text-theme-text border-none font-bold outline-none cursor-pointer uppercase p-1">
+                    <option value="dark">Scuro</option>
+                    <option value="light">Chiaro</option>
+                    <option value="punk">PUNK</option>
+                </select>
+            </div>
+        </nav>
+
+        <!-- VIEW: HOME (Libreria + Player Centrale) -->
+        <div id="view-home" class="page-view block stencil-box p-4 md:p-8 mb-24">
+            <header class="mb-8 flex flex-col md:flex-row justify-between items-center border-b-[3px] border-black pb-6 gap-4">
+                <h1 class="text-4xl md:text-6xl graffiti-title tracking-tight text-theme-text transform rotate-[-2deg] text-center md:text-left">
+                    <span class="text-5xl md:text-7xl text-theme-accent">B</span>LAS<span class="text-5xl md:text-7xl text-theme-accent">M</span>USIC
+                </h1>
+            </header>
+
+            <main class="grid lg:grid-cols-12 gap-6 lg:gap-8">
+                <!-- Sidebar Libreria & Cartelle -->
+                <aside class="lg:col-span-4 p-4 leopard-bg transform rotate-1 relative z-20">
+                    <div class="absolute -top-3 -left-3 bg-acid-pink text-white px-3 py-1 font-bold text-lg rotate-[-5deg] border border-black shadow-[2px_2px_0px_black] font-title">TRAX</div>
+                    <h2 class="leopard-text text-2xl font-black mb-4 uppercase border-b-2 border-theme-text inline-block px-1">Libreria</h2>
+
+                    <!-- Navigazione Cartelle -->
+                    <div class="mb-6 p-2 bg-box-bg border border-black">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-xs font-bold uppercase bg-acid-blue text-theme-text px-1.5 py-0.5 border border-black">
+                                <i class="fas fa-folder mr-1"></i> Cartelle Computer
+                            </label>
+                            <button id="playCurrentFolderBtn" title="Riproduci tutti i brani di questa cartella" class="bg-theme-accent text-white hover:opacity-90 px-2 py-0.5 font-bold text-xs rounded border border-black shadow-sm transition-transform hover:scale-105 flex items-center gap-1">
+                                <i class="fas fa-play text-[9px]"></i> Riproduci Tutto
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2 mb-2 p-1 border-b-2 border-black">
+                            <button id="dirUpBtn" title="Cartella superiore" class="bg-theme-text text-theme-bg hover:bg-theme-accent hover:text-white px-2 py-0.5 font-bold text-sm rounded transition-colors"><i class="fas fa-arrow-up"></i></button>
+                            <span id="currentDirDisplay" class="truncate font-primary text-theme-text text-xs flex-1 font-semibold">/</span>
+                        </div>
+                        <div id="dirList" class="max-h-56 overflow-y-auto space-y-1 custom-scrollbar font-primary pr-0.5"></div>
+                        <button id="browseFolderBtn" class="mt-3 w-full bg-theme-accent text-white font-bold text-xs uppercase p-2 rounded shadow hover:scale-102 transition-transform flex items-center justify-center gap-2">
+                            <i class="fas fa-folder-open"></i> Seleziona Altra Cartella...
+                        </button>
+                    </div>
+
+                    <!-- Selezione Playlist Salvate -->
+                    <div class="mb-6 p-2.5 bg-box-bg border border-black rounded">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-xs font-bold uppercase bg-acid-pink text-white px-1.5 py-0.5 border border-black">
+                                <i class="fas fa-list-ul mr-1"></i> Playlist
+                            </label>
+                            <button id="goToPlaylistsBtn" title="Vai alla gestione playlist" class="text-xs font-bold text-theme-accent hover:underline flex items-center gap-1">
+                                <i class="fas fa-plus-circle text-[10px]"></i> Crea / Gestisci
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="savedPlaylistSelector" class="flex-1 bg-theme-bg text-theme-text border border-black p-1.5 rounded text-xs font-semibold outline-none cursor-pointer truncate">
+                                <option value="">-- Seleziona una Playlist --</option>
+                            </select>
+                            <button id="loadSelectedPlaylistBtn" title="Carica e riproduci questa playlist" class="bg-theme-accent text-white px-2.5 py-1.5 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1 shrink-0">
+                                <i class="fas fa-play text-[9px]"></i> Play
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Player Centrale -->
+                <section class="lg:col-span-8 p-4 stencil-box relative border-acid-green">
+                    <div id="displayScreen" class="w-full p-4 border-2 border-black mb-6 flex flex-col items-center justify-center relative bg-box-bg min-h-[360px]">
+                        <div class="w-full px-4 mb-3 overflow-hidden text-center">
+                            <p id="currentTrack" class="graffiti-title text-2xl md:text-3xl transform skew-x-[-5deg] truncate">NESSUN BRANO SELEZIONATO</p>
+                        </div>
+
+                        <!-- Visualizer Canvas -->
+                        <div id="visualizerContainer" class="w-full h-52 md:h-64 bg-black border-4 border-acid-blue flex items-center justify-center relative overflow-hidden rounded">
+                            <canvas id="visualizer" class="block w-full h-full opacity-90"></canvas>
+                            <div class="absolute top-2 right-2 bg-black/60 p-1.5 rounded z-10">
+                                <select id="visualizerSelector" class="bg-transparent text-white font-bold uppercase text-xs outline-none cursor-pointer">
+                                    <option value="cover" selected>Copertina</option>
+                                    <option value="bars">Barre Spettro</option>
+                                    <option value="waveform">Forma d'Onda</option>
+                                    <option value="circles">Anelli Reattivi</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar & Timer -->
+                        <div class="w-full px-4 mt-4">
+                            <div id="progressControl" class="w-full h-3 bg-black border-2 border-black cursor-pointer relative rounded overflow-hidden">
+                                <div id="progressBar" class="h-full bg-theme-accent pointer-events-none" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div id="time-display" class="font-primary font-bold bg-theme-bg border border-theme-text px-2 mt-2 text-xs text-theme-text">0:00 / 0:00</div>
+                    </div>
+
+                    <!-- Controlli Riproduzione -->
+                    <div class="flex items-center justify-between w-full mt-4 px-4">
+                        <button id="shuffleBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-random fa-lg"></i></button>
+                        <div class="flex items-center gap-6">
+                            <button id="prevBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-step-backward fa-xl"></i></button>
+                            <button id="playPauseBtn" class="w-14 h-14 bg-theme-accent border-2 border-box-bg rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform">
+                                <i id="playPauseIcon" class="fas fa-play fa-xl"></i>
+                            </button>
+                            <button id="nextBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-step-forward fa-xl"></i></button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="muteToggleBtn" class="text-theme-text hover:text-theme-accent transition-colors cursor-pointer" title="Muto / Riattiva audio">
+                                <i id="volumeIcon" class="fas fa-volume-up text-sm"></i>
+                            </button>
+                            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.75" class="w-24">
+                        </div>
+                    </div>
+                    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+                </section>
+            </main>
+
+            <!-- Sezione Coda / Playlist -->
+            <section class="mt-8 border-t-4 border-black pt-6 bg-box-bg p-4 relative torn-paper">
+                <h2 class="text-2xl graffiti-title text-theme-text mb-4 inline-block">CODA DI RIPRODUZIONE (<span id="playlistCount">0</span>)</h2>
+                <ul id="playlist" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar font-primary"></ul>
+            </section>
+        </div>
+
+        <!-- VIEW: EQUALIZER -->
+        <div id="view-equalizer" class="page-view hidden stencil-box p-4 md:p-8 mb-32 bg-[#222]">
+            <div class="p-4 border-b-4 border-acid-green flex justify-between items-center mb-6">
+                <h2 class="text-3xl graffiti-title text-acid-green">EQUALIZER STUDIO</h2>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-5xl mx-auto p-6 bg-box-bg border-4 border-black">
+                <div class="lg:col-span-6 flex flex-col items-center p-6 border-4 border-black bg-theme-bg">
+                    <h3 class="font-black text-xl uppercase text-theme-text mb-6 pb-2 border-b-2 border-theme-text w-full text-center">EQUALIZZATORE 3 BANDE</h3>
+                    <div class="flex justify-around w-full gap-4">
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="font-bold text-xs bg-black text-white px-2 py-0.5">BASSI</span>
+                            <input type="range" id="eqLowSlider" min="-12" max="12" step="0.5" value="0" orient="vertical" class="h-40 accent-theme-accent cursor-pointer">
+                            <span class="font-bold text-xs" id="eqLowVal">0 dB</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="font-bold text-xs bg-black text-white px-2 py-0.5">MEDI</span>
+                            <input type="range" id="eqMidSlider" min="-12" max="12" step="0.5" value="0" orient="vertical" class="h-40 accent-theme-accent cursor-pointer">
+                            <span class="font-bold text-xs" id="eqMidVal">0 dB</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="font-bold text-xs bg-black text-white px-2 py-0.5">ALTI</span>
+                            <input type="range" id="eqHighSlider" min="-12" max="12" step="0.5" value="0" orient="vertical" class="h-40 accent-theme-accent cursor-pointer">
+                            <span class="font-bold text-xs" id="eqHighVal">0 dB</span>
+                        </div>
+                    </div>
+                    <button id="bassBoostBtn" class="mt-6 bg-black text-theme-text border-2 border-theme-text px-4 py-2 font-black uppercase hover:bg-theme-accent hover:text-white transition-colors w-48">
+                        BASS BOOST: OFF
+                    </button>
+                </div>
+                <div class="lg:col-span-6 flex flex-col items-center p-6 border-4 border-black bg-acid-pink">
+                    <h3 class="font-black text-xl uppercase text-white mb-6 pb-2 border-b-2 border-white w-full text-center">COMPRESSORE DINAMICO</h3>
+                    <div class="flex justify-around w-full gap-4">
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="font-bold text-xs bg-black text-white px-2 py-0.5">SOGLIA</span>
+                            <input type="range" id="thresholdSlider" min="-60" max="0" value="-24" orient="vertical" class="h-40 accent-white cursor-pointer">
+                            <span class="font-bold text-xs text-white"><span id="thresholdVal">-24</span> dB</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="font-bold text-xs bg-black text-white px-2 py-0.5">RATIO</span>
+                            <input type="range" id="ratioSlider" min="1" max="20" value="12" orient="vertical" class="h-40 accent-white cursor-pointer">
+                            <span class="font-bold text-xs text-white"><span id="ratioVal">12</span>:1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: PLAYLISTS -->
+        <div id="view-playlists" class="page-view hidden stencil-box p-4 md:p-8 mb-32 bg-box-bg">
+            <header class="flex justify-between items-center border-b-2 border-theme-accent pb-4 mb-6">
+                <div>
+                    <h2 class="text-3xl md:text-4xl graffiti-title text-theme-accent">GESTIONE PLAYLIST</h2>
+                    <p class="text-xs text-theme-muted font-semibold mt-1">Scegli i brani dalle tue cartelle con il tasto + e crea playlist personalizzate.</p>
+                </div>
+                <button id="backToHomeBtn" class="bg-theme-text text-theme-bg font-bold px-3 py-1.5 rounded text-xs uppercase hover:bg-theme-accent hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i> Torna al Player
+                </button>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+                <!-- Colonna Sinistra: Navigatore Cartelle per selezione brani -->
+                <div class="lg:col-span-7 flex flex-col p-4 border-2 border-black bg-theme-bg rounded">
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-box-border">
+                        <h3 class="font-bold text-sm uppercase text-theme-text flex items-center gap-2">
+                            <i class="fas fa-folder-open text-acid-green"></i> Sfoglia Brani dalle Cartelle
+                        </h3>
+                        <div class="flex items-center gap-1.5">
+                            <button id="plDirUpBtn" class="p-1.5 px-2 bg-box-bg border border-box-border hover:bg-theme-accent hover:text-white text-theme-text rounded text-xs transition-colors font-bold" title="Cartella superiore">
+                                <i class="fas fa-level-up-alt mr-1"></i> Su
+                            </button>
+                            <button id="plBrowseFolderBtn" class="p-1.5 px-2 bg-box-bg border border-box-border hover:bg-theme-accent hover:text-white text-theme-text rounded text-xs transition-colors font-bold" title="Scegli un'altra cartella">
+                                <i class="fas fa-folder mr-1"></i> Scegli
+                            </button>
+                            <button id="plAddAllFolderTracksBtn" class="p-1.5 px-2 bg-theme-accent text-white rounded text-xs transition-colors font-bold hover:scale-102" title="Aggiungi tutti i brani visibili alla bozza">
+                                <i class="fas fa-plus-circle mr-1"></i> Tutti
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="plCurrentDirDisplay" class="text-[11px] font-mono truncate bg-box-bg p-1.5 rounded border border-box-border mb-3 text-theme-muted" title="...">...</div>
+
+                    <!-- Lista file & sottocartelle -->
+                    <div id="plDirList" class="flex-1 max-h-[380px] overflow-y-auto space-y-1 custom-scrollbar pr-1 font-primary">
+                        <div class="p-4 text-center text-xs opacity-60 italic">Caricamento cartella...</div>
+                    </div>
+                </div>
+
+                <!-- Colonna Destra: Bozza Nuova Playlist -->
+                <div class="lg:col-span-5 flex flex-col p-4 border-2 border-black bg-theme-bg rounded">
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-box-border">
+                        <h3 class="font-bold text-sm uppercase text-theme-text flex items-center gap-2">
+                            <i class="fas fa-magic text-acid-pink"></i> Bozza Nuova Playlist
+                        </h3>
+                        <span class="text-xs bg-theme-accent text-white px-2 py-0.5 rounded font-bold">
+                            <span id="draftTracksCount">0</span> brani
+                        </span>
+                    </div>
+
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" id="playlistNameInput" placeholder="Nome playlist (es. Preferiti, Rock 90s)..." class="flex-1 p-2 border border-theme-text bg-box-bg text-theme-text font-semibold text-xs rounded">
+                        <button id="saveDraftPlaylistBtn" class="bg-theme-accent text-white px-3 py-2 font-bold text-xs uppercase rounded hover:scale-105 transition-transform flex items-center gap-1 shrink-0" title="Salva playlist">
+                            <i class="fas fa-save"></i> Salva
+                        </button>
+                    </div>
+
+                    <!-- Elenco brani scelti nella bozza -->
+                    <div class="flex-1 max-h-[220px] overflow-y-auto space-y-1.5 custom-scrollbar pr-1 mb-3">
+                        <ul id="draftTracksList" class="space-y-1 text-xs">
+                            <li class="p-3 text-center text-theme-muted italic border border-dashed border-box-border rounded text-[11px]">
+                                Clicca sul tasto <strong class="text-acid-pink font-bold">+</strong> sui brani a sinistra per comporre la tua playlist!
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-box-border text-[11px]">
+                        <button id="clearDraftBtn" class="text-theme-muted hover:text-red-500 transition-colors font-semibold flex items-center gap-1">
+                            <i class="fas fa-eraser"></i> Svuota bozza
+                        </button>
+                        <button id="saveCurrentQueueAsPlaylistBtn" class="text-theme-accent hover:underline font-semibold flex items-center gap-1" title="Importa i brani della coda del player">
+                            <i class="fas fa-layer-group"></i> Importa coda (<span id="queueTracksCount">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Elenco Playlist Salvate -->
+            <div class="p-4 border-2 border-black bg-theme-bg rounded">
+                <h3 class="font-bold text-sm uppercase text-theme-text mb-3 flex items-center justify-between">
+                    <span><i class="fas fa-folder-open text-acid-pink mr-1"></i> Playlist Salvate</span>
+                    <span id="savedPlaylistsCount" class="text-xs bg-theme-accent text-white px-2 py-0.5 rounded font-bold">0</span>
+                </h3>
+                <ul id="savedPlaylistsList" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar font-primary"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Sticky Player (visibile in Playlist ed Equalizer) -->
+    <footer id="bottom-player" class="fixed bottom-0 left-0 w-full h-20 bg-theme-bg border-t-4 border-theme-accent z-[100] hidden items-center justify-between px-6 shadow-2xl">
+        <div class="flex items-center gap-3 truncate max-w-xs">
+            <img id="coverThumbBottom" class="w-10 h-10 rounded border border-theme-accent object-cover hidden shrink-0" src="" alt="Cover">
+            <div class="truncate">
+                <p id="currentTrackBottom" class="text-theme-text font-bold text-sm truncate">NESSUN BRANO</p>
+                <p id="time-display-bottom" class="text-acid-green text-xs">0:00 / 0:00</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="prevBtnBottom" class="text-theme-text hover:text-theme-accent text-xl"><i class="fas fa-backward"></i></button>
+            <button id="playPauseBtnBottom" class="w-10 h-10 bg-theme-accent rounded-full flex items-center justify-center text-white"><i id="playPauseIconBottom" class="fas fa-play"></i></button>
+            <button id="nextBtnBottom" class="text-theme-text hover:text-theme-accent text-xl"><i class="fas fa-forward"></i></button>
+        </div>
+        <div class="flex items-center gap-2 w-32">
+            <button id="muteToggleBtnBottom" class="text-theme-text hover:text-theme-accent transition-colors cursor-pointer" title="Muto / Riattiva audio">
+                <i id="volumeIconBottom" class="fas fa-volume-up text-xs"></i>
+            </button>
+            <input type="range" id="volumeSliderBottom" min="0" max="1" step="0.01" value="0.75" class="w-full">
+        </div>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
