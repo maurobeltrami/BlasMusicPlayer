@@ -26,6 +26,23 @@ Combina la velocità e la sicurezza di un backend nativo in **Rust** (su archite
 
 ---
 
+## 📸 Interfaccia e Funzionalità
+
+### 🟢 1. Tema Modern Dark (Player & Esplorazione Cartelle)
+Interfaccia elegante in stile Spotify con navigazione rapida delle cartelle del computer, pulsante Play rapido per riprodurre all'istante le sottocartelle, disco in vinile rotante animato e coda di riproduzione.
+
+![Tema Modern Dark](assets/screenshots/01_modern_player.png)
+
+### 🐆 2. Tema Punk Acid (con Sfondo Leopardato)
+Estetica audace anni '80 con lo sfondo leopardato iconico (`.leopard-bg`) nella libreria laterale, texture in stile carta vissuta e accenti al neon giallo/fucsia.
+
+![Tema Punk Acid](assets/screenshots/02_punk_theme.png)
+
+### 📑 3. Compositore e Gestione Playlist
+Schermata dedicata alla composizione e salvataggio delle playlist personali in locale: esplora i tuoi file musicali e aggiungi le canzoni con un click sul tasto `+`.
+
+![Gestione Playlist](assets/screenshots/03_playlist_manager.png)
+
 ## 🚀 Avvio Rapido
 
 ### 1. Per l'Utente Finale (Zero-Terminal)
