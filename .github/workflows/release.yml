@@ -1,0 +1,84 @@
+name: "Release BlasMusicPlayer (Multi-Platform)"
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versione da rilasciare (es. v1.0.0)"
+        required: false
+        default: "v1.0.0"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest"
+            args: "--target universal-apple-darwin"
+          - platform: "ubuntu-22.04"
+            args: ""
+          - platform: "windows-latest"
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "npm"
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libgtk-3-dev
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build and Publish Tauri Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__
+          releaseName: "BlasMusicPlayer v__VERSION__"
+          releaseBody: |
+            ## 🎵 BlasMusicPlayer v__VERSION__
+
+            Riproduttore musicale desktop nativo, moderno e 100% **Local-First & Zero-Terminal** dell'ecosistema **[BlasOpen](https://github.com/maurobeltrami/BlasMusicPlayer)**.
+
+            ### 📦 Scarica l'applicazione per il tuo sistema:
+            * 🍏 **macOS (Apple Silicon & Intel):** scarica il file `.dmg`
+            * 🪟 **Windows:** scarica l'installer `.msi` o `.exe`
+            * 🐧 **Linux:** scarica il pacchetto `.deb` o `.AppImage`
+
+            Nessun terminale, nessun server, nessun abbonamento. Doppio click e ascolti la tua musica!
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
