@@ -8,9 +8,13 @@ Benvenuto nel manuale d'uso ufficiale di **BlasMusicPlayer**, il riproduttore mu
 
 In conformità con l'Articolo 2 della **Costituzione di BlasOpen**, l'utente finale non deve mai essere costretto a interagire con il terminale:
 
-1. **Avvio Diretto da Finder:**
-   * Fai doppio clic su **`BlasMusicPlayer.app`** o sullo script di avvio rapido **`./blasmusicplayer`**.
-   * Se avviato da Finder, la finestra terminale di transizione viene chiusa in automatico e l'interfaccia grafica si apre immediatamente.
+1. **Avvio Diretto (Zero-Terminal):**
+   * Fai doppio clic su **`BlasMusicPlayer.app`** (installato da `.dmg`) o sullo script `./blasmusicplayer`.
+   * **Se macOS mostra l'avviso di sicurezza (Gatekeeper):** Trattandosi di software open source gratuito, al primo avvio su Mac:
+     * Clicca su **Done/Annulla**.
+     * Apri **Impostazioni di Sistema** ➔ **Privacy e sicurezza** ➔ scorri su **Sicurezza** e clicca su **"Apri comunque"**.
+     * *(In alternativa da Terminale: `xattr -cr /Applications/BlasMusicPlayer.app`).*
+   * **Se Windows mostra "PC protetto da Windows" (SmartScreen):** Clicca su **"Ulteriori informazioni"** e seleziona **"Esegui comunque"**.
 2. **Modalità Sviluppo (per programmatori):**
    ```bash
    npm run tauri dev

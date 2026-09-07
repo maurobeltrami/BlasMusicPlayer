@@ -43,21 +43,45 @@ Schermata dedicata alla composizione e salvataggio delle playlist personali in l
 
 ![Gestione Playlist](assets/screenshots/03_playlist_manager.png)
 
-## 🚀 Avvio Rapido
+## 🚀 Download e Installazione (Zero-Terminal)
 
-### 1. Per l'Utente Finale (Zero-Terminal)
-Fai doppio clic sull'applicazione:
-* **`BlasMusicPlayer.app`** (oppure `./blasmusicplayer` da Finder).
+Puoi scaricare l'applicazione già compilata per il tuo sistema operativo direttamente dalla pagina delle **[Releases Ufficiali](https://github.com/maurobeltrami/BlasMusicPlayer/releases)**:
 
-### 2. Per gli Sviluppatori (Compilazione da sorgente)
+### 🍏 macOS (Apple Silicon M1/M2/M3/M4 & Intel)
+1. Scarica il file **`BlasMusicPlayer_1.0.0_universal.dmg`**.
+2. Trascina **BlasMusicPlayer** nella cartella **Applicazioni**.
+3. **Primo avvio (macOS Gatekeeper):** Trattandosi di un software open-source gratuito (senza l'abbonamento annuale a pagamento per sviluppatori Apple da 99$/anno), macOS mostrerà l'avviso di sicurezza *"Apple non può verificare BlasMusicPlayer"*.
+   * **Metodo Grafico:** Clicca su **Done/Annulla** ➔ Apri **Impostazioni di Sistema** ➔ **Privacy e sicurezza** ➔ scorri in basso fino a **Sicurezza** e clicca su **"Apri comunque"** (*Open Anyway*).
+   * **Oppure da Terminale (rapido):**
+     ```bash
+     xattr -cr /Applications/BlasMusicPlayer.app
+     ```
+
+### 🪟 Windows
+1. Scarica l'installer **`BlasMusicPlayer_1.0.0_x64-setup.exe`** (o il pacchetto `.msi`).
+2. Avvia l'installazione guidata con un doppio clic.
+3. **Primo avvio (Windows SmartScreen):** Se appare la schermata blu di protezione, fai clic su **"Ulteriori informazioni"** e poi seleziona **"Esegui comunque"**.
+
+### 🐧 Linux (Ubuntu, Debian, Fedora, Arch)
+1. Scarica il pacchetto **`.deb`** (per Ubuntu/Debian) oppure **`BlasMusicPlayer_1.0.0_amd64.AppImage`**.
+2. Con l'AppImage, rendila eseguibile con un clic destro ➔ *Proprietà* ➔ *Permessi* ➔ *Consenti l'esecuzione* (oppure `chmod +x *.AppImage`) e fai doppio clic per avviare.
+
+---
+
+## 🛠️ Per gli Sviluppatori (Compilazione da sorgente)
+
 ```bash
-# Installa le dipendenze
+# 1. Clona il repository
+git clone https://github.com/maurobeltrami/BlasMusicPlayer.git
+cd BlasMusicPlayer
+
+# 2. Installa le dipendenze
 npm install
 
-# Avvia l'applicazione in modalità sviluppo
+# 3. Avvia l'applicazione in modalità sviluppo locale
 npm run tauri dev
 
-# Compila i binari nativi e il pacchetto .dmg / .app
+# 4. Compila i binari di produzione (.dmg, .app, .exe, .deb)
 npm run tauri build
 ```
 
