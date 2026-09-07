@@ -4,6 +4,11 @@
   "description": "BlasMusicPlayer: riproduttore musicale desktop moderno, nativo e local-first per macOS, Windows e Linux",
   "license": "MIT",
   "type": "commonjs",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
   "devDependencies": {
     "@tauri-apps/cli": "^2.11.4"
   },
