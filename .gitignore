@@ -5,6 +5,8 @@ node_modules/
 src-tauri/target/
 src-tauri/gen/schemas/
 BlasMusicPlayer.app
+*.apk
+*.aab
 
 # C++ legacy build artifacts
 legacy_cpp/blasmusicplayer
