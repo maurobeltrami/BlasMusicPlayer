@@ -22,6 +22,10 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
         loadNextTrackCallback();
     };
 
+    audioPlayer.onerror = () => {
+        console.warn("Errore HTML5 Audio:", audioPlayer.error?.code, audioPlayer.error?.message);
+    };
+
     const handleSeek = (e) => {
         if (e.cancelable) e.preventDefault();
         const el = document.getElementById('progressControl');

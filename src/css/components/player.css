@@ -92,3 +92,16 @@
 .progress-control-wrapper::after {
     right: 0;
 }
+
+/* Ottimizzazione Card e Bordo per Schermi Mobile */
+@media (max-width: 768px) {
+    body:not([data-theme="punk"]) .stencil-box,
+    body:not([data-theme="punk"]) .leopard-bg {
+        box-shadow: none !important;
+        border-radius: 12px;
+        border: 1px solid var(--box-border-color) !important;
+    }
+    body:not([data-theme="punk"]) .trax-badge {
+        display: none !important;
+    }
+}

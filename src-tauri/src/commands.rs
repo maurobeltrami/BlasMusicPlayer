@@ -1,13 +1,14 @@
 // commands.rs - Comandi IPC Tauri per navigazione filesystem e riproduzione audio
 use std::fs;
 use std::path::Path;
+#[cfg(not(target_os = "android"))]
 use tauri::Manager;
 use crate::dto::{CommonDirDto, FileItemDto, FolderResultDto, TrackDto};
 use crate::metadata;
 
 /// Restituisce la cartella audio predefinita del sistema (Download o Music su Android).
 #[tauri::command]
-pub fn get_music_dir(app: tauri::AppHandle) -> String {
+pub fn get_music_dir(_app: tauri::AppHandle) -> String {
     #[cfg(target_os = "android")]
     {
         for dir in ["/storage/emulated/0/Download", "/storage/emulated/0/Music", "/storage/emulated/0"] {
@@ -17,13 +18,13 @@ pub fn get_music_dir(app: tauri::AppHandle) -> String {
     }
     #[cfg(not(target_os = "android"))]
     {
-        app.path().audio_dir().map(|p| p.to_string_lossy().to_string()).unwrap_or_else(|_| "/".to_string())
+        _app.path().audio_dir().map(|p| p.to_string_lossy().to_string()).unwrap_or_else(|_| "/".to_string())
     }
 }
 
 /// Restituisce la lista di scorciatoie rapide alle cartelle multimediali del sistema.
 #[tauri::command]
-pub fn get_common_dirs(app: tauri::AppHandle) -> Vec<CommonDirDto> {
+pub fn get_common_dirs(_app: tauri::AppHandle) -> Vec<CommonDirDto> {
     let mut list = Vec::new();
     #[cfg(target_os = "android")]
     {
@@ -34,17 +35,31 @@ pub fn get_common_dirs(app: tauri::AppHandle) -> Vec<CommonDirDto> {
     }
     #[cfg(not(target_os = "android"))]
     {
-        if let Ok(p) = app.path().audio_dir() {
+        if let Ok(p) = _app.path().audio_dir() {
             list.push(CommonDirDto { name: "Musica".into(), path: p.to_string_lossy().to_string(), icon: "fa-music".into() });
         }
-        if let Ok(p) = app.path().download_dir() {
+        if let Ok(p) = _app.path().download_dir() {
             list.push(CommonDirDto { name: "Download".into(), path: p.to_string_lossy().to_string(), icon: "fa-download".into() });
         }
-        if let Ok(p) = app.path().home_dir() {
+        if let Ok(p) = _app.path().home_dir() {
             list.push(CommonDirDto { name: "Home".into(), path: p.to_string_lossy().to_string(), icon: "fa-home".into() });
         }
     }
     list
+}
+
+/// Restituisce l'URL di streaming HTTP per un file audio locale (supporta Range HTTP 206)
+#[tauri::command]
+pub fn get_stream_url(path: String) -> String {
+    let p = crate::server::get_server_port();
+    if p > 0 { format!("http://127.0.0.1:{}/audio?path={}", p, path) } else { path }
+}
+
+/// Restituisce l'URL HTTP per una copertina immagine
+#[tauri::command]
+pub fn get_cover_url(path: String) -> String {
+    let p = crate::server::get_server_port();
+    if p > 0 { format!("http://127.0.0.1:{}/cover?path={}", p, path) } else { path }
 }
 
 /// Scansiona una cartella e restituisce la lista di file audio e sottocartelle.

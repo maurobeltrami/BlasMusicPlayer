@@ -1,30 +1,45 @@
-// core/mediaLoader.js - Caricamento e riproduzione audio locale nativa
+// core/mediaLoader.js - Caricamento e riproduzione audio locale nativa con streaming HTTP
 import * as pl from '../data/playlist.js';
 import { initAudio } from './audioEngine.js';
 
-export function loadTrack(audioPlayer, index, autoPlay, renderUICallback) {
+async function resolveMediaUrl(filePath) {
+    if (!filePath) return "";
+    if (window.__TAURI__?.core) {
+        try {
+            const url = await window.__TAURI__.core.invoke('get_stream_url', { path: filePath });
+            if (url) return url;
+        } catch (_) {}
+        if (window.__TAURI__.core.convertFileSrc) return window.__TAURI__.core.convertFileSrc(filePath);
+    }
+    return filePath;
+}
+
+async function resolveCoverUrl(coverPath, trackPath) {
+    let p = coverPath;
+    if (!p && trackPath) {
+        const lastSlash = Math.max(trackPath.lastIndexOf('/'), trackPath.lastIndexOf('\\'));
+        if (lastSlash > 0) p = trackPath.substring(0, lastSlash) + "/cover.jpg";
+    }
+    if (!p) return null;
+    if (window.__TAURI__?.core) {
+        try {
+            const url = await window.__TAURI__.core.invoke('get_cover_url', { path: p });
+            if (url) return url;
+        } catch (_) {}
+        if (window.__TAURI__.core.convertFileSrc) return window.__TAURI__.core.convertFileSrc(p);
+    }
+    return p;
+}
+
+export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) {
     if (pl.currentPlaylist.length === 0) return;
     pl.setCurrentTrackIndex(index);
     const track = pl.getCurrentTrack();
 
-    const toAssetSrc = (filePath) => {
-        if (!filePath) return null;
-        if (window.__TAURI__?.core?.convertFileSrc) return window.__TAURI__.core.convertFileSrc(filePath);
-        if (window.__TAURI_INTERNALS__?.convertFileSrc) return window.__TAURI_INTERNALS__.convertFileSrc(filePath);
-        return filePath;
-    };
-
-    audioPlayer.src = toAssetSrc(track.path) || track.path;
+    audioPlayer.src = await resolveMediaUrl(track.path);
     audioPlayer.load();
 
-    // Risoluzione e impostazione Copertina
-    let coverSrc = toAssetSrc(track.cover);
-    if (!coverSrc && track.path) {
-        const lastSlash = Math.max(track.path.lastIndexOf('/'), track.path.lastIndexOf('\\'));
-        if (lastSlash > 0) {
-            coverSrc = toAssetSrc(track.path.substring(0, lastSlash) + "/cover.jpg");
-        }
-    }
+    const coverSrc = await resolveCoverUrl(track.cover, track.path);
     pl.setCoverUrl(coverSrc);
 
     const coverThumbBottom = document.getElementById('coverThumbBottom');
