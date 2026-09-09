@@ -48,7 +48,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
             }
             items.forEach(item => {
                 const row = document.createElement('div');
-                row.className = 'group flex items-center justify-between gap-1 p-1.5 hover:bg-theme-accent hover:text-white rounded text-xs font-semibold transition-colors cursor-pointer';
+                row.className = 'group flex items-center justify-between gap-1 p-1.5 hover:bg-theme-accent hover:text-white rounded text-xs font-semibold transition-colors cursor-pointer touch-manipulation';
                 const left = document.createElement('div');
                 left.className = 'flex items-center gap-2 truncate flex-1';
 

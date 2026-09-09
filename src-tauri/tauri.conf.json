@@ -13,8 +13,8 @@
         "title": "BlasMusicPlayer - Local-First Music Experience",
         "width": 1200,
         "height": 780,
-        "minWidth": 900,
-        "minHeight": 620,
+        "minWidth": 360,
+        "minHeight": 480,
         "resizable": true,
         "fullscreen": false
       }

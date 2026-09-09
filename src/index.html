@@ -45,12 +45,12 @@
         <!-- VIEW: HOME (Libreria + Player Centrale) -->
         <div id="view-home" class="page-view block stencil-box p-4 md:p-8 mb-24">
             <header class="mb-8 flex flex-col md:flex-row justify-between items-center border-b-[3px] border-black pb-6 gap-4">
-                <h1 class="text-4xl md:text-6xl graffiti-title tracking-tight text-theme-text transform rotate-[-2deg] text-center md:text-left">
-                    <span class="text-5xl md:text-7xl text-theme-accent">B</span>LAS<span class="text-5xl md:text-7xl text-theme-accent">M</span>USIC
+                <h1 class="text-4xl md:text-6xl lg:text-7xl graffiti-title tracking-tight text-theme-text transform rotate-[-2deg] text-center md:text-left">
+                    <span class="text-6xl md:text-8xl lg:text-9xl text-theme-accent">B</span>LAS<span class="text-6xl md:text-8xl lg:text-9xl text-theme-accent">M</span>USIC
                 </h1>
             </header>
 
-            <main class="grid lg:grid-cols-12 gap-6 lg:gap-8">
+            <main class="grid lg:grid-cols-12 gap-6 lg:gap-12">
                 <!-- Sidebar Libreria & Cartelle -->
                 <aside class="lg:col-span-4 p-4 leopard-bg transform rotate-1 relative z-20">
                     <div class="absolute -top-3 -left-3 bg-acid-pink text-white px-3 py-1 font-bold text-lg rotate-[-5deg] border border-black shadow-[2px_2px_0px_black] font-title">TRAX</div>
@@ -99,13 +99,13 @@
 
                 <!-- Player Centrale -->
                 <section class="lg:col-span-8 p-4 stencil-box relative border-acid-green">
-                    <div id="displayScreen" class="w-full p-4 border-2 border-black mb-6 flex flex-col items-center justify-center relative bg-box-bg min-h-[360px]">
+                    <div id="displayScreen" class="w-full p-4 border-2 border-black mb-6 flex flex-col items-center justify-center relative bg-box-bg min-h-[300px] md:min-h-[480px]">
                         <div class="w-full px-4 mb-3 overflow-hidden text-center">
-                            <p id="currentTrack" class="graffiti-title text-2xl md:text-3xl transform skew-x-[-5deg] truncate">NESSUN BRANO SELEZIONATO</p>
+                            <p id="currentTrack" class="graffiti-title text-2xl md:text-4xl transform skew-x-[-5deg] break-words">NESSUN BRANO SELEZIONATO</p>
                         </div>
 
                         <!-- Visualizer Canvas -->
-                        <div id="visualizerContainer" class="w-full h-52 md:h-64 bg-black border-4 border-acid-blue flex items-center justify-center relative overflow-hidden rounded">
+                        <div id="visualizerContainer" class="w-full h-48 md:h-80 bg-black border-4 border-acid-blue flex items-center justify-center relative overflow-hidden rounded">
                             <canvas id="visualizer" class="block w-full h-full opacity-90"></canvas>
                             <div class="absolute top-2 right-2 bg-black/60 p-1.5 rounded z-10">
                                 <select id="visualizerSelector" class="bg-transparent text-white font-bold uppercase text-xs outline-none cursor-pointer">
@@ -126,21 +126,25 @@
                         <div id="time-display" class="font-primary font-bold bg-theme-bg border border-theme-text px-2 mt-2 text-xs text-theme-text">0:00 / 0:00</div>
                     </div>
 
-                    <!-- Controlli Riproduzione -->
-                    <div class="flex items-center justify-between w-full mt-4 px-4">
-                        <button id="shuffleBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-random fa-lg"></i></button>
-                        <div class="flex items-center gap-6">
-                            <button id="prevBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-step-backward fa-xl"></i></button>
-                            <button id="playPauseBtn" class="w-14 h-14 bg-theme-accent border-2 border-box-bg rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform">
+                    <!-- Controlli Riproduzione (layout responsivo: stack verticale su mobile, orizzontale su desktop) -->
+                    <div class="flex flex-col md:flex-row items-center justify-between w-full mt-6 gap-6 px-4">
+                        <!-- Spacer sinistro visibile solo su desktop per bilanciare il layout -->
+                        <div class="hidden md:flex flex-1"></div>
+                        <!-- Centro: pulsanti di riproduzione -->
+                        <div class="flex items-center justify-center gap-6">
+                            <button id="shuffleBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-random fa-lg"></i></button>
+                            <button id="prevBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-step-backward fa-lg"></i></button>
+                            <button id="playPauseBtn" style="border-radius: 50% !important;" class="w-14 h-14 md:w-16 md:h-16 aspect-square bg-theme-accent border-2 border-box-bg rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform z-10">
                                 <i id="playPauseIcon" class="fas fa-play fa-xl"></i>
                             </button>
-                            <button id="nextBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-step-forward fa-xl"></i></button>
+                            <button id="nextBtn" class="text-theme-text hover:text-theme-accent transition-colors"><i class="fas fa-step-forward fa-lg"></i></button>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <!-- Destra: volume (centrato su mobile, allineato a destra su desktop) -->
+                        <div class="flex items-center justify-center md:justify-end flex-1 gap-3">
                             <button id="muteToggleBtn" class="text-theme-text hover:text-theme-accent transition-colors cursor-pointer" title="Muto / Riattiva audio">
-                                <i id="volumeIcon" class="fas fa-volume-up text-sm"></i>
+                                <i id="volumeIcon" class="fas fa-volume-up"></i>
                             </button>
-                            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.75" class="w-24">
+                            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.75" class="w-24 md:w-32">
                         </div>
                     </div>
                     <audio id="audioPlayer" crossorigin="anonymous"></audio>
@@ -290,25 +294,40 @@
         </div>
     </div>
 
-    <!-- Bottom Sticky Player (visibile in Playlist ed Equalizer) -->
-    <footer id="bottom-player" class="fixed bottom-0 left-0 w-full h-20 bg-theme-bg border-t-4 border-theme-accent z-[100] hidden items-center justify-between px-6 shadow-2xl">
-        <div class="flex items-center gap-3 truncate max-w-xs">
-            <img id="coverThumbBottom" class="w-10 h-10 rounded border border-theme-accent object-cover hidden shrink-0" src="" alt="Cover">
-            <div class="truncate">
-                <p id="currentTrackBottom" class="text-theme-text font-bold text-sm truncate">NESSUN BRANO</p>
-                <p id="time-display-bottom" class="text-acid-green text-xs">0:00 / 0:00</p>
+    <!-- Bottom Sticky Player (visibile in Playlist ed Equalizer) - Layout responsivo con progress bar -->
+    <footer id="bottom-player"
+        class="fixed bottom-0 left-0 w-full h-24 bg-theme-bg border-t-4 border-theme-accent z-[100] hidden flex-col justify-center px-4 shadow-[0_-10px_20px_rgba(0,0,0,0.5)] transition-colors duration-300">
+        <!-- Barra di avanzamento seekabile posizionata in cima al footer -->
+        <div id="progressControlBottom" class="absolute top-[-4px] left-0 w-full h-2 bg-gray-800 cursor-pointer">
+            <div id="progressBarBottom" class="h-full bg-theme-accent pointer-events-none" style="width: 0%;"></div>
+        </div>
+
+        <div class="flex justify-between items-center h-full w-full px-4 md:px-8 gap-4">
+            <!-- Info Traccia con cover thumbnail -->
+            <div class="flex items-center gap-3 flex-1 truncate">
+                <img id="coverThumbBottom" class="w-10 h-10 rounded border border-theme-accent object-cover hidden shrink-0" src="" alt="Cover">
+                <div class="truncate">
+                    <p id="currentTrackBottom" class="text-theme-text font-primary font-bold text-sm md:text-xl truncate">NESSUN BRANO</p>
+                    <p id="time-display-bottom" class="text-acid-green text-xs font-bold">0:00 / 0:00</p>
+                </div>
             </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button id="prevBtnBottom" class="text-theme-text hover:text-theme-accent text-xl"><i class="fas fa-backward"></i></button>
-            <button id="playPauseBtnBottom" class="w-10 h-10 bg-theme-accent rounded-full flex items-center justify-center text-white"><i id="playPauseIconBottom" class="fas fa-play"></i></button>
-            <button id="nextBtnBottom" class="text-theme-text hover:text-theme-accent text-xl"><i class="fas fa-forward"></i></button>
-        </div>
-        <div class="flex items-center gap-2 w-32">
-            <button id="muteToggleBtnBottom" class="text-theme-text hover:text-theme-accent transition-colors cursor-pointer" title="Muto / Riattiva audio">
-                <i id="volumeIconBottom" class="fas fa-volume-up text-xs"></i>
-            </button>
-            <input type="range" id="volumeSliderBottom" min="0" max="1" step="0.01" value="0.75" class="w-full">
+
+            <!-- Controlli Playback con touch targets adeguati (≥48px) -->
+            <div class="flex items-center gap-4 md:gap-8">
+                <button id="prevBtnBottom" class="text-theme-text hover:text-acid-pink text-2xl"><i class="fas fa-backward"></i></button>
+                <button id="playPauseBtnBottom" style="border-radius: 50% !important;" class="text-black bg-theme-accent hover:opacity-90 w-12 h-12 md:w-14 md:h-14 aspect-square rounded-full flex items-center justify-center text-xl transition-colors">
+                    <i id="playPauseIconBottom" class="fas fa-play"></i>
+                </button>
+                <button id="nextBtnBottom" class="text-theme-text hover:text-acid-pink text-2xl"><i class="fas fa-forward"></i></button>
+            </div>
+
+            <!-- Volume: nascosto su mobile per risparmiare spazio -->
+            <div class="hidden md:flex items-center gap-2 w-32">
+                <button id="muteToggleBtnBottom" class="text-theme-text hover:text-theme-accent transition-colors cursor-pointer" title="Muto / Riattiva audio">
+                    <i id="volumeIconBottom" class="fas fa-volume-up text-sm"></i>
+                </button>
+                <input type="range" id="volumeSliderBottom" min="0" max="1" step="0.01" value="0.75" class="w-full accent-theme-accent h-1 bg-gray-600 appearance-none">
+            </div>
         </div>
     </footer>
 
