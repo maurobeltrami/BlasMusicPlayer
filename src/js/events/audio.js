@@ -24,6 +24,10 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
 
     audioPlayer.onerror = () => {
         console.warn("Errore HTML5 Audio:", audioPlayer.error?.code, audioPlayer.error?.message);
+        // Avanza automaticamente alla traccia successiva se il file corrente fallisce
+        setTimeout(() => {
+            loadNextTrackCallback();
+        }, 1000);
     };
 
     const handleSeek = (e) => {

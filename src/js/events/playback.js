@@ -40,6 +40,16 @@ export function setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICa
     safeSetClick('prevBtn', goPrev);
     safeSetClick('prevBtnBottom', goPrev);
 
+    // Controlli multimediali nativi per schermata di blocco Android / cuffie
+    if ('mediaSession' in navigator) {
+        try {
+            navigator.mediaSession.setActionHandler('play', handlePlayPause);
+            navigator.mediaSession.setActionHandler('pause', handlePlayPause);
+            navigator.mediaSession.setActionHandler('nexttrack', goNext);
+            navigator.mediaSession.setActionHandler('previoustrack', goPrev);
+        } catch (_) {}
+    }
+
     let previousVolume = 0.75;
 
     const updateVolumeUI = (val) => {

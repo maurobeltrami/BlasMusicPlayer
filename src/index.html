@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BlasMusicPlayer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -51,52 +51,63 @@
             </header>
 
             <main class="grid lg:grid-cols-12 gap-6 lg:gap-12">
-                <!-- Sidebar Libreria & Cartelle (in colonna su mobile, sinistra su desktop) -->
-                <aside class="order-2 lg:order-1 lg:col-span-4 p-3 sm:p-4 leopard-bg relative z-20">
-                    <div class="trax-badge absolute -top-3 -left-3 bg-acid-pink text-white px-3 py-1 font-bold text-base sm:text-lg border border-black shadow-[2px_2px_0px_black] font-title">TRAX</div>
-                    <h2 class="leopard-text text-xl sm:text-2xl font-black mb-3 uppercase border-b-2 border-theme-text inline-block px-1">Libreria</h2>
-
-                    <!-- Navigazione Cartelle -->
-                    <div class="mb-6 p-3 bg-box-bg border border-black rounded">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs sm:text-sm font-bold uppercase bg-acid-blue text-theme-text px-2 py-0.5 border border-black rounded">
-                                <i class="fas fa-folder mr-1"></i> Memoria & Cartelle
-                            </label>
-                            <button id="playCurrentFolderBtn" title="Riproduci tutti i brani di questa cartella" class="bg-theme-accent text-white hover:opacity-90 px-2.5 py-1 font-bold text-xs sm:text-sm rounded border border-black shadow-sm transition-transform active:scale-95 flex items-center gap-1.5 touch-manipulation">
-                                <i class="fas fa-play text-xs"></i> Riproduci Tutto
-                            </button>
-                        </div>
-
-                        <!-- Scorciatoie rapide cartelle dispositivo (Download, Musica, Memoria) -->
-                        <div id="quickDirsContainer" class="flex items-center gap-1.5 mb-2.5 flex-wrap"></div>
-
-                        <div class="flex items-center gap-2 mb-2 p-1.5 border-b-2 border-black bg-theme-bg/50 rounded">
-                            <button id="dirUpBtn" title="Cartella superiore" class="bg-theme-text text-theme-bg hover:bg-theme-accent hover:text-white px-3 py-1 font-bold text-sm sm:text-base rounded transition-colors active:scale-95 touch-manipulation"><i class="fas fa-arrow-up"></i></button>
-                            <span id="currentDirDisplay" class="truncate font-primary text-theme-text text-xs sm:text-sm flex-1 font-semibold break-all select-all">/</span>
-                        </div>
-                        <div id="dirList" class="max-h-64 overflow-y-auto space-y-1.5 custom-scrollbar font-primary pr-0.5"></div>
-                        <button id="browseFolderBtn" class="mt-3 w-full bg-theme-accent text-white font-bold text-xs sm:text-sm uppercase py-2.5 px-3 rounded shadow hover:scale-102 active:scale-98 transition-transform flex items-center justify-center gap-2 touch-manipulation">
-                            <i class="fas fa-folder-open text-sm"></i> Scegli / Cambia Cartella...
-                        </button>
-                    </div>
-
-                    <!-- Selezione Playlist Salvate -->
-                    <div class="mb-6 p-3 bg-box-bg border border-black rounded">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs sm:text-sm font-bold uppercase bg-acid-pink text-white px-2 py-0.5 border border-black rounded">
-                                <i class="fas fa-list-ul mr-1"></i> Playlist
-                            </label>
-                            <button id="goToPlaylistsBtn" title="Vai alla gestione playlist" class="text-xs sm:text-sm font-bold text-theme-accent hover:underline flex items-center gap-1">
-                                <i class="fas fa-plus-circle text-xs"></i> Crea / Gestisci
-                            </button>
-                        </div>
+                <!-- Sidebar Libreria & Cartelle (in colonna su mobile, sinistra su desktop, comprimibile con menu a tendina) -->
+                <aside id="libraryAside" class="order-2 lg:order-1 lg:col-span-4 p-3 sm:p-4 leopard-bg relative z-20 rounded border border-box-border transition-all">
+                    <!-- Header Accordion / Menu a Tendina per Comprimere la Libreria -->
+                    <button id="libraryToggleBtn" type="button" class="w-full flex items-center justify-between py-1 cursor-pointer focus:outline-none touch-manipulation">
                         <div class="flex items-center gap-2">
-                            <select id="savedPlaylistSelector" class="flex-1 bg-theme-bg text-theme-text border border-black p-2 rounded text-xs sm:text-sm font-semibold outline-none cursor-pointer truncate">
-                                <option value="">-- Seleziona una Playlist --</option>
-                            </select>
-                            <button id="loadSelectedPlaylistBtn" title="Carica e riproduci questa playlist" class="bg-theme-accent text-white px-3 py-2 rounded text-xs sm:text-sm font-bold active:scale-95 transition-transform flex items-center gap-1 shrink-0 touch-manipulation">
-                                <i class="fas fa-play text-xs"></i> Play
+                            <i class="fas fa-folder-open text-theme-accent text-lg"></i>
+                            <h2 class="leopard-text text-base sm:text-xl font-black uppercase inline-block border-b-2 border-theme-text px-1">Libreria & Cartelle</h2>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-xs font-bold text-theme-accent bg-box-bg px-2.5 py-1 rounded border border-box-border shadow-sm active:scale-95 transition-transform">
+                            <span id="libraryToggleText">Nascondi</span>
+                            <i id="libraryToggleIcon" class="fas fa-chevron-up transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <div id="libraryContent" class="space-y-4 mt-3 transition-all duration-300">
+                        <!-- Navigazione Cartelle -->
+                        <div class="p-3 bg-box-bg border border-black rounded">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs sm:text-sm font-bold uppercase bg-acid-blue text-theme-text px-2 py-0.5 border border-black rounded">
+                                    <i class="fas fa-folder mr-1"></i> Memoria & Cartelle
+                                </label>
+                                <button id="playCurrentFolderBtn" title="Riproduci tutti i brani di questa cartella" class="bg-theme-accent text-white hover:opacity-90 px-2.5 py-1 font-bold text-xs sm:text-sm rounded border border-black shadow-sm transition-transform active:scale-95 flex items-center gap-1.5 touch-manipulation">
+                                    <i class="fas fa-play text-xs"></i> Riproduci Tutto
+                                </button>
+                            </div>
+
+                            <!-- Scorciatoie rapide cartelle dispositivo (Download, Musica, Memoria) -->
+                            <div id="quickDirsContainer" class="flex items-center gap-1.5 mb-2.5 flex-wrap"></div>
+
+                            <div class="flex items-center gap-2 mb-2 p-1.5 border-b-2 border-black bg-theme-bg/50 rounded">
+                                <button id="dirUpBtn" title="Cartella superiore" class="bg-theme-text text-theme-bg hover:bg-theme-accent hover:text-white px-3 py-1 font-bold text-sm sm:text-base rounded transition-colors active:scale-95 touch-manipulation"><i class="fas fa-arrow-up"></i></button>
+                                <span id="currentDirDisplay" class="truncate font-primary text-theme-text text-xs sm:text-sm flex-1 font-semibold break-all select-all">/</span>
+                            </div>
+                            <div id="dirList" class="max-h-64 overflow-y-auto space-y-1.5 custom-scrollbar font-primary pr-0.5"></div>
+                            <button id="browseFolderBtn" class="mt-3 w-full bg-theme-accent text-white font-bold text-xs sm:text-sm uppercase py-2.5 px-3 rounded shadow hover:scale-102 active:scale-98 transition-transform flex items-center justify-center gap-2 touch-manipulation">
+                                <i class="fas fa-folder-open text-sm"></i> Scegli / Cambia Cartella...
                             </button>
+                        </div>
+
+                        <!-- Selezione Playlist Salvate -->
+                        <div class="p-3 bg-box-bg border border-black rounded">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs sm:text-sm font-bold uppercase bg-acid-pink text-white px-2 py-0.5 border border-black rounded">
+                                    <i class="fas fa-list-ul mr-1"></i> Playlist
+                                </label>
+                                <button id="goToPlaylistsBtn" title="Vai alla gestione playlist" class="text-xs sm:text-sm font-bold text-theme-accent hover:underline flex items-center gap-1">
+                                    <i class="fas fa-plus-circle text-xs"></i> Crea / Gestisci
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select id="savedPlaylistSelector" class="flex-1 bg-theme-bg text-theme-text border border-black p-2 rounded text-xs sm:text-sm font-semibold outline-none cursor-pointer truncate">
+                                    <option value="">-- Seleziona una Playlist --</option>
+                                </select>
+                                <button id="loadSelectedPlaylistBtn" title="Carica e riproduci questa playlist" class="bg-theme-accent text-white px-3 py-2 rounded text-xs sm:text-sm font-bold active:scale-95 transition-transform flex items-center gap-1 shrink-0 touch-manipulation">
+                                    <i class="fas fa-play text-xs"></i> Play
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </aside>
@@ -156,7 +167,7 @@
             </main>
 
             <!-- Sezione Coda / Playlist -->
-            <section class="mt-8 border-t-4 border-black pt-6 bg-box-bg p-4 relative torn-paper">
+            <section class="mt-4 md:mt-8 border-t-4 border-black pt-4 md:pt-6 bg-box-bg p-4 relative torn-paper">
                 <h2 class="text-2xl graffiti-title text-theme-text mb-4 inline-block">CODA DI RIPRODUZIONE (<span id="playlistCount">0</span>)</h2>
                 <ul id="playlist" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar font-primary"></ul>
             </section>

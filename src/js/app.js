@@ -66,6 +66,23 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     await setupNavigation(loadTrackCallback, renderUICallback);
 
+    // Accordion / Menu a Tendina per Comprimere la Libreria Cartelle & Playlist
+    const libToggleBtn = document.getElementById('libraryToggleBtn');
+    const libContent = document.getElementById('libraryContent');
+    const libToggleText = document.getElementById('libraryToggleText');
+    const libToggleIcon = document.getElementById('libraryToggleIcon');
+    if (libToggleBtn && libContent) {
+        libToggleBtn.addEventListener('click', () => {
+            const isHidden = libContent.classList.toggle('hidden');
+            if (libToggleText) libToggleText.textContent = isHidden ? 'Mostra' : 'Nascondi';
+            if (libToggleIcon) {
+                libToggleIcon.className = isHidden 
+                    ? 'fas fa-chevron-down transition-transform duration-200' 
+                    : 'fas fa-chevron-up transition-transform duration-200';
+            }
+        });
+    }
+
     // Resume AudioContext on any user interaction
     document.addEventListener('pointerdown', () => {
         if (audioEngine.audioContext?.state === 'suspended') audioEngine.audioContext.resume();

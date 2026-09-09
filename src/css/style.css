@@ -4,3 +4,11 @@
 @import url('themes/modern.css');
 @import url('components/player.css');
 @import url('components/playlist.css');
+
+/* Prevenzione overflow orizzontale e gesture di zoom indesiderate */
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    touch-action: pan-y;
+}
