@@ -1,49 +1,53 @@
 // commands.rs - Comandi IPC Tauri per navigazione filesystem e riproduzione audio
-use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
 use tauri::Manager;
+use crate::dto::{CommonDirDto, FileItemDto, FolderResultDto, TrackDto};
 use crate::metadata;
 
-/// DTO per una singola traccia audio con metadati
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct TrackDto {
-    pub title: String,
-    pub artist: Option<String>,
-    pub path: String,
-    pub extension: String,
-    pub cover: Option<String>,
-}
-
-/// DTO per il risultato della selezione di una cartella musicale
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct FolderResultDto {
-    pub folder_path: String,
-    pub tracks: Vec<TrackDto>,
-}
-
-/// DTO per un elemento del filesystem (file audio o cartella)
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct FileItemDto {
-    pub name: String,
-    pub title: Option<String>,
-    pub artist: Option<String>,
-    pub path: String,
-    pub is_dir: bool,
-    pub cover: Option<String>,
-}
-
-/// Restituisce la cartella Musica predefinita del sistema operativo.
-/// Su Android usa il resolver di percorsi nativo di Tauri.
+/// Restituisce la cartella audio predefinita del sistema (Download o Music su Android).
 #[tauri::command]
 pub fn get_music_dir(app: tauri::AppHandle) -> String {
-    app.path().audio_dir()
-        .map(|p| p.to_string_lossy().to_string())
-        .unwrap_or_else(|_| "/storage/emulated/0/Music".to_string())
+    #[cfg(target_os = "android")]
+    {
+        for dir in ["/storage/emulated/0/Download", "/storage/emulated/0/Music", "/storage/emulated/0"] {
+            if Path::new(dir).exists() { return dir.to_string(); }
+        }
+        return "/storage/emulated/0/Download".to_string();
+    }
+    #[cfg(not(target_os = "android"))]
+    {
+        app.path().audio_dir().map(|p| p.to_string_lossy().to_string()).unwrap_or_else(|_| "/".to_string())
+    }
+}
+
+/// Restituisce la lista di scorciatoie rapide alle cartelle multimediali del sistema.
+#[tauri::command]
+pub fn get_common_dirs(app: tauri::AppHandle) -> Vec<CommonDirDto> {
+    let mut list = Vec::new();
+    #[cfg(target_os = "android")]
+    {
+        list.push(CommonDirDto { name: "Download".into(), path: "/storage/emulated/0/Download".into(), icon: "fa-download".into() });
+        list.push(CommonDirDto { name: "Musica".into(), path: "/storage/emulated/0/Music".into(), icon: "fa-music".into() });
+        list.push(CommonDirDto { name: "Memoria".into(), path: "/storage/emulated/0".into(), icon: "fa-hdd".into() });
+        list.push(CommonDirDto { name: "Documenti".into(), path: "/storage/emulated/0/Documents".into(), icon: "fa-folder".into() });
+    }
+    #[cfg(not(target_os = "android"))]
+    {
+        if let Ok(p) = app.path().audio_dir() {
+            list.push(CommonDirDto { name: "Musica".into(), path: p.to_string_lossy().to_string(), icon: "fa-music".into() });
+        }
+        if let Ok(p) = app.path().download_dir() {
+            list.push(CommonDirDto { name: "Download".into(), path: p.to_string_lossy().to_string(), icon: "fa-download".into() });
+        }
+        if let Ok(p) = app.path().home_dir() {
+            list.push(CommonDirDto { name: "Home".into(), path: p.to_string_lossy().to_string(), icon: "fa-home".into() });
+        }
+    }
+    list
 }
 
 /// Scansiona una cartella e restituisce la lista di file audio e sottocartelle.
-/// Filtra i file nascosti (che iniziano con '.') e ordina: cartelle prima, poi file.
 #[tauri::command]
 pub fn scan_directory(dir_path: String) -> Vec<FileItemDto> {
     let mut items = Vec::new();
@@ -54,26 +58,16 @@ pub fn scan_directory(dir_path: String) -> Vec<FileItemDto> {
             let p = entry.path();
             let name = p.file_name().unwrap_or_default().to_string_lossy().to_string();
             if name.starts_with('.') { continue; }
-
             if p.is_dir() {
-                items.push(FileItemDto {
-                    name, title: None, artist: None,
-                    path: p.to_string_lossy().to_string(),
-                    is_dir: true, cover: None,
-                });
+                items.push(FileItemDto { name, title: None, artist: None, path: p.to_string_lossy().to_string(), is_dir: true, cover: None });
             } else if let Some(ext) = p.extension() {
                 if metadata::is_audio(&ext.to_string_lossy()) {
                     let meta = metadata::extract_metadata(&p);
-                    items.push(FileItemDto {
-                        name, title: Some(meta.title), artist: meta.artist,
-                        path: p.to_string_lossy().to_string(),
-                        is_dir: false, cover: cover.clone(),
-                    });
+                    items.push(FileItemDto { name, title: Some(meta.title), artist: meta.artist, path: p.to_string_lossy().to_string(), is_dir: false, cover: cover.clone() });
                 }
             }
         }
     }
-    // Ordinamento: cartelle prima dei file, poi ordine alfabetico
     items.sort_by(|a, b| match (a.is_dir, b.is_dir) {
         (true, false) => std::cmp::Ordering::Less,
         (false, true) => std::cmp::Ordering::Greater,
@@ -82,8 +76,7 @@ pub fn scan_directory(dir_path: String) -> Vec<FileItemDto> {
     items
 }
 
-/// Scansione ricorsiva di una cartella e di tutte le sottocartelle.
-/// Raccoglie tutti i file audio con i relativi metadati ID3/Vorbis.
+/// Scansione ricorsiva di una cartella e di tutte le relative sottocartelle.
 #[tauri::command]
 pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
     let mut tracks = Vec::new();
@@ -100,11 +93,7 @@ pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
                     let ext_str = ext.to_string_lossy().to_string();
                     if metadata::is_audio(&ext_str) {
                         let meta = metadata::extract_metadata(&p);
-                        tracks.push(TrackDto {
-                            title: meta.title, artist: meta.artist,
-                            path: p.to_string_lossy().to_string(),
-                            extension: ext_str, cover: dir_cover.clone(),
-                        });
+                        tracks.push(TrackDto { title: meta.title, artist: meta.artist, path: p.to_string_lossy().to_string(), extension: ext_str, cover: dir_cover.clone() });
                     }
                 }
             }
@@ -115,16 +104,13 @@ pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
     tracks
 }
 
-/// Apre il dialog nativo per selezionare una cartella musicale.
-/// Su desktop usa tauri-plugin-dialog; su Android naviga dalla cartella Music.
+/// Seleziona una cartella tramite dialogo di sistema o cartella di default su Android.
 #[tauri::command]
 pub fn pick_audio_folder(app: tauri::AppHandle) -> Option<FolderResultDto> {
     #[cfg(not(target_os = "android"))]
     {
         use tauri_plugin_dialog::DialogExt;
-        if let Some(folder) = app.dialog().file()
-            .set_title("Seleziona cartella musicale")
-            .blocking_pick_folder() {
+        if let Some(folder) = app.dialog().file().set_title("Seleziona cartella musicale").blocking_pick_folder() {
             let path_str = folder.to_string();
             let tracks = scan_folder_recursive(path_str.clone());
             return Some(FolderResultDto { folder_path: path_str, tracks });
@@ -133,8 +119,6 @@ pub fn pick_audio_folder(app: tauri::AppHandle) -> Option<FolderResultDto> {
     }
     #[cfg(target_os = "android")]
     {
-        // Su Android il dialog cartelle non è supportato nativamente.
-        // Naviga direttamente dalla cartella Music predefinita del dispositivo.
         let music = get_music_dir(app);
         let tracks = scan_folder_recursive(music.clone());
         Some(FolderResultDto { folder_path: music, tracks })

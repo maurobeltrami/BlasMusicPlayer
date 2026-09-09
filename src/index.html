@@ -23,18 +23,18 @@
     </script>
 </head>
 <body class="bg-theme-bg text-theme-text min-h-screen font-primary custom-scrollbar transition-colors duration-300">
-    <div class="w-full relative z-10 px-2 md:px-8">
+    <div class="w-full relative z-10 px-2 sm:px-4 md:px-8 pt-safe">
         <!-- Navigazione SPA -->
-        <nav class="w-full bg-theme-bg text-theme-text p-4 mb-4 flex flex-col md:flex-row items-center justify-center gap-4 border-b-4 border-theme-accent sticky top-0 z-50 shadow-lg font-title text-xl transition-colors duration-300">
-            <div class="flex gap-6 justify-center flex-wrap w-full md:w-auto">
-                <button class="nav-btn text-theme-accent hover:scale-110 transition-transform" data-target="view-home">HOME</button>
-                <button class="nav-btn hover:text-theme-accent hover:scale-110 transition-transform" data-target="view-playlists">PLAYLIST</button>
-                <button class="nav-btn hover:text-theme-accent hover:scale-110 transition-transform" data-target="view-equalizer">EQUALIZER</button>
+        <nav class="w-full bg-theme-bg text-theme-text p-3 mb-4 flex flex-wrap items-center justify-between gap-3 border-b-4 border-theme-accent sticky top-0 z-50 shadow-lg font-title text-base sm:text-lg md:text-xl transition-colors duration-300">
+            <div class="flex gap-4 sm:gap-6 justify-center flex-wrap">
+                <button class="nav-btn text-theme-accent hover:scale-105 transition-transform py-1 px-2" data-target="view-home">HOME</button>
+                <button class="nav-btn hover:text-theme-accent hover:scale-105 transition-transform py-1 px-2" data-target="view-playlists">PLAYLIST</button>
+                <button class="nav-btn hover:text-theme-accent hover:scale-105 transition-transform py-1 px-2" data-target="view-equalizer">EQUALIZER</button>
             </div>
-            <!-- Selettore Tema -->
-            <div class="md:absolute md:right-4 flex items-center gap-2 font-primary text-sm bg-theme-bg p-1 border-2 border-theme-accent rotate-scuff-2 z-50">
-                <label for="themeSelector" class="font-bold text-theme-text px-1 uppercase hidden md:block">Tema:</label>
-                <select id="themeSelector" class="bg-theme-bg text-theme-text border-none font-bold outline-none cursor-pointer uppercase p-1">
+            <!-- Selettore Tema pulito e allineato -->
+            <div class="flex items-center gap-2 font-primary text-xs sm:text-sm bg-box-bg px-2 py-1 border border-box-border rounded">
+                <label for="themeSelector" class="font-bold text-theme-text uppercase">Tema:</label>
+                <select id="themeSelector" class="bg-transparent text-theme-text border-none font-bold outline-none cursor-pointer uppercase py-0.5">
                     <option value="dark">Scuro</option>
                     <option value="light">Chiaro</option>
                     <option value="punk">PUNK</option>
@@ -43,65 +43,69 @@
         </nav>
 
         <!-- VIEW: HOME (Libreria + Player Centrale) -->
-        <div id="view-home" class="page-view block stencil-box p-4 md:p-8 mb-24">
-            <header class="mb-8 flex flex-col md:flex-row justify-between items-center border-b-[3px] border-black pb-6 gap-4">
-                <h1 class="text-4xl md:text-6xl lg:text-7xl graffiti-title tracking-tight text-theme-text transform rotate-[-2deg] text-center md:text-left">
-                    <span class="text-6xl md:text-8xl lg:text-9xl text-theme-accent">B</span>LAS<span class="text-6xl md:text-8xl lg:text-9xl text-theme-accent">M</span>USIC
+        <div id="view-home" class="page-view block stencil-box p-3 sm:p-4 md:p-8 mb-24">
+            <header class="mb-6 flex flex-col md:flex-row justify-between items-center border-b-[3px] border-black pb-4 gap-4">
+                <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl graffiti-title tracking-tight text-theme-text text-center md:text-left">
+                    <span class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl text-theme-accent">B</span>LAS<span class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl text-theme-accent">M</span>USIC
                 </h1>
             </header>
 
             <main class="grid lg:grid-cols-12 gap-6 lg:gap-12">
-                <!-- Sidebar Libreria & Cartelle -->
-                <aside class="lg:col-span-4 p-4 leopard-bg transform rotate-1 relative z-20">
-                    <div class="absolute -top-3 -left-3 bg-acid-pink text-white px-3 py-1 font-bold text-lg rotate-[-5deg] border border-black shadow-[2px_2px_0px_black] font-title">TRAX</div>
+                <!-- Sidebar Libreria & Cartelle (perfettamente allineata) -->
+                <aside class="lg:col-span-4 p-4 leopard-bg relative z-20">
+                    <div class="absolute -top-3 -left-3 bg-acid-pink text-white px-3 py-1 font-bold text-base sm:text-lg border border-black shadow-[2px_2px_0px_black] font-title">TRAX</div>
                     <h2 class="leopard-text text-2xl font-black mb-4 uppercase border-b-2 border-theme-text inline-block px-1">Libreria</h2>
 
                     <!-- Navigazione Cartelle -->
-                    <div class="mb-6 p-2 bg-box-bg border border-black">
+                    <div class="mb-6 p-3 bg-box-bg border border-black rounded">
                         <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold uppercase bg-acid-blue text-theme-text px-1.5 py-0.5 border border-black">
-                                <i class="fas fa-folder mr-1"></i> Cartelle Computer
+                            <label class="text-xs sm:text-sm font-bold uppercase bg-acid-blue text-theme-text px-2 py-0.5 border border-black rounded">
+                                <i class="fas fa-folder mr-1"></i> Memoria & Cartelle
                             </label>
-                            <button id="playCurrentFolderBtn" title="Riproduci tutti i brani di questa cartella" class="bg-theme-accent text-white hover:opacity-90 px-2 py-0.5 font-bold text-xs rounded border border-black shadow-sm transition-transform hover:scale-105 flex items-center gap-1">
-                                <i class="fas fa-play text-[9px]"></i> Riproduci Tutto
+                            <button id="playCurrentFolderBtn" title="Riproduci tutti i brani di questa cartella" class="bg-theme-accent text-white hover:opacity-90 px-2.5 py-1 font-bold text-xs sm:text-sm rounded border border-black shadow-sm transition-transform active:scale-95 flex items-center gap-1.5 touch-manipulation">
+                                <i class="fas fa-play text-xs"></i> Riproduci Tutto
                             </button>
                         </div>
-                        <div class="flex items-center gap-2 mb-2 p-1 border-b-2 border-black">
-                            <button id="dirUpBtn" title="Cartella superiore" class="bg-theme-text text-theme-bg hover:bg-theme-accent hover:text-white px-2 py-0.5 font-bold text-sm rounded transition-colors"><i class="fas fa-arrow-up"></i></button>
-                            <span id="currentDirDisplay" class="truncate font-primary text-theme-text text-xs flex-1 font-semibold">/</span>
+
+                        <!-- Scorciatoie rapide cartelle dispositivo (Download, Musica, Memoria) -->
+                        <div id="quickDirsContainer" class="flex items-center gap-1.5 mb-2.5 flex-wrap"></div>
+
+                        <div class="flex items-center gap-2 mb-2 p-1.5 border-b-2 border-black bg-theme-bg/50 rounded">
+                            <button id="dirUpBtn" title="Cartella superiore" class="bg-theme-text text-theme-bg hover:bg-theme-accent hover:text-white px-3 py-1 font-bold text-sm sm:text-base rounded transition-colors active:scale-95 touch-manipulation"><i class="fas fa-arrow-up"></i></button>
+                            <span id="currentDirDisplay" class="truncate font-primary text-theme-text text-xs sm:text-sm flex-1 font-semibold break-all select-all">/</span>
                         </div>
-                        <div id="dirList" class="max-h-56 overflow-y-auto space-y-1 custom-scrollbar font-primary pr-0.5"></div>
-                        <button id="browseFolderBtn" class="mt-3 w-full bg-theme-accent text-white font-bold text-xs uppercase p-2 rounded shadow hover:scale-102 transition-transform flex items-center justify-center gap-2">
-                            <i class="fas fa-folder-open"></i> Seleziona Altra Cartella...
+                        <div id="dirList" class="max-h-64 overflow-y-auto space-y-1.5 custom-scrollbar font-primary pr-0.5"></div>
+                        <button id="browseFolderBtn" class="mt-3 w-full bg-theme-accent text-white font-bold text-xs sm:text-sm uppercase py-2.5 px-3 rounded shadow hover:scale-102 active:scale-98 transition-transform flex items-center justify-center gap-2 touch-manipulation">
+                            <i class="fas fa-folder-open text-sm"></i> Scegli / Cambia Cartella...
                         </button>
                     </div>
 
                     <!-- Selezione Playlist Salvate -->
-                    <div class="mb-6 p-2.5 bg-box-bg border border-black rounded">
+                    <div class="mb-6 p-3 bg-box-bg border border-black rounded">
                         <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold uppercase bg-acid-pink text-white px-1.5 py-0.5 border border-black">
+                            <label class="text-xs sm:text-sm font-bold uppercase bg-acid-pink text-white px-2 py-0.5 border border-black rounded">
                                 <i class="fas fa-list-ul mr-1"></i> Playlist
                             </label>
-                            <button id="goToPlaylistsBtn" title="Vai alla gestione playlist" class="text-xs font-bold text-theme-accent hover:underline flex items-center gap-1">
-                                <i class="fas fa-plus-circle text-[10px]"></i> Crea / Gestisci
+                            <button id="goToPlaylistsBtn" title="Vai alla gestione playlist" class="text-xs sm:text-sm font-bold text-theme-accent hover:underline flex items-center gap-1">
+                                <i class="fas fa-plus-circle text-xs"></i> Crea / Gestisci
                             </button>
                         </div>
                         <div class="flex items-center gap-2">
-                            <select id="savedPlaylistSelector" class="flex-1 bg-theme-bg text-theme-text border border-black p-1.5 rounded text-xs font-semibold outline-none cursor-pointer truncate">
+                            <select id="savedPlaylistSelector" class="flex-1 bg-theme-bg text-theme-text border border-black p-2 rounded text-xs sm:text-sm font-semibold outline-none cursor-pointer truncate">
                                 <option value="">-- Seleziona una Playlist --</option>
                             </select>
-                            <button id="loadSelectedPlaylistBtn" title="Carica e riproduci questa playlist" class="bg-theme-accent text-white px-2.5 py-1.5 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1 shrink-0">
-                                <i class="fas fa-play text-[9px]"></i> Play
+                            <button id="loadSelectedPlaylistBtn" title="Carica e riproduci questa playlist" class="bg-theme-accent text-white px-3 py-2 rounded text-xs sm:text-sm font-bold active:scale-95 transition-transform flex items-center gap-1 shrink-0 touch-manipulation">
+                                <i class="fas fa-play text-xs"></i> Play
                             </button>
                         </div>
                     </div>
                 </aside>
 
                 <!-- Player Centrale -->
-                <section class="lg:col-span-8 p-4 stencil-box relative border-acid-green">
+                <section class="lg:col-span-8 p-3 sm:p-4 stencil-box relative border-acid-green">
                     <div id="displayScreen" class="w-full p-4 border-2 border-black mb-6 flex flex-col items-center justify-center relative bg-box-bg min-h-[300px] md:min-h-[480px]">
                         <div class="w-full px-4 mb-3 overflow-hidden text-center">
-                            <p id="currentTrack" class="graffiti-title text-2xl md:text-4xl transform skew-x-[-5deg] break-words">NESSUN BRANO SELEZIONATO</p>
+                            <p id="currentTrack" class="graffiti-title text-xl sm:text-2xl md:text-3xl break-words">NESSUN BRANO SELEZIONATO</p>
                         </div>
 
                         <!-- Visualizer Canvas -->
@@ -220,24 +224,27 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
                 <!-- Colonna Sinistra: Navigatore Cartelle per selezione brani -->
                 <div class="lg:col-span-7 flex flex-col p-4 border-2 border-black bg-theme-bg rounded">
-                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-box-border">
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-box-border flex-wrap gap-2">
                         <h3 class="font-bold text-sm uppercase text-theme-text flex items-center gap-2">
                             <i class="fas fa-folder-open text-acid-green"></i> Sfoglia Brani dalle Cartelle
                         </h3>
-                        <div class="flex items-center gap-1.5">
-                            <button id="plDirUpBtn" class="p-1.5 px-2 bg-box-bg border border-box-border hover:bg-theme-accent hover:text-white text-theme-text rounded text-xs transition-colors font-bold" title="Cartella superiore">
-                                <i class="fas fa-level-up-alt mr-1"></i> Su
+                        <div class="flex items-center gap-2">
+                            <button id="plDirUpBtn" class="py-1.5 px-3 bg-box-bg border border-box-border hover:bg-theme-accent hover:text-white text-theme-text rounded text-xs sm:text-sm transition-colors font-bold active:scale-95 touch-manipulation" title="Cartella superiore">
+                                <i class="fas fa-arrow-up mr-1"></i> Su
                             </button>
-                            <button id="plBrowseFolderBtn" class="p-1.5 px-2 bg-box-bg border border-box-border hover:bg-theme-accent hover:text-white text-theme-text rounded text-xs transition-colors font-bold" title="Scegli un'altra cartella">
+                            <button id="plBrowseFolderBtn" class="py-1.5 px-3 bg-box-bg border border-box-border hover:bg-theme-accent hover:text-white text-theme-text rounded text-xs sm:text-sm transition-colors font-bold active:scale-95 touch-manipulation" title="Scegli un'altra cartella">
                                 <i class="fas fa-folder mr-1"></i> Scegli
                             </button>
-                            <button id="plAddAllFolderTracksBtn" class="p-1.5 px-2 bg-theme-accent text-white rounded text-xs transition-colors font-bold hover:scale-102" title="Aggiungi tutti i brani visibili alla bozza">
+                            <button id="plAddAllFolderTracksBtn" class="py-1.5 px-3 bg-theme-accent text-white rounded text-xs sm:text-sm transition-colors font-bold hover:scale-102 active:scale-95 touch-manipulation" title="Aggiungi tutti i brani visibili alla bozza">
                                 <i class="fas fa-plus-circle mr-1"></i> Tutti
                             </button>
                         </div>
                     </div>
 
-                    <div id="plCurrentDirDisplay" class="text-[11px] font-mono truncate bg-box-bg p-1.5 rounded border border-box-border mb-3 text-theme-muted" title="...">...</div>
+                    <!-- Scorciatoie rapide cartelle per playlist -->
+                    <div id="plQuickDirsContainer" class="flex items-center gap-1.5 mb-2.5 flex-wrap"></div>
+
+                    <div id="plCurrentDirDisplay" class="text-xs font-mono truncate bg-box-bg p-2 rounded border border-box-border mb-3 text-theme-text select-all" title="...">...</div>
 
                     <!-- Lista file & sottocartelle -->
                     <div id="plDirList" class="flex-1 max-h-[380px] overflow-y-auto space-y-1 custom-scrollbar pr-1 font-primary">

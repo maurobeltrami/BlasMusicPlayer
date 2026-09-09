@@ -1,4 +1,5 @@
 mod commands;
+mod dto;
 mod metadata;
 mod state;
 
@@ -9,6 +10,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![
             commands::get_music_dir,
+            commands::get_common_dirs,
             commands::scan_directory,
             commands::scan_folder_recursive,
             commands::pick_audio_folder,
