@@ -6,9 +6,17 @@
 @import url('components/playlist.css');
 
 /* Prevenzione overflow orizzontale e gesture di zoom indesiderate */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 html, body {
     width: 100%;
-    max-width: 100vw;
+    max-width: 100%;
     overflow-x: hidden;
     touch-action: pan-y;
+}
+
+img, canvas, svg, video {
+    max-width: 100%;
 }
