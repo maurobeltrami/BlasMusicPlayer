@@ -36,7 +36,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
         const countEl = document.getElementById('playlistCount');
         if (countEl) countEl.textContent = pl.currentPlaylist.length;
-        if (plManager?.refreshPlaylistsUI) plManager.refreshPlaylistsUI();
+        const qCount = document.getElementById('queueTracksCount');
+        if (qCount) qCount.textContent = pl.currentPlaylist.length;
         stateManager.saveQueueState(pl.currentPlaylist, pl.currentTrackIndex);
     };
 
@@ -44,8 +45,12 @@ window.addEventListener('DOMContentLoaded', async () => {
         mediaLoader.loadTrack(audioPlayer, index, autoPlay, renderUICallback);
     };
 
+    let isTransitioning = false;
     const loadNextTrackCallback = () => {
+        if (isTransitioning) return;
+        isTransitioning = true;
         loadTrackCallback(pl.getNextTrackIndex(), true);
+        setTimeout(() => { isTransitioning = false; }, 300);
     };
 
     setupAudioEvents(audioPlayer, loadNextTrackCallback);

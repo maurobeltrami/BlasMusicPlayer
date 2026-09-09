@@ -20,7 +20,9 @@ pub fn start_audio_server() {
     SERVER_PORT.store(port, Ordering::SeqCst);
     thread::spawn(move || {
         for request in server.incoming_requests() {
-            handle_request(request);
+            thread::spawn(move || {
+                handle_request(request);
+            });
         }
     });
 }

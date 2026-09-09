@@ -14,10 +14,13 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     const savedPlaylistsCount = document.getElementById('savedPlaylistsCount');
     const queueTracksCount = document.getElementById('queueTracksCount');
 
+    let isUpdatingSelector = false;
+
     async function refreshPlaylistsUI() {
         const playlists = await pl.getSavedPlaylists();
 
         if (savedPlaylistSelector) {
+            isUpdatingSelector = true;
             const currentVal = savedPlaylistSelector.value;
             savedPlaylistSelector.innerHTML = '<option value="">-- Seleziona una Playlist --</option>';
             playlists.forEach(p => {
@@ -27,6 +30,7 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                 savedPlaylistSelector.appendChild(opt);
             });
             if (currentVal) savedPlaylistSelector.value = currentVal;
+            isUpdatingSelector = false;
         }
 
         if (queueTracksCount) queueTracksCount.textContent = pl.currentPlaylist.length;
@@ -88,7 +92,7 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     }
 
     const loadFromSelector = async () => {
-        if (!savedPlaylistSelector || !savedPlaylistSelector.value) return;
+        if (isUpdatingSelector || !savedPlaylistSelector || !savedPlaylistSelector.value) return;
         const playlists = await pl.getSavedPlaylists();
         const selected = playlists.find(p => p.name === savedPlaylistSelector.value);
         if (selected && selected.tracks.length > 0) {

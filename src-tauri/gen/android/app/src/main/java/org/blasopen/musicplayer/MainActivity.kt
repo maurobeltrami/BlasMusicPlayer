@@ -16,6 +16,9 @@ class MainActivity : TauriActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    // Avvia il servizio foreground per la riproduzione continua a schermo spento
+    AudioService.start(this)
+
     // WakeLock parziale per prevenire sospensione CPU a schermo spento
     val powerManager = getSystemService(Context.POWER_SERVICE) as? PowerManager
     wakeLock = powerManager?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BlasMusicPlayer:AudioWakeLock")
@@ -43,8 +46,15 @@ class MainActivity : TauriActivity() {
     webViewRef?.onResume()
   }
 
+  override fun onStop() {
+    super.onStop()
+    // Preveniamo la sospensione dell'engine JS e dei timer quando lo schermo si spegne
+    webViewRef?.onResume()
+  }
+
   override fun onDestroy() {
     wakeLock?.let { if (it.isHeld) it.release() }
+    AudioService.stop(this)
     super.onDestroy()
   }
 
@@ -53,6 +63,9 @@ class MainActivity : TauriActivity() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
         perms.add(Manifest.permission.READ_MEDIA_AUDIO)
+      }
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        perms.add(Manifest.permission.POST_NOTIFICATIONS)
       }
     } else {
       if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

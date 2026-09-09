@@ -18,16 +18,27 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
         }
     };
 
+    let errorStreak = 0;
+
     audioPlayer.onended = () => {
+        errorStreak = 0;
         loadNextTrackCallback();
     };
 
+    audioPlayer.onplaying = () => {
+        errorStreak = 0;
+    };
+
     audioPlayer.onerror = () => {
+        // Ignora l'errore di abort (code 1) che si verifica al cambio normale di src
+        if (audioPlayer.error?.code === 1) return;
         console.warn("Errore HTML5 Audio:", audioPlayer.error?.code, audioPlayer.error?.message);
-        // Avanza automaticamente alla traccia successiva se il file corrente fallisce
-        setTimeout(() => {
-            loadNextTrackCallback();
-        }, 1000);
+        errorStreak++;
+        if (errorStreak < 5) {
+            setTimeout(() => {
+                loadNextTrackCallback();
+            }, 1000);
+        }
     };
 
     const handleSeek = (e) => {

@@ -58,8 +58,10 @@ export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) 
 
     if (!cachedBaseOrigin) await initStreamBase();
 
-    audioPlayer.src = resolveMediaUrl(track.path);
-    audioPlayer.load();
+    const mediaUrl = resolveMediaUrl(track.path);
+    if (audioPlayer.src !== mediaUrl) {
+        audioPlayer.src = mediaUrl;
+    }
 
     const coverSrc = resolveCoverUrl(track.cover, track.path);
     pl.setCoverUrl(coverSrc);
@@ -86,20 +88,26 @@ export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) 
     const playIcon = document.getElementById('playPauseIcon');
     const playIconBottom = document.getElementById('playPauseIconBottom');
 
+    const updatePlayUI = (playing) => {
+        pl.setPlaying(playing);
+        const [oldIcon, newIcon] = playing ? ['fa-play', 'fa-pause'] : ['fa-pause', 'fa-play'];
+        if (playIcon) playIcon.classList.replace(oldIcon, newIcon);
+        if (playIconBottom) playIconBottom.classList.replace(oldIcon, newIcon);
+    };
+
     if (autoPlay) {
-        initAudio(audioPlayer).catch(() => {}).then(() => {
-            return audioPlayer.play();
-        }).then(() => {
-            pl.setPlaying(true);
-            if (playIcon) playIcon.classList.replace('fa-play', 'fa-pause');
-            if (playIconBottom) playIconBottom.classList.replace('fa-play', 'fa-pause');
-        }).catch((err) => {
-            console.warn("Riproduzione audio:", err);
-        });
+        initAudio(audioPlayer).catch(() => {});
+        const p = audioPlayer.play();
+        if (p !== undefined) {
+            p.then(() => updatePlayUI(true)).catch((err) => {
+                console.warn("Riproduzione immediata in attesa:", err);
+                audioPlayer.addEventListener('canplay', () => {
+                    audioPlayer.play().then(() => updatePlayUI(true)).catch(e => console.warn("Retry play:", e));
+                }, { once: true });
+            });
+        }
     } else {
-        pl.setPlaying(false);
-        if (playIcon) playIcon.classList.replace('fa-pause', 'fa-play');
-        if (playIconBottom) playIconBottom.classList.replace('fa-pause', 'fa-play');
+        updatePlayUI(false);
     }
 
     if (renderUICallback) renderUICallback();
