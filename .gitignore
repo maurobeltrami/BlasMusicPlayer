@@ -25,3 +25,6 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Keystore firma release Android (NON committare mai)
+blas-release.keystore
