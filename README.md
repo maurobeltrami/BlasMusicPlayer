@@ -16,8 +16,9 @@ Combina la velocità e la sicurezza di un backend nativo in **Rust** (su archite
 ## ✨ Caratteristiche Principali
 
 * **Regola Zero-Terminal:** Nessun interprete esterno da installare o comando da digitare. Si avvia istantaneamente con un doppio clic su `BlasMusicPlayer.app` o tramite lo script `./blasmusicplayer`.
+* **🎨 Nuova Icona Ufficiale Punk Stencil:** Monogramma musicale verde acido su fondo nero con finitura stencil, ottimizzato per macOS Dock (`.icns`), Windows (`.ico`) e mobile Android (`mipmap` adaptive).
 * **Navigazione Cartelle & Play Sottocartelle:** Esplora la tua musica locale liberamente. Ogni cartella o sottocartella include un pulsante Play rapido per ascoltarne direttamente l'intero contenuto.
-* **Sistema Playlist Persistente:** Crea, personalizza e conserva le tue playlist in locale. Pagina dedicata con navigazione a cartelle e pulsante `+` per comporre playlist traccia per traccia.
+* **📑 Sistema Playlist con CRUD Completo:** Creazione, lettura, modifica e cancellazione. Pannello in-page dedicato per rinominare la playlist, riordinare i brani con i tasti ▲▼, eliminare tracce specifiche o accodare nuovi brani dal file browser.
 * **Memoria di Stato Automatica:** L'applicazione ricorda sempre l'ultima cartella esplorata, riaprendola immediatamente all'avvio.
 * **Metadati e Copertine Native:** Analisi binaria ad alte prestazioni con la crate Rust `lofty`: visualizzazione in tempo reale di Artista, Titolo e Cover Art originale embedded.
 * **Visualizzatore Audio a 60 FPS:** Analizzatore di spettro (Barre), Forma d'onda (Oscilloscopio), Anelli d'onda reattivi e Vinile rotante animato.
@@ -101,6 +102,7 @@ BlasMusicPlayer rispetta i principi di etica, privacy, modularità (limite tassa
   * [06. Architettura Moderna: Tauri 2.0 e IPC](docs/06_architettura_tauri_e_ipc.md)
   * [07. Gestione Metadati, Copertine e Playlist](docs/07_gestione_metadati_e_playlist_persistenti.md)
   * [Manuale Utente Ufficiale](docs/manuali/manuale_utente.md)
+  * [Guida Icone Ufficiali e Logo](docs/manuali/guida_icone_e_logo.md)
   * [Censimento Tecnologie Utilizzate](docs/tecnologie_utilizzate.md)
 
 *(Nota didattica: il prototipo iniziale sviluppato in C++17 e Raylib 6.0 è interamente conservato e consultabile all'interno della cartella `legacy_cpp/`).*

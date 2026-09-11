@@ -25,7 +25,14 @@ Il nucleo di **BlasMusicPlayer v1.0** adotta un'architettura ibrida ad altissime
 * **CSS Moderno & Design System Modulare:**
   * **Tema Modern Dark:** Ispirato a Spotify con tonalità `#121212` e accenti verdi `#1DB954`.
   * **Tema Punk:** Ispirato all'estetica acid/punk con pattern leopardato (`.leopard-bg`) incorporato e accenti al neon `#CCFF00` e `#FF00FF`.
-* **Local-First Data Persistence:** Utilizzo di `window.localStorage` per la memorizzazione permanente delle playlist create dall'utente e dell'ultima cartella visitata.
+* **Local-First Data Persistence & CRUD Playlist:**
+  * Utilizzo di `window.localStorage` combinato alla persistenza su file atomico JSON (`state.rs`).
+  * Modulo `playlistEditor.js` con algoritmo di riordino swap $O(1)$, deduplicazione percorsi e modalità append per l'aggiornamento (Update) delle playlist.
+
+### 📱 Sottosistema Mobile Android Nativo (Kotlin + Foreground Service)
+* **AudioService.kt:** Servizio Foreground Android con `ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` e notifica persistente in `NotificationChannel` dedicato. Impedisce il deep sleep (Doze Mode) della CPU a schermo spento.
+* **Wakelock & Webview Retention:** Acquisizione preventiva di `PowerManager.PARTIAL_WAKE_LOCK` e mantenimento attivo del motore WebKit tramite `webViewRef?.onResume()` in `MainActivity.kt`.
+* **Asset Mipmap Adaptive:** Generazione automatica di icone multi-risoluzione (`mipmap-mdpi` fino a `xxxhdpi`) per supporto nativo ad Android 8.0+.
 
 ---
 

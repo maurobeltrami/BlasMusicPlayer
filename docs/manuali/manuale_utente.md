@@ -49,6 +49,14 @@ BlasMusicPlayer include un sistema completo per la gestione delle proprie playli
 4. Ogni brano mostra un pulsante **`+`**: fai clic su di esso per aggiungere la canzone alla tua nuova playlist!
 5. Clicca su **"Salva Playlist"**: la playlist verrà memorizzata in modo permanente sul tuo dispositivo (salvataggio locale).
 
+### ✏️ Modifica di una Playlist Esistente (Pannello Editor)
+Accanto a ciascuna playlist salvata nell'elenco trovi il pulsante **`✏️ Modifica`**:
+1. **Rinominare la Playlist:** Modifica il testo nel campo del titolo; il sistema valida automaticamente l'assenza di conflitti con altre playlist esistenti.
+2. **Riordinare i Brani:** Usa i pulsanti **`▲`** (sposta in alto) e **`▼`** (sposta in basso) accanto a ciascuna traccia per cambiare l'ordine di riproduzione.
+3. **Rimuovere una Canzone:** Clicca sul pulsante rosso **`✕`** accanto al brano che desideri eliminare dalla playlist.
+4. **Aggiungere Nuovi Brani (Modalità Append):** Clicca su **`➕ Aggiungi brani`** per abilitare l'inserimento dal browser delle cartelle, che accoderà le tracce scelte direttamente alla playlist in modifica senza duplicati.
+5. **Salvare le Modifiche:** Clicca su **`💾 Salva Modifiche`** per persistere istantaneamente i cambiamenti su disco.
+
 ---
 
 ## 🖼️ 4. Copertine, Metadati e Display Centrale

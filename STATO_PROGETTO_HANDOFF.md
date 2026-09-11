@@ -73,45 +73,28 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 
 ---
 
-## 🚀 Funzionalità Risolte e Verificate
+### 🚀 Funzionalità Risolte e Verificate
 1. **Layout 100% Responsive e Fullscreen Lock** ✅
 2. **Libreria Comprimibile ad Accordion** ✅
-3. **Riproduzione Continua in Background & Standby** ✅
+3. **Riproduzione Continua in Background & Standby (AudioService.kt)** ✅
 4. **Correzione Avanzamento Coda** ✅
 5. **Equalizzatore Verticale Perfetto** ✅
-6. **Copertine Incorporate nei file MP3** ✅
-7. **CRUD Completo delle Playlist** ✅ *(Nuovo — Sessione 2)*
-   - Rinomina playlist con validazione conflitti nome
-   - Rimozione singoli brani dal pannello editor in-page
-   - Riordino brani con pulsanti ▲▼ (swap O(1), compatibile touch Android)
+6. **Copertine Incorporate nei file MP3/FLAC** ✅
+7. **CRUD Completo delle Playlist** ✅
+   - Rinomina playlist con validazione conflitti nome (`stateManager.renamePlaylist`)
+   - Rimozione singoli brani dal pannello editor in-page (`playlistEditor.js`)
+   - Riordino brani con pulsanti ▲▼ (swap $O(1)$, compatibile touch Android)
    - Aggiunta brani a playlist esistente via navigatore (modalità append)
-8. **Icone App Aggiornate** ✅ *(Nuovo — Sessione 2)*
-   - Logo punk stencil verde acido generato e convertito in PNG 1024×1024
-   - `npx tauri icon` ha generato tutte le densità desktop e Android mipmap
-   - Rebuild APK necessario per distribuire le nuove icone
+8. **Icone App Aggiornate** ✅
+   - Logo punk stencil verde acido generato a 1024×1024
+   - `npx tauri icon` ha generato tutte le densità desktop (`.icns`, `.ico`) e Android `mipmap`
+   - Rebuild APK necessario per distribuire le nuove icone ad Android
 
 ---
 
-## 🏗️ Architettura Attuale del Sistema
-
-### 1. Logica CRUD Completa per le Playlist (Desktop & Mobile)
-Attualmente le playlist possono essere create (C), visualizzate (R) ed eliminate in blocco (D). Manca la parte di modifica (**Update - U**):
-- **Modifica Nome:** Possibilità di rinominare una playlist salvata esistente.
-- **Aggiunta Tracce a Playlist Esistente:** Aggiungere brani da una cartella o dalla coda attuale a una playlist già salvata, senza doverla ricreare da capo.
-- **Rimozione Singoli Brani:** Aprire una playlist salvata per visualizzarne i brani ed eliminare una traccia specifica.
-- **Riordinamento Tracce:** Modificare l'ordine dei brani dentro una playlist salvata (pulsanti su/giù o drag & drop).
-- *Attenzione:* Mantenere i file modificati sotto le 150 righe, eventualmente separando la logica di visualizzazione/modifica in un modulo dedicato (es. `playlistEditor.js`).
-
-### 2. Personalizzazione Logo & Icone dell'Applicazione (Desktop & Mobile)
-Personalizzare l'icona dell'app che appare sul desktop e nel drawer delle applicazioni su Android:
-- **Icon Generator di Tauri:** Tauri 2.0 include il comando:
-  ```bash
-  npx tauri icon /percorso/icona-sorgente-1024x1024.png
-  ```
-- Questo comando genera automaticamente:
-  - Icone desktop: `.ico` (Windows), `.icns` (macOS), `.png` (Linux: 32x32, 128x128, ecc.) in `src-tauri/icons/`.
-  - Icone Android: tutte le densità mipmap (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) per icone standard e adaptive (`ic_launcher.png`, `ic_launcher_round.png`, `ic_launcher_foreground.png`).
-- Serve solo un file immagine quadrato (consigliato PNG 1024x1024 o 512x512 con sfondo o trasparenza) con il nuovo logo di BlasMusicPlayer.
+## 🎯 Prossimi Passi Consigliati
+1. **Test Manuale CRUD:** Test approfondito dell'editor playlist su desktop e mobile.
+2. **Rebuild APK Android:** Compilazione del nuovo APK Android con le icone punk verdi integrate tramite `npx tauri android build`.
 
 ---
 
