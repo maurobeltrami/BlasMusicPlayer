@@ -6,6 +6,7 @@ use std::path::Path;
 pub struct AudioMetadata {
     pub title: String,
     pub artist: Option<String>,
+    pub has_cover: bool,
 }
 
 pub fn is_audio(ext: &str) -> bool {
@@ -41,11 +42,13 @@ pub fn extract_metadata(path: &Path) -> AudioMetadata {
     if let Ok(tag) = Tag::new().read_from_path(path) {
         let tag_title = tag.title().map(|s| s.trim().to_string()).filter(|s| !s.is_empty());
         let tag_artist = tag.artist().map(|s| s.trim().to_string()).filter(|s| !s.is_empty());
+        let has_cover = tag.album_cover().is_some();
 
         if tag_title.is_some() || tag_artist.is_some() {
             return AudioMetadata {
                 title: tag_title.unwrap_or(stem),
                 artist: tag_artist,
+                has_cover,
             };
         }
     }
@@ -54,12 +57,14 @@ pub fn extract_metadata(path: &Path) -> AudioMetadata {
         return AudioMetadata {
             title,
             artist: Some(artist),
+            has_cover: false,
         };
     }
 
     AudioMetadata {
         title: stem,
         artist: None,
+        has_cover: false,
     }
 }
 

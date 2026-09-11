@@ -20,3 +20,21 @@ html, body {
 img, canvas, svg, video {
     max-width: 100%;
 }
+
+/* Safe area per status bar / notch */
+.pt-safe {
+    padding-top: max(16px, env(safe-area-inset-top, 16px));
+}
+.pb-safe {
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+}
+
+/* Slider verticali nativi per tutti i browser e WebView Android */
+input[type="range"][orient="vertical"] {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    -webkit-appearance: slider-vertical;
+    width: 28px;
+    margin: 0 auto;
+}
+

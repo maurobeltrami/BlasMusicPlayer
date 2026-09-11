@@ -78,7 +78,8 @@ pub fn scan_directory(dir_path: String) -> Vec<FileItemDto> {
             } else if let Some(ext) = p.extension() {
                 if metadata::is_audio(&ext.to_string_lossy()) {
                     let meta = metadata::extract_metadata(&p);
-                    items.push(FileItemDto { name, title: Some(meta.title), artist: meta.artist, path: p.to_string_lossy().to_string(), is_dir: false, cover: cover.clone() });
+                    let c = if meta.has_cover { Some(p.to_string_lossy().to_string()) } else { cover.clone() };
+                    items.push(FileItemDto { name, title: Some(meta.title), artist: meta.artist, path: p.to_string_lossy().to_string(), is_dir: false, cover: c });
                 }
             }
         }
@@ -108,7 +109,8 @@ pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
                     let ext_str = ext.to_string_lossy().to_string();
                     if metadata::is_audio(&ext_str) {
                         let meta = metadata::extract_metadata(&p);
-                        tracks.push(TrackDto { title: meta.title, artist: meta.artist, path: p.to_string_lossy().to_string(), extension: ext_str, cover: dir_cover.clone() });
+                        let c = if meta.has_cover { Some(p.to_string_lossy().to_string()) } else { dir_cover.clone() };
+                        tracks.push(TrackDto { title: meta.title, artist: meta.artist, path: p.to_string_lossy().to_string(), extension: ext_str, cover: c });
                     }
                 }
             }

@@ -27,11 +27,7 @@ function resolveMediaUrl(filePath) {
 }
 
 function resolveCoverUrl(coverPath, trackPath) {
-    let p = coverPath;
-    if (!p && trackPath) {
-        const lastSlash = Math.max(trackPath.lastIndexOf('/'), trackPath.lastIndexOf('\\'));
-        if (lastSlash > 0) p = trackPath.substring(0, lastSlash) + "/cover.jpg";
-    }
+    const p = coverPath || trackPath;
     if (!p) return null;
     if (cachedBaseOrigin) return `${cachedBaseOrigin}/cover?path=${encodeURIComponent(p)}`;
     if (window.__TAURI__?.core?.convertFileSrc) return window.__TAURI__.core.convertFileSrc(p);
@@ -70,10 +66,12 @@ export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) 
     const coverThumbBottom = document.getElementById('coverThumbBottom');
     if (coverThumbBottom) {
         if (coverSrc) {
+            coverThumbBottom.onload = () => coverThumbBottom.classList.remove('hidden');
+            coverThumbBottom.onerror = () => coverThumbBottom.classList.add('hidden');
             coverThumbBottom.src = coverSrc;
-            coverThumbBottom.classList.remove('hidden');
         } else {
             coverThumbBottom.classList.add('hidden');
+            coverThumbBottom.src = '';
         }
     }
 
