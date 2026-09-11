@@ -1,10 +1,12 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 11 Settembre 2026  
-> **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git  
-> **Branch Corrente:** `feature/responsive-android`  
-> **Ultimo Commit:** `dcf30cf` ("fix(equalizer-cover): risolto slider alti fuori schermo ed estrazione copertine ID3 da MP3")  
-> **APK Android Pronto:** `./app-universal-debug.apk` (nella root del progetto)  
+> **Data:** 11 Settembre 2026 (Sessione 2)
+> **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
+> **Branch Corrente:** `feature/responsive-android`
+> **Ultimo Commit:** da committare — "feat(playlist-crud): CRUD completo playlist + icone app punk verde"
+> **APK Android Pronto:** `./app-universal-debug.apk` (icone aggiornate, rebuild richiesto)
+
+  
 
 ---
 
@@ -72,24 +74,25 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 ---
 
 ## 🚀 Funzionalità Risolte e Verificate
-1. **Layout 100% Responsive e Fullscreen Lock:**
-   - Azzerati margini e padding nidificati su schermi mobili.
-   - Vincoli rigidi `min-w-0` e `truncate` contro ogni slittamento orizzontale.
-   - Nessun zoom involontario (viewport-fit=cover, disabilitazione zoom su WebView nativo).
-2. **Libreria Comprimibile ad Accordion:**
-   - La libreria cartelle si richiude con un tocco sul pulsante "Nascondi / Mostra", portando la Coda di Riproduzione subito sotto al Player Centrale.
-3. **Riproduzione Continua in Background & Standby:**
-   - La coda non si ferma e non perde il filo a schermo spento grazie al Foreground Service nativo e all'override del ciclo di vita della WebView.
-4. **Correzione Avanzamento Coda:**
-   - Risolto il bug che faceva ripartire sempre la prima canzone (causato dal trigger spurio di `onchange` sul selettore playlist e dalle code a traccia singola).
-5. **Equalizzatore Verticale Perfetto:**
-   - Cursori ALTI, MEDI e BASSI resi rigorosamente verticali cross-browser, completamente visibili e centrati all'interno della schermata.
-6. **Copertine Incorporate nei file MP3:**
-   - Estrazione diretta dei byte ID3/APIC dal server HTTP locale e visualizzazione nel player sticky, sul visualizzatore e sui controlli di sistema della schermata di blocco.
+1. **Layout 100% Responsive e Fullscreen Lock** ✅
+2. **Libreria Comprimibile ad Accordion** ✅
+3. **Riproduzione Continua in Background & Standby** ✅
+4. **Correzione Avanzamento Coda** ✅
+5. **Equalizzatore Verticale Perfetto** ✅
+6. **Copertine Incorporate nei file MP3** ✅
+7. **CRUD Completo delle Playlist** ✅ *(Nuovo — Sessione 2)*
+   - Rinomina playlist con validazione conflitti nome
+   - Rimozione singoli brani dal pannello editor in-page
+   - Riordino brani con pulsanti ▲▼ (swap O(1), compatibile touch Android)
+   - Aggiunta brani a playlist esistente via navigatore (modalità append)
+8. **Icone App Aggiornate** ✅ *(Nuovo — Sessione 2)*
+   - Logo punk stencil verde acido generato e convertito in PNG 1024×1024
+   - `npx tauri icon` ha generato tutte le densità desktop e Android mipmap
+   - Rebuild APK necessario per distribuire le nuove icone
 
 ---
 
-## 📌 Prossimi Obiettivi da Implementare (Nuova Chat)
+## 🏗️ Architettura Attuale del Sistema
 
 ### 1. Logica CRUD Completa per le Playlist (Desktop & Mobile)
 Attualmente le playlist possono essere create (C), visualizzate (R) ed eliminate in blocco (D). Manca la parte di modifica (**Update - U**):

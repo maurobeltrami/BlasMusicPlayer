@@ -73,3 +73,50 @@ Il gestore delle playlist ([`src/js/events/playlistsManager.js`](file:///Users/m
 2. **Play Rapido Sottocartelle:**
    * Accanto a ogni cartella nella visualizzazione principale è presente un'icona Play.
    * Facendo click su di essa, il backend Rust raccoglie ricorsivamente tutti i brani supportati e avvia subito la riproduzione dell'intero album o cartella.
+
+---
+
+## 5. CRUD Completo delle Playlist (Update — Implementato in data 11/09/2026)
+
+Le operazioni CRUD sono ora complete. Oltre alla **Creazione (C)**, **Lettura (R)** ed **Eliminazione (D)** già presenti, è stato implementato l'**Aggiornamento (U)** con le seguenti funzionalità:
+
+### 5.1 Rinomina Playlist — `stateManager.renamePlaylist(oldName, newName)`
+
+La funzione opera sullo stato locale in memoria, applica la validazione del conflitto nome e persiste via `saveAppState()` in modo atomico (localStorage + file nativo Tauri). La firma è:
+
+```js
+// core/stateManager.js
+export async function renamePlaylist(oldName, newName)
+// Restituisce { ok: true } oppure { ok: false, error: 'descrizione' }
+```
+
+Il pattern di **upsert per nome** già presente in `savePlaylist` garantisce che la modifica dei brani e la rinomina possano avvenire in fasi separate senza rischio di duplicati.
+
+### 5.2 Modulo Editor — `playlistEditor.js`
+
+Il modulo espone un pannello in-page (`#playlist-editor-panel`) che si apre sopra l'elenco delle playlist salvate quando l'utente clicca **Modifica**. Il ciclo di vita è:
+
+```
+openEditor(playlist, callback)
+  → carica brani in editingTracks[]
+  → mostra #playlist-editor-panel
+  → renderEditorList() → <li> con ▲ ▼ ✕
+  → [Salva] → renamePlaylist + savePlaylist → callback() → closeEditor()
+  → [Chiudi] → closeEditor() senza persistere
+```
+
+### 5.3 Riordino Brani — Pattern di Swap in-place
+
+Il riordino avviene tramite swap di due elementi adiacenti nell'array `editingTracks`:
+
+```js
+// playlistEditor.js — moveTrack(idx, delta)
+[editingTracks[idx], editingTracks[idx + delta]] =
+[editingTracks[idx + delta], editingTracks[idx]];
+```
+
+Nessuna libreria esterna: O(1) in spazio, O(n) in rendering (re-render completo della lista). Compatibile al 100% con touch Android.
+
+### 5.4 Modalità Append — `playlistComposer.enableEditMode()`
+
+Quando l'utente clicca **Aggiungi brani** nel pannello editor, viene attivato un flag `isEditMode = true` in `playlistComposer`. Ogni successiva chiamata a `addTrack()` o `addTracks()` dal navigatore cartelle instradata verso `playlistEditor.appendTracks()` invece che alla bozza locale, con deduplicazione automatica per percorso file.

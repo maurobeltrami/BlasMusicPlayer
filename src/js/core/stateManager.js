@@ -96,6 +96,19 @@ export async function deletePlaylist(name) {
     return { ok: true };
 }
 
+// Rinomina una playlist salvata preservandone i brani e l'id originale
+export async function renamePlaylist(oldName, newName) {
+    const playlists = [...(state.saved_playlists || [])];
+    const idx = playlists.findIndex(p => p.name === oldName);
+    if (idx < 0) return { ok: false, error: 'Playlist non trovata' };
+    // Verifica che il nuovo nome non esista già (diverso dall'originale)
+    const conflict = playlists.find((p, i) => i !== idx && p.name.toLowerCase() === newName.toLowerCase());
+    if (conflict) return { ok: false, error: 'Nome già in uso' };
+    playlists[idx] = { ...playlists[idx], name: newName };
+    await saveAppState({ saved_playlists: playlists });
+    return { ok: true };
+}
+
 export async function saveQueueState(queue, trackIndex) {
     return await saveAppState({
         current_queue: [...queue],

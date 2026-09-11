@@ -2,18 +2,20 @@
 import * as pl from '../data/playlist.js';
 import * as stateManager from '../core/stateManager.js';
 import { navigateTo } from '../ui/router.js';
-import { setupPlaylistComposer } from './playlistComposer.js';
+import { setupPlaylistComposer, enableEditMode, disableEditMode } from './playlistComposer.js';
 import { setupPlaylistFolderBrowser } from './playlistFolderBrowser.js';
+import { openEditor, closeEditor, setupPlaylistEditor } from './playlistEditor.js';
 
 export async function setupPlaylistsManager(loadTrackCallback, renderUICallback) {
     const savedPlaylistSelector = document.getElementById('savedPlaylistSelector');
     const loadSelectedPlaylistBtn = document.getElementById('loadSelectedPlaylistBtn');
-    const goToPlaylistsBtn = document.getElementById('goToPlaylistsBtn');
-    const backToHomeBtn = document.getElementById('backToHomeBtn');
+    const goToPlaylistsBtn  = document.getElementById('goToPlaylistsBtn');
+    const backToHomeBtn     = document.getElementById('backToHomeBtn');
     const savedPlaylistsList = document.getElementById('savedPlaylistsList');
     const savedPlaylistsCount = document.getElementById('savedPlaylistsCount');
-    const queueTracksCount = document.getElementById('queueTracksCount');
+    const queueTracksCount  = document.getElementById('queueTracksCount');
 
+    // Flag anti-loop: impedisce a onchange di scattare durante il rebuild del selettore
     let isUpdatingSelector = false;
 
     async function refreshPlaylistsUI() {
@@ -45,19 +47,22 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
 
             playlists.forEach(p => {
                 const li = document.createElement('li');
-                li.className = 'p-3 bg-box-bg border border-box-border rounded flex justify-between items-center shadow-sm';
+                li.className = 'p-3 bg-box-bg border border-box-border rounded flex justify-between items-center shadow-sm gap-2';
                 li.innerHTML = `
-                    <div class="flex items-center gap-2 truncate">
-                        <i class="fas fa-list-ul text-theme-accent"></i>
-                        <span class="font-bold text-sm text-theme-text">${p.name}</span>
-                        <span class="text-[10px] uppercase opacity-70 bg-theme-bg px-2 py-0.5 rounded font-semibold border border-box-border">${p.tracks.length} brani</span>
+                    <div class="flex items-center gap-2 truncate flex-1 min-w-0">
+                        <i class="fas fa-list-ul text-theme-accent shrink-0"></i>
+                        <span class="font-bold text-sm text-theme-text truncate">${p.name}</span>
+                        <span class="text-[10px] uppercase opacity-70 bg-theme-bg px-2 py-0.5 rounded font-semibold border border-box-border shrink-0">${p.tracks.length} brani</span>
                     </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
+                    <div class="flex items-center gap-1 shrink-0 flex-wrap justify-end">
                         <button class="play-pl-btn bg-theme-accent text-white px-2.5 py-1 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1" title="Riproduci ora">
                             <i class="fas fa-play text-[9px]"></i> Play
                         </button>
                         <button class="queue-pl-btn bg-theme-text text-theme-bg px-2 py-1 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1" title="Aggiungi alla coda">
                             <i class="fas fa-plus text-[9px]"></i> Coda
+                        </button>
+                        <button class="edit-pl-btn bg-acid-blue text-theme-text px-2 py-1 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1" title="Modifica playlist">
+                            <i class="fas fa-pencil-alt text-[9px]"></i> Modifica
                         </button>
                         <button class="del-pl-btn text-red-500 hover:text-red-700 p-1 rounded transition-colors" title="Elimina playlist">
                             <i class="fas fa-trash-alt text-xs"></i>
@@ -65,6 +70,7 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                     </div>
                 `;
 
+                // Riproduce la playlist dalla prima traccia
                 li.querySelector('.play-pl-btn').onclick = () => {
                     if (p.tracks.length > 0) {
                         pl.setPlaylists(p.tracks);
@@ -74,18 +80,22 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                         if (savedPlaylistSelector) savedPlaylistSelector.value = p.name;
                     }
                 };
-
+                // Accoda tutti i brani alla coda attiva
                 li.querySelector('.queue-pl-btn').onclick = () => {
                     p.tracks.forEach(t => pl.currentPlaylist.push(t));
                     renderUICallback();
                     refreshPlaylistsUI();
                 };
-
+                // Apre il pannello editor per modificare nome, brani e ordine
+                li.querySelector('.edit-pl-btn').onclick = () => {
+                    disableEditMode();
+                    openEditor(p, () => refreshPlaylistsUI());
+                };
+                // Elimina definitivamente la playlist
                 li.querySelector('.del-pl-btn').onclick = async () => {
                     await pl.deleteSavedPlaylist(p.name);
                     await refreshPlaylistsUI();
                 };
-
                 savedPlaylistsList.appendChild(li);
             });
         }
@@ -94,7 +104,7 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     const loadFromSelector = async () => {
         if (isUpdatingSelector || !savedPlaylistSelector || !savedPlaylistSelector.value) return;
         const playlists = await pl.getSavedPlaylists();
-        const selected = playlists.find(p => p.name === savedPlaylistSelector.value);
+        const selected  = playlists.find(p => p.name === savedPlaylistSelector.value);
         if (selected && selected.tracks.length > 0) {
             pl.setPlaylists(selected.tracks);
             renderUICallback();
@@ -103,22 +113,28 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     };
 
     if (loadSelectedPlaylistBtn) loadSelectedPlaylistBtn.onclick = loadFromSelector;
-    if (savedPlaylistSelector) savedPlaylistSelector.onchange = loadFromSelector;
+    if (savedPlaylistSelector)   savedPlaylistSelector.onchange  = loadFromSelector;
+    if (goToPlaylistsBtn) goToPlaylistsBtn.onclick = () => { navigateTo('view-playlists'); refreshPlaylistsUI(); };
+    if (backToHomeBtn)    backToHomeBtn.onclick    = () => navigateTo('view-home');
 
-    if (goToPlaylistsBtn) {
-        goToPlaylistsBtn.onclick = () => {
-            navigateTo('view-playlists');
-            refreshPlaylistsUI();
+    // Bottone "+ Aggiungi brani" nel pannello editor: attiva modalità append e torna al navigatore
+    const editorAddBtn = document.getElementById('editorAddTracksBtn');
+    if (editorAddBtn) {
+        editorAddBtn.onclick = () => {
+            enableEditMode();
+            // Porta il focus al navigatore cartelle nella colonna sinistra
+            document.getElementById('plDirList')?.scrollIntoView({ behavior: 'smooth' });
         };
     }
 
-    if (backToHomeBtn) backToHomeBtn.onclick = () => navigateTo('view-home');
-
+    setupPlaylistEditor();
     setupPlaylistComposer(() => refreshPlaylistsUI());
     const browser = await setupPlaylistFolderBrowser();
 
     window.addEventListener('view-changed', (e) => {
         if (e.detail?.view === 'view-playlists') {
+            disableEditMode();
+            closeEditor();
             refreshPlaylistsUI();
             if (browser?.navigate) browser.navigate(stateManager.getLastFolder() || '');
         }

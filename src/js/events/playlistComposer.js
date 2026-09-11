@@ -1,21 +1,24 @@
 // events/playlistComposer.js - Gestione della bozza di playlist e salvataggio
 import * as pl from '../data/playlist.js';
 import * as stateManager from '../core/stateManager.js';
+import { appendTracks } from './playlistEditor.js';
 
 let draftTracks = [];
+// Flag: true quando il navigatore è in modalità append verso una playlist esistente
+let isEditMode = false;
 
-export function getDraftTracks() {
-    return draftTracks;
-}
+export function getDraftTracks() { return draftTracks; }
+export function getIsEditMode()  { return isEditMode;   }
 
 export function addTrack(track) {
-    draftTracks.push({ ...track, artist: (track.artist && track.artist !== "Locale") ? track.artist : "" });
-    renderDraftUI();
+    const t = { ...track, artist: (track.artist && track.artist !== 'Locale') ? track.artist : '' };
+    // In modalità append, invia il brano direttamente all'editor anziché alla bozza
+    if (isEditMode) { appendTracks([t]); } else { draftTracks.push(t); renderDraftUI(); }
 }
 
 export function addTracks(tracks) {
-    tracks.forEach(t => draftTracks.push({ ...t, artist: (t.artist && t.artist !== "Locale") ? t.artist : "" }));
-    renderDraftUI();
+    const mapped = tracks.map(t => ({ ...t, artist: (t.artist && t.artist !== 'Locale') ? t.artist : '' }));
+    if (isEditMode) { appendTracks(mapped); } else { mapped.forEach(t => draftTracks.push(t)); renderDraftUI(); }
 }
 
 export function removeTrack(index) {
@@ -25,12 +28,17 @@ export function removeTrack(index) {
 
 export function clearDraft() {
     draftTracks = [];
+    isEditMode = false;
     renderDraftUI();
 }
 
+// Attiva/disattiva la modalità append verso l'editor di playlist esistenti
+export function enableEditMode()  { isEditMode = true;  }
+export function disableEditMode() { isEditMode = false; }
+
 export function renderDraftUI() {
     const draftCountEl = document.getElementById('draftTracksCount');
-    const draftListEl = document.getElementById('draftTracksList');
+    const draftListEl  = document.getElementById('draftTracksList');
     if (draftCountEl) draftCountEl.textContent = draftTracks.length;
     if (!draftListEl) return;
 
@@ -64,23 +72,16 @@ export function renderDraftUI() {
 }
 
 export function setupPlaylistComposer(onPlaylistSavedCallback) {
-    const nameInput = document.getElementById('playlistNameInput');
-    const saveDraftBtn = document.getElementById('saveDraftPlaylistBtn');
+    const nameInput     = document.getElementById('playlistNameInput');
+    const saveDraftBtn  = document.getElementById('saveDraftPlaylistBtn');
     const clearDraftBtn = document.getElementById('clearDraftBtn');
     const importQueueBtn = document.getElementById('saveCurrentQueueAsPlaylistBtn');
 
     if (saveDraftBtn) {
         saveDraftBtn.onclick = async () => {
             const name = nameInput?.value?.trim();
-            if (!name) {
-                alert("Inserisci un nome per la playlist!");
-                nameInput?.focus();
-                return;
-            }
-            if (draftTracks.length === 0) {
-                alert("Aggiungi almeno un brano con il tasto '+' prima di salvare la playlist!");
-                return;
-            }
+            if (!name) { alert('Inserisci un nome per la playlist!'); nameInput?.focus(); return; }
+            if (draftTracks.length === 0) { alert("Aggiungi almeno un brano con il tasto '+' prima di salvare!"); return; }
             await stateManager.savePlaylist(name, draftTracks);
             clearDraft();
             if (nameInput) nameInput.value = '';
@@ -89,16 +90,11 @@ export function setupPlaylistComposer(onPlaylistSavedCallback) {
         };
     }
 
-    if (clearDraftBtn) {
-        clearDraftBtn.onclick = () => clearDraft();
-    }
+    if (clearDraftBtn) clearDraftBtn.onclick = () => clearDraft();
 
     if (importQueueBtn) {
         importQueueBtn.onclick = () => {
-            if (pl.currentPlaylist.length === 0) {
-                alert("La coda del player è vuota!");
-                return;
-            }
+            if (pl.currentPlaylist.length === 0) { alert('La coda del player è vuota!'); return; }
             addTracks(pl.currentPlaylist);
         };
     }
