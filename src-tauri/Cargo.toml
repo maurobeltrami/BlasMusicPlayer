@@ -8,8 +8,6 @@ repository = ""
 edition = "2021"
 rust-version = "1.77.2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [lib]
 name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
@@ -27,3 +25,6 @@ tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 audiotags = "0.5.0"
 tiny_http = "0.12.0"
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+rfd = "0.17.2"

@@ -135,7 +135,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
                         renderUICallback();
                         loadTrackCallback(0, true);
                     }
-                } else { navigate('/storage/emulated/0'); }
+                }
             } catch (err) { console.error("Errore selezione cartella:", err); }
         };
     }

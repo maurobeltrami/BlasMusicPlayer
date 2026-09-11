@@ -113,8 +113,6 @@ export async function setupPlaylistFolderBrowser() {
                 const res = await window.__TAURI__.core.invoke('pick_audio_folder');
                 if (res?.folder_path && res.folder_path !== currentDirectory) {
                     await navigate(res.folder_path);
-                } else {
-                    navigate('/storage/emulated/0');
                 }
             } catch (err) { console.error("Errore apertura cartella:", err); }
         };

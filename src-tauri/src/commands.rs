@@ -121,23 +121,22 @@ pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
     tracks
 }
 
-/// Seleziona una cartella tramite dialogo di sistema o cartella di default su Android.
+/// Seleziona una cartella tramite dialogo nativo (rfd su desktop) o cartella di default su Android.
 #[tauri::command]
-pub fn pick_audio_folder(app: tauri::AppHandle) -> Option<FolderResultDto> {
+pub fn pick_audio_folder(_app: tauri::AppHandle) -> Option<FolderResultDto> {
     #[cfg(not(target_os = "android"))]
     {
-        use tauri_plugin_dialog::DialogExt;
-        if let Some(folder) = app.dialog().file().set_title("Seleziona cartella musicale").blocking_pick_folder() {
-            let path_str = folder.to_string();
-            let tracks = scan_folder_recursive(path_str.clone());
-            return Some(FolderResultDto { folder_path: path_str, tracks });
+        if let Some(folder) = rfd::FileDialog::new().set_title("Seleziona cartella musicale").pick_folder() {
+            let path_str = folder.to_string_lossy().to_string();
+            return Some(FolderResultDto { folder_path: path_str, tracks: Vec::new() });
         }
         None
     }
     #[cfg(target_os = "android")]
     {
-        let music = get_music_dir(app);
+        let music = get_music_dir(_app);
         let tracks = scan_folder_recursive(music.clone());
         Some(FolderResultDto { folder_path: music, tracks })
     }
 }
+
