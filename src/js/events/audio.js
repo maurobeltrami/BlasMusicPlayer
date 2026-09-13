@@ -1,4 +1,5 @@
 import { formatTime, getClientX } from '../utils/helpers.js';
+import * as audioEngine from '../core/audioEngine.js';
 
 export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
     audioPlayer.ontimeupdate = () => {
@@ -25,8 +26,10 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
         loadNextTrackCallback();
     };
 
-    audioPlayer.onplaying = () => {
+    audioPlayer.onplaying = async () => {
         errorStreak = 0;
+        // Garantisce che il grafo Web Audio API sia attivo e che l'uscita non resti muta
+        await audioEngine.ensureAudioRunning();
     };
 
     audioPlayer.onerror = () => {

@@ -62,7 +62,29 @@ Per riprodurre file audio locali (`.mp3`, `.wav`, `.flac`, `.ogg`) senza dover a
 
 ---
 
-## 4. Regola Costituzionale "Zero-Terminal"
+## 4. Ciclo di Vita di Web Audio API e Resilienza allo Standby del Sistema Operativo
+
+Nei sistemi operativi moderni (come macOS CoreAudio o Windows WASAPI), quando il computer entra in modalità sospensione (sleep/standby) o blocca lo schermo:
+1. **Disattivazione Hardware:** Il sistema operativo interrompe l'alimentazione all'interfaccia audio hardware (DAC e amplificatore cuffie/casse) per preservare la batteria.
+2. **Transizione di Stato del Grafo Web Audio:**
+   L'istanza `AudioContext` transiziona automaticamente dallo stato `'running'` allo stato `'suspended'` o, specificamente nel motore WebKit di macOS/iOS, allo stato **`'interrupted'`**.
+3. **Il Problema dell'Audio Muto con Traccia in Esecuzione:**
+   Se l'utente preme Pausa prima dello standby e Play allo sblocco del PC:
+   - L'elemento HTML5 `<audio>` riprende il playback avanzatore di `currentTime`.
+   - Tuttavia, poiché il flusso passa attraverso `createMediaElementSource` verso `AudioContext.destination`, se `AudioContext` non viene esplicitamente risvegliato con `audioContext.resume()`, i campioni PCM non vengono processati verso l'uscita hardware.
+   - La UI mostra la canzone in riproduzione, la barra avanza, ma l'audio resta muto.
+4. **Strategia di Risoluzione Adottata in BlasMusicPlayer:**
+   - **Metodo Centralizzato `ensureAudioRunning()`:** Verifica costantemente se `audioContext.state !== 'running'` (coprendo sia `'suspended'` che `'interrupted'`) ed esegue `await audioContext.resume()`, riallineando contestualmente il `gainNode` master.
+   - **Invocazione preventiva in `handlePlayPause()`:** Prima di richiamare `audioPlayer.play()`, il motore attende il completamento del risveglio di `AudioContext`.
+   - **Ascolto degli Eventi di Risveglio del Sistema (`setupWakeupListeners`):**
+     * `document.addEventListener('visibilitychange')`: intercetta il ritorno alla finestra visibile subito dopo lo sblocco del computer.
+     * `window.addEventListener('focus')`: riattiva il contesto quando la finestra riprende il focus di sistema.
+     * `pointerdown` e `keydown`: gesti utente immediati per sbloccare l'AudioContext.
+     * `audioPlayer.onplaying`: garantisce che ogni transizione in riproduzione effettiva verifichi lo stato del grafo audio.
+
+---
+
+## 5. Regola Costituzionale "Zero-Terminal"
 Con il comando `tauri build`, il compilatore genera un vero pacchetto autonomo:
 * Su macOS: file `.dmg` e bundle `.app`.
 * Su Windows: installer `.msi` ed eseguibile `.exe`.

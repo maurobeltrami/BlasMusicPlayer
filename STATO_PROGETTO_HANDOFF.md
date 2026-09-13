@@ -1,12 +1,10 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 11 Settembre 2026 (Sessione 2)
+> **Data:** 13 Settembre 2026 (Sessione 3)
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
 > **Branch Corrente:** `feature/responsive-android`
-> **Ultimo Commit:** da committare — "feat(playlist-crud): CRUD completo playlist + icone app punk verde"
+> **Ultimo Commit:** in fase di commit — "fix(audio): risolto blocco audio post-standby e ripristino automatico AudioContext"
 > **APK Android Pronto:** `./app-universal-debug.apk` (icone aggiornate, rebuild richiesto)
-
-  
 
 ---
 
@@ -37,7 +35,7 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
   - Streaming audio con supporto Range HTTP 206 (`/audio?path=...`).
   - Estrazione al volo e streaming delle **copertine ID3/APIC incorporate nei file MP3/FLAC** o fallback su immagini di cartella (`/cover?path=...`).
 - `metadata.rs` (82 righe): Lettura tag ID3/Vorbis (titolo, artista, presenza di copertina incorporata con `audiotags`).
-- `commands.rs` (143 righe): Scansione cartelle (`scan_directory`, `scan_folder_recursive`), navigazione cartelle comuni (`get_common_dirs`), selezione cartelle cross-platform (`pick_audio_folder`).
+- `commands.rs` (142 righe): Scansione cartelle (`scan_directory`, `scan_folder_recursive`), navigazione cartelle comuni (`get_common_dirs`), selezione cartelle cross-platform (`pick_audio_folder`).
 - `state.rs` (42 righe): Persistenza atomica dello stato applicativo (`app_state.json`) tramite percorsi nativi Tauri (su desktop `~/.config/BlasMusicPlayer`, su Android cartella interna sandboxed).
 - `dto.rs` (38 righe): Strutture dati scambiate tra Rust e frontend.
 
@@ -55,21 +53,22 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
   - Header sticky con safe area padding per notch e status bar.
   - Accordion a scomparsa per la libreria cartelle (`libraryContent`).
   - Visualizzatore Canvas centrale (`visualizer`) con supporto copertina, oscilloscopio e barre.
-- `src/css/style.css` (40 righe): Box-sizing globale, prevenzione overflow orizzontale, utility `.pt-safe` e `.pb-safe`, stile per range verticali (`writing-mode: vertical-lr; direction: rtl; -webkit-appearance: slider-vertical; width: 28px;`).
-- `src/js/app.js` (133 righe): Entry point principale, gestione eventi di inizializzazione, router, drag & drop e loop del visualizzatore a 60 FPS.
+- `src/css/style.css` (40 righe): Box-sizing globale, prevenzione overflow orizzontale, utility `.pt-safe` e `.pb-safe`, stile per range verticali.
+- `src/js/app.js` (131 righe): Entry point principale, router, drag & drop, gestione eventi di risveglio AudioContext e loop visualizzatore 60 FPS.
 - `src/js/core/`:
-  - `mediaLoader.js` (112 righe): Risoluzione URL streaming e copertina, aggiornamento `MediaMetadata` per la schermata di blocco, buffering resiliente con listener `canplay` e gestione `onload`/`onerror` anti-immagini rotte.
-  - `audioEngine.js` (105 righe): DSP Web Audio API (filtri EQ 3 bande, compressore dinamico, gain master, analizzatore FFT).
-  - `stateManager.js` (104 righe): Sincronizzazione stato tra LocalStorage e persistenza nativa JSON.
-- `src/js/data/playlist.js` (77 righe): Gestione coda di riproduzione attiva, cronologia e algoritmo di shuffle casuale.
+  - `mediaLoader.js` (113 righe): Risoluzione URL streaming e copertina, aggiornamento `MediaMetadata`, risveglio preventivo AudioContext in autoPlay.
+  - `audioEngine.js` (140 righe): DSP Web Audio API (filtri EQ 3 bande, compressore dinamico, gain master, analizzatore FFT), `ensureAudioRunning()` e listener di risveglio standby (`setupWakeupListeners`).
+  - `stateManager.js` (117 righe): Sincronizzazione stato tra LocalStorage e persistenza nativa JSON.
+- `src/js/data/playlist.js` (77 righe): Gestione coda di riproduzione attiva, cronologia e shuffle.
 - `src/js/events/`:
-  - `navigation.js` (145 righe): Navigazione del filesystem. Cliccando su un brano, l'intera cartella entra in coda e il playback parte da quel brano; con il tasto `+` si aggiunge una singola traccia.
-  - `playlistsManager.js` (129 righe): Gestione caricamento ed eliminazione playlist salvate con blocco `isUpdatingSelector` anti-loop.
-  - `playlistComposer.js` (107 righe): Bozza per la creazione di nuove playlist.
-  - `playlistFolderBrowser.js` (133 righe): Browser cartelle dedicato per la composizione delle playlist.
-  - `playback.js` (92 righe): Controlli play/pause, next, prev, volume, mute e associazione comandi fisici (`navigator.mediaSession`).
-  - `audio.js` (69 righe): Gestione avanzamento continuo traccia (`onended`), barra di avanzamento e gestione errori (`MEDIA_ERR_ABORTED`).
-  - `equalizer.js` (67 righe): Collegamento slider equalizzatore e compressore.
+  - `navigation.js` (145 righe): Navigazione del filesystem e accodamento tracce.
+  - `playlistsManager.js` (145 righe): Gestione caricamento ed eliminazione playlist salvate.
+  - `playlistComposer.js` (103 righe): Creazione nuove playlist.
+  - `playlistEditor.js` (114 righe): Editor in-page per rinomina, riordino ▲▼ e rimozione brani.
+  - `playlistFolderBrowser.js` (131 righe): Browser cartelle per composizione ed editing playlist.
+  - `playback.js` (111 righe): Controlli play/pause con risveglio asincrono AudioContext, gestione errori, comandi multimediali e scorciatoia `Space`.
+  - `audio.js` (72 righe): Avanzamento continuo traccia (`onended`), barra di avanzamento e recupero audio su `onplaying`.
+  - `equalizer.js` (67 righe): Slider equalizzatore e compressore.
 
 ---
 
@@ -81,14 +80,12 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 5. **Equalizzatore Verticale Perfetto** ✅
 6. **Copertine Incorporate nei file MP3/FLAC** ✅
 7. **CRUD Completo delle Playlist** ✅
-   - Rinomina playlist con validazione conflitti nome (`stateManager.renamePlaylist`)
-   - Rimozione singoli brani dal pannello editor in-page (`playlistEditor.js`)
-   - Riordino brani con pulsanti ▲▼ (swap $O(1)$, compatibile touch Android)
-   - Aggiunta brani a playlist esistente via navigatore (modalità append)
 8. **Icone App Aggiornate** ✅
-   - Logo punk stencil verde acido generato a 1024×1024
-   - `npx tauri icon` ha generato tutte le densità desktop (`.icns`, `.ico`) e Android `mipmap`
-   - Rebuild APK necessario per distribuire le nuove icone ad Android
+9. **Resilienza Standby & AudioContext Wakeup** ✅
+   - Risolto il blocco in cui la traccia avanzava ma l'audio restava muto dopo lo sblocco del computer.
+   - Gestiti gli stati WebKit/CoreAudio `'suspended'` e `'interrupted'` tramite `ensureAudioRunning()`.
+   - Aggiunti listener preventivi su `visibilitychange`, `focus`, `pointerdown` e `keydown`.
+   - Aggiunta scorciatoia da tastiera `Space` per Play/Pause globale su desktop.
 
 ---
 

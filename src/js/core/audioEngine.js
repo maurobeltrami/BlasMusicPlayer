@@ -35,27 +35,16 @@ export async function initAudio(audioElement) {
         compressor.attack.setValueAtTime(0.003, audioContext.currentTime);
         compressor.release.setValueAtTime(0.25, audioContext.currentTime);
 
-        // Creazione filtri EQ
-        eqFilters.bassBoost = audioContext.createBiquadFilter();
-        eqFilters.bassBoost.type = 'lowshelf';
-        eqFilters.bassBoost.frequency.value = 80;
-        eqFilters.bassBoost.gain.value = 0;
-
-        eqFilters.low = audioContext.createBiquadFilter();
-        eqFilters.low.type = 'lowshelf';
-        eqFilters.low.frequency.value = 60;
-        eqFilters.low.gain.value = 0;
-
-        eqFilters.mid = audioContext.createBiquadFilter();
-        eqFilters.mid.type = 'peaking';
-        eqFilters.mid.frequency.value = 1000;
-        eqFilters.mid.Q.value = 1;
-        eqFilters.mid.gain.value = 0;
-
-        eqFilters.high = audioContext.createBiquadFilter();
-        eqFilters.high.type = 'highshelf';
-        eqFilters.high.frequency.value = 10000;
-        eqFilters.high.gain.value = 0;
+        // Creazione filtri EQ tramite funzione ausiliaria compatta
+        const makeFilter = (type, freq, gain = 0, q = 1) => {
+            const f = audioContext.createBiquadFilter();
+            f.type = type; f.frequency.value = freq; f.gain.value = gain; f.Q.value = q;
+            return f;
+        };
+        eqFilters.bassBoost = makeFilter('lowshelf', 80);
+        eqFilters.low = makeFilter('lowshelf', 60);
+        eqFilters.mid = makeFilter('peaking', 1000, 0, 1);
+        eqFilters.high = makeFilter('highshelf', 10000);
 
         // Nodo Gain Master per il controllo del volume effettivo
         gainNode = audioContext.createGain();
@@ -72,11 +61,57 @@ export async function initAudio(audioElement) {
         gainNode.connect(audioContext.destination);
     }
 
-    if (audioContext.state === 'suspended') {
-        await audioContext.resume();
+        audioContext.onstatechange = () => {
+            if (audioContext.state !== 'running') {
+                console.info("Stato AudioContext variato:", audioContext.state);
+            }
+        };
+    }
+
+    if (audioContext.state !== 'running') {
+        try {
+            await audioContext.resume();
+        } catch (e) {
+            console.warn("Ripristino AudioContext non riuscito in initAudio:", e);
+        }
     }
 
     return { audioContext, analyser, compressor, gainNode };
+}
+
+/**
+ * Assicura che l'AudioContext sia attivo e sincronizzato (es. dopo sleep/standby o cambio periferica)
+ */
+export async function ensureAudioRunning() {
+    if (!audioContext) return;
+    if (audioContext.state !== 'running') {
+        try {
+            await audioContext.resume();
+            console.info("AudioContext riattivato con successo. Stato:", audioContext.state);
+        } catch (e) {
+            console.warn("Tentativo di riattivare AudioContext fallito:", e);
+        }
+    }
+    if (gainNode && audioContext) {
+        gainNode.gain.setValueAtTime(currentVolume, audioContext.currentTime);
+    }
+}
+
+/**
+ * Registra listener globali per intercettare il risveglio dallo standby e cambi visibilità finestra
+ */
+export function setupWakeupListeners() {
+    const handleWake = () => {
+        if (audioContext && audioContext.state !== 'running') {
+            ensureAudioRunning();
+        }
+    };
+    window.addEventListener('focus', handleWake);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') handleWake();
+    });
+    document.addEventListener('pointerdown', handleWake);
+    document.addEventListener('keydown', handleWake);
 }
 
 /**

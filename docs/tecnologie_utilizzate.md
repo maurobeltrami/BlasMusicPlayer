@@ -21,6 +21,7 @@ Il nucleo di **BlasMusicPlayer v1.0** adotta un'architettura ibrida ad altissime
   * `BiquadFilterNode` per l'equalizzatore a 3 bande (Bassi, Medi, Alti) ed elaborazione del suono in tempo reale.
   * `DynamicsCompressorNode` per la prevenzione di clipping e saturazione acustica.
   * `AnalyserNode` con FFT a 128 bande per il campionamento dello spettro di frequenza e delle forme d'onda.
+  * **Ciclo di Vita & Standby Recovery (`ensureAudioRunning`):** Gestione resiliente degli stati `'suspended'` e `'interrupted'` con riattivazione istantanea del grafo audio allo sblocco del sistema operativo o cambio periferica.
 * **HTML5 Canvas a 60 FPS:** Rendering hardware accelerato dei visualizzatori (spettro a barre, oscilloscopio, anelli reattivi, disco in vinile rotante).
 * **CSS Moderno & Design System Modulare:**
   * **Tema Modern Dark:** Ispirato a Spotify con tonalità `#121212` e accenti verdi `#1DB954`.

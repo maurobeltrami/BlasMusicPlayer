@@ -23,6 +23,8 @@ Combina la velocità e la sicurezza di un backend nativo in **Rust** (su archite
 * **Metadati e Copertine Native:** Analisi binaria ad alte prestazioni con la crate Rust `lofty`: visualizzazione in tempo reale di Artista, Titolo e Cover Art originale embedded.
 * **Visualizzatore Audio a 60 FPS:** Analizzatore di spettro (Barre), Forma d'onda (Oscilloscopio), Anelli d'onda reattivi e Vinile rotante animato.
 * **Equalizzatore Master a 3 Bande:** Bassi, Medi, Alti e processamento dinamico senza latenza.
+* **🌙 Resilienza allo Standby & Ripristino Istantaneo:** Risveglio automatico e trasparente del grafo Web Audio API dopo la sospensione (sleep) del computer o lo sblocco dello schermo, azzerando qualsiasi blocco o desincronizzazione audio.
+* **⌨️ Scorciatoie da Tastiera Intuitive:** Controllo desktop immediato tramite barra spaziatrice per Play/Pausa e tasti dedicati.
 * **Doppio Tema Grafico:** Look *Modern Dark* (stile Spotify) e look *Punk Acid* con lo sfondo leopardato originale (`.leopard-bg`) e accenti al neon.
 
 ---

@@ -4,13 +4,24 @@ import * as pl from '../data/playlist.js';
 
 export function setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICallback) {
     const handlePlayPause = async () => {
-        if (!audioEngine.audioContext) await audioEngine.initAudio(audioPlayer);
+        if (!audioEngine.audioContext) {
+            await audioEngine.initAudio(audioPlayer);
+        } else {
+            await audioEngine.ensureAudioRunning();
+        }
         
         const playIcon = document.getElementById('playPauseIcon');
         const playIconBottom = document.getElementById('playPauseIconBottom');
         
         if (audioPlayer.paused) { 
-            audioPlayer.play(); 
+            await audioEngine.ensureAudioRunning();
+            try {
+                await audioPlayer.play();
+            } catch (err) {
+                console.warn("Riproduzione fallita, ritento dopo ripristino:", err);
+                await audioEngine.ensureAudioRunning();
+                await audioPlayer.play();
+            }
             pl.setPlaying(true); 
             if (playIcon) playIcon.classList.replace('fa-play', 'fa-pause');
             if (playIconBottom) playIconBottom.classList.replace('fa-play', 'fa-pause');
@@ -89,4 +100,12 @@ export function setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICa
     safeSetInput('volumeSliderBottom', handleVolume);
     safeSetClick('muteToggleBtn', toggleMute);
     safeSetClick('muteToggleBtnBottom', toggleMute);
+
+    // Scorciatoia da tastiera globale: barra spaziatrice per play/pause
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            handlePlayPause();
+        }
+    });
 }

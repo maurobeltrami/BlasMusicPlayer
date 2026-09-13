@@ -88,10 +88,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Resume AudioContext on any user interaction
-    document.addEventListener('pointerdown', () => {
-        if (audioEngine.audioContext?.state === 'suspended') audioEngine.audioContext.resume();
-    }, { once: false });
+    // Registrazione listener per il risveglio da standby e recupero AudioContext
+    audioEngine.setupWakeupListeners();
 
     // Visualizer Loop a 60 FPS
     let frame = 0;

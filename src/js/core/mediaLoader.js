@@ -1,7 +1,7 @@
 // core/mediaLoader.js - Caricamento e riproduzione audio locale nativa con streaming HTTP
 import * as pl from '../data/playlist.js';
 import * as stateManager from './stateManager.js';
-import { initAudio } from './audioEngine.js';
+import { initAudio, ensureAudioRunning } from './audioEngine.js';
 
 let cachedBaseOrigin = null;
 
@@ -94,12 +94,13 @@ export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) 
     };
 
     if (autoPlay) {
-        initAudio(audioPlayer).catch(() => {});
+        initAudio(audioPlayer).then(() => ensureAudioRunning()).catch(() => {});
         const p = audioPlayer.play();
         if (p !== undefined) {
             p.then(() => updatePlayUI(true)).catch((err) => {
                 console.warn("Riproduzione immediata in attesa:", err);
-                audioPlayer.addEventListener('canplay', () => {
+                audioPlayer.addEventListener('canplay', async () => {
+                    await ensureAudioRunning();
                     audioPlayer.play().then(() => updatePlayUI(true)).catch(e => console.warn("Retry play:", e));
                 }, { once: true });
             });
