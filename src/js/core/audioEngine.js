@@ -59,7 +59,6 @@ export async function initAudio(audioElement) {
         eqFilters.high.connect(compressor);
         compressor.connect(gainNode);
         gainNode.connect(audioContext.destination);
-    }
 
         audioContext.onstatechange = () => {
             if (audioContext.state !== 'running') {
