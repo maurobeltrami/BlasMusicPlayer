@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>BlasMusicPlayer richiede l'accesso alla cartella Documenti per riprodurre i tuoi file musicali.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>BlasMusicPlayer richiede l'accesso alla cartella Download per riprodurre i tuoi file musicali.</string>
+	<key>NSAudioFolderUsageDescription</key>
+	<string>BlasMusicPlayer richiede l'accesso alla cartella Musica per riprodurre i tuoi brani.</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>BlasMusicPlayer richiede l'accesso alla cartella Scrivania per selezionare brani musicali.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>BlasMusicPlayer richiede l'accesso ai volumi di rete per riprodurre file audio.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>BlasMusicPlayer richiede l'accesso a supporti rimovibili per riprodurre file audio.</string>
+</dict>
+</plist>

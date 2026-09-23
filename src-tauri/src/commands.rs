@@ -35,14 +35,16 @@ pub fn get_common_dirs(_app: tauri::AppHandle) -> Vec<CommonDirDto> {
     }
     #[cfg(not(target_os = "android"))]
     {
-        if let Ok(p) = _app.path().audio_dir() {
-            list.push(CommonDirDto { name: "Musica".into(), path: p.to_string_lossy().to_string(), icon: "fa-music".into() });
-        }
-        if let Ok(p) = _app.path().download_dir() {
-            list.push(CommonDirDto { name: "Download".into(), path: p.to_string_lossy().to_string(), icon: "fa-download".into() });
-        }
-        if let Ok(p) = _app.path().home_dir() {
-            list.push(CommonDirDto { name: "Home".into(), path: p.to_string_lossy().to_string(), icon: "fa-home".into() });
+        let dirs = [
+            ("Musica", _app.path().audio_dir(), "fa-music"),
+            ("Documenti", _app.path().document_dir(), "fa-folder"),
+            ("Download", _app.path().download_dir(), "fa-download"),
+            ("Home", _app.path().home_dir(), "fa-home"),
+        ];
+        for (name, res, icon) in dirs {
+            if let Ok(p) = res {
+                list.push(CommonDirDto { name: name.into(), path: p.to_string_lossy().into(), icon: icon.into() });
+            }
         }
     }
     list
@@ -84,11 +86,7 @@ pub fn scan_directory(dir_path: String) -> Vec<FileItemDto> {
             }
         }
     }
-    items.sort_by(|a, b| match (a.is_dir, b.is_dir) {
-        (true, false) => std::cmp::Ordering::Less,
-        (false, true) => std::cmp::Ordering::Greater,
-        _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
-    });
+    items.sort_by(|a, b| b.is_dir.cmp(&a.is_dir).then_with(|| a.name.to_lowercase().cmp(&b.name.to_lowercase())));
     items
 }
 
@@ -121,22 +119,29 @@ pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
     tracks
 }
 
-/// Seleziona una cartella tramite dialogo nativo (rfd su desktop) o cartella di default su Android.
+/// Seleziona una cartella tramite dialogo nativo asincrono o cartella predefinita su Android.
 #[tauri::command]
-pub fn pick_audio_folder(_app: tauri::AppHandle) -> Option<FolderResultDto> {
+pub async fn pick_audio_folder(app: tauri::AppHandle) -> Option<FolderResultDto> {
     #[cfg(not(target_os = "android"))]
     {
-        if let Some(folder) = rfd::FileDialog::new().set_title("Seleziona cartella musicale").pick_folder() {
-            let path_str = folder.to_string_lossy().to_string();
+        use tauri_plugin_dialog::DialogExt;
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        app.dialog().file().set_title("Seleziona cartella musicale").pick_folder(move |folder| {
+            let _ = tx.send(folder);
+        });
+        if let Ok(Some(file_path)) = rx.await {
+            let path_str = match file_path {
+                tauri_plugin_dialog::FilePath::Path(p) => p.to_string_lossy().to_string(),
+                tauri_plugin_dialog::FilePath::Url(u) => u.to_file_path().unwrap_or_default().to_string_lossy().to_string(),
+            };
             return Some(FolderResultDto { folder_path: path_str, tracks: Vec::new() });
         }
         None
     }
     #[cfg(target_os = "android")]
     {
-        let music = get_music_dir(_app);
+        let music = get_music_dir(app);
         let tracks = scan_folder_recursive(music.clone());
         Some(FolderResultDto { folder_path: music, tracks })
     }
 }
-

@@ -35,7 +35,8 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
   - Streaming audio con supporto Range HTTP 206 (`/audio?path=...`).
   - Estrazione al volo e streaming delle **copertine ID3/APIC incorporate nei file MP3/FLAC** o fallback su immagini di cartella (`/cover?path=...`).
 - `metadata.rs` (82 righe): Lettura tag ID3/Vorbis (titolo, artista, presenza di copertina incorporata con `audiotags`).
-- `commands.rs` (142 righe): Scansione cartelle (`scan_directory`, `scan_folder_recursive`), navigazione cartelle comuni (`get_common_dirs`), selezione cartelle cross-platform (`pick_audio_folder`).
+- `commands.rs` (147 righe): Scansione cartelle (`scan_directory`, `scan_folder_recursive`), navigazione cartelle comuni con aggiunta Documenti (`get_common_dirs`), selezione cartelle asincrona tramite `tauri-plugin-dialog` (`pick_audio_folder`).
+- `Info.plist`: Dichiarazione permessi macOS TCC per accesso sicuro a Documenti, Download, Musica e volumi esterni.
 - `state.rs` (42 righe): Persistenza atomica dello stato applicativo (`app_state.json`) tramite percorsi nativi Tauri (su desktop `~/.config/BlasMusicPlayer`, su Android cartella interna sandboxed).
 - `dto.rs` (38 righe): Strutture dati scambiate tra Rust e frontend.
 
