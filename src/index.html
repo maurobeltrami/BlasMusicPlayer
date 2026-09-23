@@ -258,17 +258,22 @@
                 <div class="lg:col-span-5 flex flex-col p-2.5 sm:p-4 border-2 border-black bg-theme-bg rounded min-w-0">
                     <div class="flex items-center justify-between pb-2 mb-3 border-b border-box-border min-w-0">
                         <h3 class="font-bold text-xs sm:text-sm uppercase text-theme-text flex items-center gap-2 min-w-0 truncate">
-                            <i class="fas fa-magic text-acid-pink shrink-0"></i> <span>Bozza Nuova Playlist</span>
+                            <i id="composerIcon" class="fas fa-magic text-acid-pink shrink-0"></i> <span id="composerModeTitle">Bozza Nuova Playlist</span>
                         </h3>
-                        <span class="text-xs bg-theme-accent text-white px-2 py-0.5 rounded font-bold shrink-0">
-                            <span id="draftTracksCount">0</span> brani
-                        </span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button id="cancelEditPlaylistBtn" class="hidden text-xs text-red-500 hover:text-red-400 font-bold transition-colors flex items-center gap-1 active:scale-95" title="Annulla modifica e crea nuova playlist">
+                                <i class="fas fa-times"></i> Annulla
+                            </button>
+                            <span class="text-xs bg-theme-accent text-white px-2 py-0.5 rounded font-bold">
+                                <span id="draftTracksCount">0</span> brani
+                            </span>
+                        </div>
                     </div>
 
                     <div class="flex gap-2 mb-3 min-w-0">
                         <input type="text" id="playlistNameInput" placeholder="Nome playlist..." class="flex-1 min-w-0 p-2 border border-theme-text bg-box-bg text-theme-text font-semibold text-xs rounded">
                         <button id="saveDraftPlaylistBtn" class="bg-theme-accent text-white px-3 py-2 font-bold text-xs uppercase rounded hover:scale-105 transition-transform flex items-center gap-1 shrink-0" title="Salva playlist">
-                            <i class="fas fa-save"></i> Salva
+                            <i class="fas fa-save"></i> <span id="saveDraftBtnText">Salva</span>
                         </button>
                     </div>
 
@@ -299,35 +304,6 @@
                     <span id="savedPlaylistsCount" class="text-xs bg-theme-accent text-white px-2 py-0.5 rounded font-bold shrink-0">0</span>
                 </h3>
                 <ul id="savedPlaylistsList" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar font-primary min-w-0"></ul>
-            </div>
-
-            <!-- Pannello Editor Playlist (nascosto di default, aperto da playlistEditor.js) -->
-            <div id="playlist-editor-panel" class="hidden mt-4 p-2.5 sm:p-4 border-2 border-theme-accent bg-theme-bg rounded min-w-0">
-                <!-- Intestazione editor con nome playlist editabile -->
-                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b-2 border-theme-accent min-w-0">
-                    <div class="flex items-center gap-2 flex-1 min-w-0">
-                        <i class="fas fa-pencil-alt text-theme-accent shrink-0"></i>
-                        <h3 class="font-bold text-xs sm:text-sm uppercase text-theme-text shrink-0">Modifica Playlist</h3>
-                        <input type="text" id="editorPlaylistName" placeholder="Nome playlist..." class="flex-1 min-w-0 p-1.5 border border-theme-accent bg-box-bg text-theme-text font-semibold text-xs rounded">
-                    </div>
-                    <span class="text-xs bg-theme-accent text-white px-2 py-0.5 rounded font-bold shrink-0">
-                        <span id="editorTracksCount">0</span> brani
-                    </span>
-                </div>
-                <!-- Lista brani con riordino ▲▼ e rimozione ✕ -->
-                <ul id="editorTracksList" class="space-y-1 max-h-64 overflow-y-auto custom-scrollbar font-primary mb-3 pr-0.5 min-w-0"></ul>
-                <!-- Azioni editor: aggiungi dal navigatore, salva modifiche, chiudi -->
-                <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-box-border min-w-0">
-                    <button id="editorAddTracksBtn" class="flex items-center gap-1 bg-acid-green text-black px-3 py-1.5 rounded text-xs font-bold hover:scale-105 transition-transform shrink-0" title="Usa il navigatore cartelle qui sopra per aggiungere brani">
-                        <i class="fas fa-plus-circle text-[10px]"></i> Aggiungi brani
-                    </button>
-                    <button id="editorSaveBtn" class="flex items-center gap-1 bg-theme-accent text-white px-3 py-1.5 rounded text-xs font-bold hover:scale-105 transition-transform shrink-0">
-                        <i class="fas fa-save text-[10px]"></i> Salva modifiche
-                    </button>
-                    <button id="editorCloseBtn" class="flex items-center gap-1 bg-box-bg border border-box-border text-theme-text px-3 py-1.5 rounded text-xs font-bold hover:text-red-500 transition-colors shrink-0 ml-auto">
-                        <i class="fas fa-times text-[10px]"></i> Chiudi
-                    </button>
-                </div>
             </div>
         </div>
     </div>

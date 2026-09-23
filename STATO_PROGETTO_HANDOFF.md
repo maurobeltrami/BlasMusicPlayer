@@ -63,10 +63,9 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 - `src/js/data/playlist.js` (77 righe): Gestione coda di riproduzione attiva, cronologia e shuffle.
 - `src/js/events/`:
   - `navigation.js` (145 righe): Navigazione del filesystem e accodamento tracce.
-  - `playlistsManager.js` (145 righe): Gestione caricamento ed eliminazione playlist salvate.
-  - `playlistComposer.js` (103 righe): Creazione nuove playlist.
-  - `playlistEditor.js` (114 righe): Editor in-page per rinomina, riordino ▲▼ e rimozione brani.
-  - `playlistFolderBrowser.js` (131 righe): Browser cartelle per composizione ed editing playlist.
+  - `playlistsManager.js` (125 righe): Gestione caricamento ed eliminazione playlist salvate, avvio modifica nel compositore.
+  - `playlistComposer.js` (143 righe): Compositore unificato per creazione e modifica in-place delle playlist con riordino ▲▼, rinomina, rimozione brani e pulsante annulla.
+  - `playlistFolderBrowser.js` (131 righe): Browser cartelle per selezione tracce da aggiungere alle playlist.
   - `playback.js` (111 righe): Controlli play/pause con risveglio asincrono AudioContext, gestione errori, comandi multimediali e scorciatoia `Space`.
   - `audio.js` (72 righe): Avanzamento continuo traccia (`onended`), barra di avanzamento e recupero audio su `onplaying`.
   - `equalizer.js` (67 righe): Slider equalizzatore e compressore.

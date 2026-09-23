@@ -2,9 +2,8 @@
 import * as pl from '../data/playlist.js';
 import * as stateManager from '../core/stateManager.js';
 import { navigateTo } from '../ui/router.js';
-import { setupPlaylistComposer, enableEditMode, disableEditMode } from './playlistComposer.js';
+import { setupPlaylistComposer, loadPlaylistForEditing } from './playlistComposer.js';
 import { setupPlaylistFolderBrowser } from './playlistFolderBrowser.js';
-import { openEditor, closeEditor, setupPlaylistEditor } from './playlistEditor.js';
 
 export async function setupPlaylistsManager(loadTrackCallback, renderUICallback) {
     const savedPlaylistSelector = document.getElementById('savedPlaylistSelector');
@@ -15,7 +14,6 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     const savedPlaylistsCount = document.getElementById('savedPlaylistsCount');
     const queueTracksCount  = document.getElementById('queueTracksCount');
 
-    // Flag anti-loop: impedisce a onchange di scattare durante il rebuild del selettore
     let isUpdatingSelector = false;
 
     async function refreshPlaylistsUI() {
@@ -61,7 +59,7 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                         <button class="queue-pl-btn bg-theme-text text-theme-bg px-2 py-1 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1" title="Aggiungi alla coda">
                             <i class="fas fa-plus text-[9px]"></i> Coda
                         </button>
-                        <button class="edit-pl-btn bg-acid-blue text-theme-text px-2 py-1 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1" title="Modifica playlist">
+                        <button class="edit-pl-btn bg-acid-blue text-theme-text px-2 py-1 rounded text-xs font-bold hover:scale-105 transition-transform flex items-center gap-1" title="Modifica playlist nel compositore">
                             <i class="fas fa-pencil-alt text-[9px]"></i> Modifica
                         </button>
                         <button class="del-pl-btn text-red-500 hover:text-red-700 p-1 rounded transition-colors" title="Elimina playlist">
@@ -70,7 +68,6 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                     </div>
                 `;
 
-                // Riproduce la playlist dalla prima traccia
                 li.querySelector('.play-pl-btn').onclick = () => {
                     if (p.tracks.length > 0) {
                         pl.setPlaylists(p.tracks);
@@ -80,18 +77,14 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                         if (savedPlaylistSelector) savedPlaylistSelector.value = p.name;
                     }
                 };
-                // Accoda tutti i brani alla coda attiva
                 li.querySelector('.queue-pl-btn').onclick = () => {
                     p.tracks.forEach(t => pl.currentPlaylist.push(t));
                     renderUICallback();
                     refreshPlaylistsUI();
                 };
-                // Apre il pannello editor per modificare nome, brani e ordine
                 li.querySelector('.edit-pl-btn').onclick = () => {
-                    disableEditMode();
-                    openEditor(p, () => refreshPlaylistsUI());
+                    loadPlaylistForEditing(p);
                 };
-                // Elimina definitivamente la playlist
                 li.querySelector('.del-pl-btn').onclick = async () => {
                     await pl.deleteSavedPlaylist(p.name);
                     await refreshPlaylistsUI();
@@ -117,24 +110,11 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     if (goToPlaylistsBtn) goToPlaylistsBtn.onclick = () => { navigateTo('view-playlists'); refreshPlaylistsUI(); };
     if (backToHomeBtn)    backToHomeBtn.onclick    = () => navigateTo('view-home');
 
-    // Bottone "+ Aggiungi brani" nel pannello editor: attiva modalità append e torna al navigatore
-    const editorAddBtn = document.getElementById('editorAddTracksBtn');
-    if (editorAddBtn) {
-        editorAddBtn.onclick = () => {
-            enableEditMode();
-            // Porta il focus al navigatore cartelle nella colonna sinistra
-            document.getElementById('plDirList')?.scrollIntoView({ behavior: 'smooth' });
-        };
-    }
-
-    setupPlaylistEditor();
     setupPlaylistComposer(() => refreshPlaylistsUI());
     const browser = await setupPlaylistFolderBrowser();
 
     window.addEventListener('view-changed', (e) => {
         if (e.detail?.view === 'view-playlists') {
-            disableEditMode();
-            closeEditor();
             refreshPlaylistsUI();
             if (browser?.navigate) browser.navigate(stateManager.getLastFolder() || '');
         }
