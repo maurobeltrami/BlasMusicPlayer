@@ -1,10 +1,11 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 13 Settembre 2026 (Sessione 3)
+> **Data:** 23 Settembre 2026 (Sessione 4)
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
 > **Branch Corrente:** `feature/responsive-android`
-> **Ultimo Commit:** in fase di commit — "fix(audio): risolto blocco audio post-standby e ripristino automatico AudioContext"
-> **APK Android Pronto:** `./app-universal-debug.apk` (icone aggiornate, rebuild richiesto)
+> **Ultimo Commit:** in fase di commit — "docs: completata documentazione, guida aggiornamento Android e allineamento costituzionale"
+> **Bundle Desktop Pronto:** `./BlasMusicPlayer.app` (compilato in release, firmato e verificato)
+> **Guida Android:** `docs/manuali/guida_aggiornamento_android.md`
 
 ---
 
@@ -87,12 +88,23 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - Gestiti gli stati WebKit/CoreAudio `'suspended'` e `'interrupted'` tramite `ensureAudioRunning()`.
    - Aggiunti listener preventivi su `visibilitychange`, `focus`, `pointerdown` e `keydown`.
    - Aggiunta scorciatoia da tastiera `Space` per Play/Pause globale su desktop.
+10. **Risoluzione Accesso Cartelle macOS & Permessi TCC** ✅
+   - Sostituito `rfd` con `tauri_plugin_dialog::DialogExt` asincrono su canale oneshot.
+   - Aggiunta la directory "Documenti" (`document_dir()`) nelle scorciatoie desktop.
+   - Creato `src-tauri/Info.plist` con permessi TCC macOS (`NSDocumentsFolderUsageDescription`, ecc.).
+   - Risolto il blocco dell'avvio con firma bundle `codesign --force --deep -s -`.
+11. **Risoluzione SyntaxError `audioEngine.js`** ✅
+   - Rimossa la parentesi graffa superflua che chiudeva anticipatamente `initAudio` mandando in crash l'import di `app.js`.
+12. **Compositore Playlist Unificato** ✅
+   - La modifica riapre la playlist direttamente nel riquadro di composizione/creazione a destra (con riordino ▲▼, rinomina e rimozione ✕), eliminando il vecchio modulo separato.
+13. **Modale Rapida Aggiunta Playlist da Coda (Home)** ✅
+   - Tasto `+` sui brani della coda attiva con modale a caselle di spunta (checkbox) per associare o rimuovere il brano dalle playlist in un click.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Test Manuale CRUD:** Test approfondito dell'editor playlist su desktop e mobile.
-2. **Rebuild APK Android:** Compilazione del nuovo APK Android con le icone punk verdi integrate tramite `npx tauri android build`.
+1. **Compilazione APK Android:** Eseguire la compilazione del nuovo pacchetto APK seguendo la guida creata in `docs/manuali/guida_aggiornamento_android.md`.
+2. **Test su Dispositivo Mobile Reale:** Verificare la riproduzione in background, la nuova modale con checkbox e il compositore unificato su smartphone Android.
 
 ---
 
@@ -122,7 +134,7 @@ npm run tauri dev
 
 ### Verifica Rigorosa Limite 150 Righe:
 ```bash
-wc -l src-tauri/src/*.rs src/css/*.css src/css/**/*.css src/js/**/*.js src-tauri/gen/android/app/src/main/java/org/blasopen/musicplayer/*.kt
+wc -l src-tauri/src/*.rs src/css/*.css src/js/**/*.js src-tauri/gen/android/app/src/main/java/org/blasopen/musicplayer/*.kt
 ```
 
 ---
@@ -135,8 +147,5 @@ Puoi copiare e incollare il seguente testo all'avvio della nuova chat:
 Ciao! Continuiamo lo sviluppo di BlasMusicPlayer a partire dal documento STATO_PROGETTO_HANDOFF.md presente nella root del progetto (/Users/mauroi/Documents/blasopen/projects/BlasMusicPlayer).
 Il branch di lavoro attivo è feature/responsive-android.
 Ricordati i vincoli di AGENTS.md (massimo 150 righe per file di codice e commenti rigorosamente in italiano).
-Oggi dobbiamo implementare:
-1. La logica CRUD completa per le playlist (modifica nome, aggiunta/rimozione singoli brani da una playlist esistente, riordino).
-2. La procedura per sostituire il logo e le icone dell'app sia per desktop che per mobile Android.
-Iniziamo analizzando come strutturare il CRUD delle playlist!
+Oggi possiamo procedere con la compilazione e test del nuovo APK Android seguendo docs/manuali/guida_aggiornamento_android.md!
 ```

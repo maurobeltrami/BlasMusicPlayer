@@ -92,31 +92,34 @@ export async function renamePlaylist(oldName, newName)
 
 Il pattern di **upsert per nome** già presente in `savePlaylist` garantisce che la modifica dei brani e la rinomina possano avvenire in fasi separate senza rischio di duplicati.
 
-### 5.2 Modulo Editor — `playlistEditor.js`
+### 5.2 Compositore Unificato — `playlistComposer.js`
 
-Il modulo espone un pannello in-page (`#playlist-editor-panel`) che si apre sopra l'elenco delle playlist salvate quando l'utente clicca **Modifica**. Il ciclo di vita è:
+Invece di aprire pannelli esterni ridondanti, la modifica sfrutta direttamente il riquadro di composizione a destra:
 
 ```
-openEditor(playlist, callback)
-  → carica brani in editingTracks[]
-  → mostra #playlist-editor-panel
-  → renderEditorList() → <li> con ▲ ▼ ✕
-  → [Salva] → renamePlaylist + savePlaylist → callback() → closeEditor()
-  → [Chiudi] → closeEditor() senza persistere
+loadPlaylistForEditing(playlist)
+  → popola draftTracks[] con le tracce esistenti
+  → aggiorna intestazione e mostra pulsante "Annulla"
+  → renderDraftUI() con controlli ▲ ▼ ✕
+  → [Salva Modifiche] → renamePlaylist + savePlaylist atomici
+  → [Annulla] → cancelEditing() e reset bozza vuota
 ```
 
 ### 5.3 Riordino Brani — Pattern di Swap in-place
 
-Il riordino avviene tramite swap di due elementi adiacenti nell'array `editingTracks`:
+Il riordino avviene tramite swap atomico di due elementi adiacenti nell'array `draftTracks`:
 
 ```js
-// playlistEditor.js — moveTrack(idx, delta)
-[editingTracks[idx], editingTracks[idx + delta]] =
-[editingTracks[idx + delta], editingTracks[idx]];
+// playlistComposer.js — moveTrack(idx, delta)
+[draftTracks[idx], draftTracks[idx + delta]] =
+[draftTracks[idx + delta], draftTracks[idx]];
 ```
 
-Nessuna libreria esterna: O(1) in spazio, O(n) in rendering (re-render completo della lista). Compatibile al 100% con touch Android.
+Nessuna libreria esterna: $O(1)$ in spazio, $O(n)$ in rendering (re-render completo della lista). Compatibile al 100% con touch Android.
 
-### 5.4 Modalità Append — `playlistComposer.enableEditMode()`
+### 5.4 Modale Rapida di Aggiunta da Coda — `playlistModal.js`
 
-Quando l'utente clicca **Aggiungi brani** nel pannello editor, viene attivato un flag `isEditMode = true` in `playlistComposer`. Ogni successiva chiamata a `addTrack()` o `addTracks()` dal navigatore cartelle instradata verso `playlistEditor.appendTracks()` invece che alla bozza locale, con deduplicazione automatica per percorso file.
+Per consentire l'organizzazione rapida durante l'ascolto senza dover abbandonare la schermata Home:
+* Cliccando sul tasto `+` accanto a qualsiasi brano nella coda, `playlistRenderer.js` attiva `openAddToPlaylistModal(track)`.
+* La modale interroga `stateManager.getSavedPlaylists()` e visualizza ciascuna playlist con una checkbox attiva se `p.tracks.some(t => t.path === track.path)`.
+* Il toggle della spunta inserisce o rimuove la traccia e persiste istantaneamente lo stato, sincronizzando la UI senza ricaricamenti.
