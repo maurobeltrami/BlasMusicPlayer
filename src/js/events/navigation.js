@@ -128,7 +128,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
             if (!window.__TAURI__?.core) return;
             try {
                 const res = await window.__TAURI__.core.invoke('pick_audio_folder');
-                if (res?.folder_path && res.folder_path !== currentDirectory) {
+                if (res?.folder_path) {
                     await navigate(res.folder_path);
                     if (res.tracks?.length > 0) {
                         pl.setPlaylists(res.tracks.map(t => ({ ...t, artist: (t.artist && t.artist !== "Locale") ? t.artist : "" })));
