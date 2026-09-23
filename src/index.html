@@ -345,6 +345,29 @@
         </div>
     </footer>
 
+    <!-- Modale per aggiungere/rimuovere brani dalle Playlist -->
+    <div id="addToPlaylistModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-theme-bg border-2 sm:border-4 border-theme-accent p-4 sm:p-6 rounded-lg max-w-sm w-full shadow-2xl relative torn-paper">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b-2 border-box-border">
+                <div class="min-w-0 pr-2">
+                    <h3 class="font-black text-sm uppercase text-theme-text flex items-center gap-1.5 truncate">
+                        <i class="fas fa-list-ul text-theme-accent shrink-0"></i> Aggiungi a Playlist
+                    </h3>
+                    <p id="modalTrackTitle" class="text-[11px] text-acid-green font-semibold truncate mt-0.5" title="...">...</p>
+                </div>
+                <button id="closeAddToPlaylistModal" class="text-theme-muted hover:text-red-500 p-1 text-sm font-bold transition-colors shrink-0" title="Chiudi">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="max-h-60 overflow-y-auto space-y-1.5 custom-scrollbar mb-4 pr-1" id="modalPlaylistsList"></div>
+            <div class="flex justify-end pt-2 border-t border-box-border">
+                <button id="modalDoneBtn" class="bg-theme-accent text-white px-4 py-1.5 rounded text-xs font-bold uppercase hover:scale-105 transition-transform">
+                    Fatto
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@ import { setupPlaybackControls } from './events/playback.js';
 import { setupNavigation } from './events/navigation.js';
 import { setupEqualizer } from './events/equalizer.js';
 import { setupPlaylistsManager } from './events/playlistsManager.js';
+import { setupPlaylistModal, openAddToPlaylistModal } from './events/playlistModal.js';
 
 window.addEventListener('DOMContentLoaded', async () => {
     initTheme();
@@ -31,7 +32,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         }, {
             onLoadTrack: (idx) => loadTrackCallback(idx, true),
             onRemoveTrack: (idx) => { pl.removeTrack(idx); renderUICallback(); },
-            onAddToPlaylist: () => {},
+            onAddToPlaylist: (tr) => openAddToPlaylistModal(tr, () => {
+                if (plManager?.refreshPlaylistsUI) plManager.refreshPlaylistsUI();
+            }),
             isShuffling: pl.isShuffling
         });
         const countEl = document.getElementById('playlistCount');
@@ -57,6 +60,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICallback);
     setupRouter();
     setupEqualizer();
+    setupPlaylistModal();
     plManager = await setupPlaylistsManager(loadTrackCallback, renderUICallback);
 
     // Ripristino coda e traccia precedente all'avvio

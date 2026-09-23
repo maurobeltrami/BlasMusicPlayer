@@ -66,6 +66,7 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
   - `playlistsManager.js` (125 righe): Gestione caricamento ed eliminazione playlist salvate, avvio modifica nel compositore.
   - `playlistComposer.js` (143 righe): Compositore unificato per creazione e modifica in-place delle playlist con riordino ▲▼, rinomina, rimozione brani e pulsante annulla.
   - `playlistFolderBrowser.js` (131 righe): Browser cartelle per selezione tracce da aggiungere alle playlist.
+  - `playlistModal.js` (110 righe): Modale per aggiungere e rimuovere brani dalle playlist tramite spunte/checkbox.
   - `playback.js` (111 righe): Controlli play/pause con risveglio asincrono AudioContext, gestione errori, comandi multimediali e scorciatoia `Space`.
   - `audio.js` (72 righe): Avanzamento continuo traccia (`onended`), barra di avanzamento e recupero audio su `onplaying`.
   - `equalizer.js` (67 righe): Slider equalizzatore e compressore.
