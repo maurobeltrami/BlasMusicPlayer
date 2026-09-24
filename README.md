@@ -4,7 +4,8 @@
 ![Rust](https://img.shields.io/badge/Rust-2021-orange.svg)
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-HTML5%20%2F%20CSS3-yellowgreen.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)
+![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows%20%7C%20Android-lightgrey.svg)
+![Version](https://img.shields.io/badge/Version-1.0.1-blue.svg)
 ![Zero-Terminal](https://img.shields.io/badge/Zero--Terminal-100%25%20Compliant-brightgreen.svg)
 
 **BlasMusicPlayer** è un riproduttore musicale desktop moderno, nativo, ultra-leggero e rigorosamente conforme ai principi **Local-First & Zero-Terminal** dell'ecosistema **[BlasOpen](../../COSTITUZIONE.md)**.
@@ -68,6 +69,10 @@ Puoi scaricare l'applicazione già compilata per il tuo sistema operativo dirett
 ### 🐧 Linux (Ubuntu, Debian, Fedora, Arch)
 1. Scarica il pacchetto **`.deb`** (per Ubuntu/Debian) oppure **`BlasMusicPlayer_1.0.0_amd64.AppImage`**.
 2. Con l'AppImage, rendila eseguibile con un clic destro ➔ *Proprietà* ➔ *Permessi* ➔ *Consenti l'esecuzione* (oppure `chmod +x *.AppImage`) e fai doppio clic per avviare.
+
+### 📱 Android (Smartphone e Tablet)
+1. Scarica il file **`BlasMusicPlayer-release.apk`** (15 MB, pronto nelle Releases).
+2. Sullo smartphone, tocca l'APK scaricato da Telegram o File Manager per procedere con l'installazione o l'aggiornamento automatico (senza perdere playlist o dati locali).
 
 ---
 

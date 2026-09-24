@@ -1,6 +1,6 @@
 {
   "name": "blasmusicplayer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "BlasMusicPlayer: riproduttore musicale desktop moderno, nativo e local-first per macOS, Windows e Linux",
   "license": "MIT",
   "type": "commonjs",

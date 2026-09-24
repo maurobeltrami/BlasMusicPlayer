@@ -2,10 +2,10 @@
 
 > **Data:** 24 Settembre 2026 (Sessione 5)
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
-> **Branch Corrente:** `feature/responsive-android`
-> **Ultimo Commit:** build: compilato APK Android universale con sincronizzazione playlist e UI
+> **Versione Attuale:** `1.0.1`
+> **Ultimo Commit:** chore(release): bump version to 1.0.1 e preparazione pull request
 > **Bundle Desktop Pronto:** `./BlasMusicPlayer.app` (compilato in release, firmato e verificato)
-> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, firmato con `blas-release.keystore`, inviato via DevBot Telegram) e `./app-universal-debug.apk` (debug universale)
+> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, v1.0.1 firmato con `blas-release.keystore`) e `./app-universal-debug.apk`
 > **Guida Android:** `docs/manuali/guida_aggiornamento_android.md`
 
 ---
@@ -101,8 +101,11 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 13. **Modale Rapida Aggiunta Playlist da Coda (Home)** ✅
    - Tasto `+` sui brani della coda attiva con modale a caselle di spunta (checkbox) per associare o rimuovere il brano dalle playlist in un click.
 14. **Compilazione & Packaging APK Android Sincronizzato** ✅
-   - Compilato con successo l'APK universale (`app-universal-debug.apk`, 154 MB) contenente tutte le ultime novità: compositore playlist unificato, modale rapida checkbox, fix risveglio standby, icone punk adaptive e foreground service.
-   - Posizionato nella root del progetto (`./app-universal-debug.apk`) in conformità con la Regola Zero-Terminal.
+   - Compilato con successo l'APK universale contenente tutte le novità del compositore e della modale.
+15. **Risoluzione Layout Responsive Mobile Playlist & Bump Release v1.0.1** ✅
+   - Risolto il difetto visivo su schermi mobile: la lista delle playlist salvate ora sfrutta una riga intera per il titolo e una riga per i bottoni, garantendo la lettura completa del titolo e touch ergonomico.
+   - Incrementata la versione di progetto a `1.0.1` (`package.json`, `tauri.conf.json`, `Cargo.toml`, `tauri.properties`).
+   - Compilato, verificato e rilasciato l'APK release v1.0.1 (`./BlasMusicPlayer-release.apk`, 15 MB).
 
 ---
 
