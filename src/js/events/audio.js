@@ -19,6 +19,14 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
         }
     };
 
+    audioPlayer.ondurationchange = () => {
+        if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+            try {
+                window.AndroidMediaBridge?.updatePlaybackState(!audioPlayer.paused, Math.floor((audioPlayer.currentTime || 0) * 1000));
+            } catch (_) {}
+        }
+    };
+
     let errorStreak = 0;
 
     audioPlayer.onended = () => {

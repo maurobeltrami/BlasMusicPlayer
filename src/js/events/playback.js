@@ -3,18 +3,23 @@ import * as audioEngine from '../core/audioEngine.js';
 import * as pl from '../data/playlist.js';
 
 export function setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICallback) {
+    const playIcon = document.getElementById('playPauseIcon');
+    const playIconBottom = document.getElementById('playPauseIconBottom');
+
+    const syncState = (playing) => {
+        pl.setPlaying(playing);
+        const [oldI, newI] = playing ? ['fa-play', 'fa-pause'] : ['fa-pause', 'fa-play'];
+        if (playIcon) playIcon.classList.replace(oldI, newI);
+        if (playIconBottom) playIconBottom.classList.replace(oldI, newI);
+        try { window.AndroidMediaBridge?.updatePlaybackState(playing, Math.floor((audioPlayer.currentTime || 0) * 1000)); } catch (_) {}
+        if (renderUICallback) renderUICallback();
+    };
+
     const handlePlayPause = async () => {
-        if (!audioEngine.audioContext) {
-            await audioEngine.initAudio(audioPlayer);
-        } else {
-            await audioEngine.ensureAudioRunning();
-        }
-        
-        const playIcon = document.getElementById('playPauseIcon');
-        const playIconBottom = document.getElementById('playPauseIconBottom');
+        if (!audioEngine.audioContext) await audioEngine.initAudio(audioPlayer);
+        await audioEngine.ensureAudioRunning();
         
         if (audioPlayer.paused) { 
-            await audioEngine.ensureAudioRunning();
             try {
                 await audioPlayer.play();
             } catch (err) {
@@ -22,16 +27,11 @@ export function setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICa
                 await audioEngine.ensureAudioRunning();
                 await audioPlayer.play();
             }
-            pl.setPlaying(true); 
-            if (playIcon) playIcon.classList.replace('fa-play', 'fa-pause');
-            if (playIconBottom) playIconBottom.classList.replace('fa-play', 'fa-pause');
+            syncState(true);
         } else { 
             audioPlayer.pause(); 
-            pl.setPlaying(false); 
-            if (playIcon) playIcon.classList.replace('fa-pause', 'fa-play');
-            if (playIconBottom) playIconBottom.classList.replace('fa-pause', 'fa-play');
+            syncState(false);
         }
-        if (renderUICallback) renderUICallback();
     };
 
     safeSetClick('playPauseBtn', handlePlayPause);
@@ -60,6 +60,27 @@ export function setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICa
             navigator.mediaSession.setActionHandler('previoustrack', goPrev);
         } catch (_) {}
     }
+
+    // Ricezione comandi fisici al volante e da display Android Auto
+    window.addEventListener('native-media-command', (e) => {
+        const { action, arg } = e.detail || {};
+        if (action === 'play' && audioPlayer.paused) handlePlayPause();
+        else if (action === 'pause' && !audioPlayer.paused) handlePlayPause();
+        else if (action === 'next') goNext();
+        else if (action === 'prev') goPrev();
+        else if (action === 'seek' && arg) audioPlayer.currentTime = parseFloat(arg) / 1000;
+        else if (action === 'play_track' && arg) {
+            const idx = pl.currentPlaylist.findIndex(t => t.path === arg);
+            if (idx >= 0) {
+                loadTrackCallback(idx, true);
+            } else {
+                const name = arg.split(/[\/\\]/).pop() || 'Traccia';
+                pl.currentPlaylist.push({ title: name.replace(/\.[^/.]+$/, ''), path: arg, artist: '' });
+                renderUICallback();
+                loadTrackCallback(pl.currentPlaylist.length - 1, true);
+            }
+        }
+    });
 
     let previousVolume = 0.75;
 

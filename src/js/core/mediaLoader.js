@@ -35,14 +35,17 @@ function resolveCoverUrl(coverPath, trackPath) {
 }
 
 function updateMediaSession(track, coverSrc) {
-    if (!('mediaSession' in navigator) || !track) return;
+    if (!track) return;
+    const title = track.title || 'Sconosciuto';
+    const artist = (track.artist && track.artist !== 'Locale') ? track.artist : 'BlasMusic';
     try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: track.title || 'Sconosciuto',
-            artist: (track.artist && track.artist !== 'Locale') ? track.artist : 'BlasMusic',
-            album: 'BlasMusicPlayer',
-            artwork: coverSrc ? [{ src: coverSrc, sizes: '512x512', type: 'image/jpeg' }] : []
-        });
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title, artist, album: 'BlasMusicPlayer',
+                artwork: coverSrc ? [{ src: coverSrc, sizes: '512x512', type: 'image/jpeg' }] : []
+            });
+        }
+        window.AndroidMediaBridge?.updateMetadata(title, artist, 'BlasMusicPlayer', 0);
     } catch (_) {}
 }
 
