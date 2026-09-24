@@ -56,7 +56,11 @@ class AudioService : MediaBrowserServiceCompat() {
   }
 
   override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
-    return BrowserRoot(MediaCatalogHelper.MEDIA_ROOT_ID, null)
+    val extras = Bundle().apply {
+      putBoolean(BrowserRoot.EXTRA_RECENT, true)
+      putBoolean(BrowserRoot.EXTRA_OFFLINE, true)
+    }
+    return BrowserRoot(MediaCatalogHelper.MEDIA_ROOT_ID, extras)
   }
 
   override fun onLoadChildren(parentId: String, result: Result<List<MediaItem>>) {
@@ -83,7 +87,9 @@ class AudioService : MediaBrowserServiceCompat() {
   }
 
   private fun createNotification(): Notification {
-    val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+    val launchIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+      flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
     val pendingIntent = PendingIntent.getActivity(
       this, 0, launchIntent,
       PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
@@ -97,6 +103,7 @@ class AudioService : MediaBrowserServiceCompat() {
       .setSmallIcon(android.R.drawable.ic_media_play)
       .setContentIntent(pendingIntent)
       .setStyle(style)
+      .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
       .setColor(0xFF39FF14.toInt()) // Verde acido punk BlasOpen per il cruscotto
       .setOngoing(true)
       .setPriority(NotificationCompat.PRIORITY_LOW)

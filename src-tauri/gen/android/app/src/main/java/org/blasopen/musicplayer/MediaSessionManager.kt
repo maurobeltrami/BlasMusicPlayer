@@ -60,6 +60,7 @@ object MediaSessionManager {
       })
 
       isActive = true
+      updateState(false, 0)
     }
   }
 
