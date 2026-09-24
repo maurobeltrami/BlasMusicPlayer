@@ -46,11 +46,16 @@ pub fn extract_metadata(path: &Path) -> AudioMetadata {
         let tag_album = tag.album_title().map(|s| s.trim().to_string()).filter(|s| !s.is_empty());
         let has_cover = tag.album_cover().is_some();
 
-        if tag_title.is_some() || tag_artist.is_some() || tag_album.is_some() {
+        let artist = tag_artist
+            .or_else(|| parse_artist_title(&stem).map(|(a, _)| a))
+            .or_else(|| get_folder_artist(path));
+        let album = tag_album.or_else(|| get_parent_dir_name(path));
+
+        if tag_title.is_some() || artist.is_some() || album.is_some() {
             return AudioMetadata {
                 title: tag_title.unwrap_or(stem),
-                artist: tag_artist,
-                album: tag_album,
+                artist,
+                album,
                 has_cover,
             };
         }
@@ -60,17 +65,32 @@ pub fn extract_metadata(path: &Path) -> AudioMetadata {
         return AudioMetadata {
             title,
             artist: Some(artist),
-            album: None,
+            album: get_parent_dir_name(path),
             has_cover: false,
         };
     }
 
     AudioMetadata {
         title: stem,
-        artist: None,
-        album: None,
+        artist: get_folder_artist(path),
+        album: get_parent_dir_name(path),
         has_cover: false,
     }
+}
+
+fn get_parent_dir_name(path: &Path) -> Option<String> {
+    path.parent()
+        .and_then(|p| p.file_name())
+        .map(|s| s.to_string_lossy().trim().to_string())
+        .filter(|s| !s.is_empty() && s != "Music" && s != "Download" && s != "Musica" && s != "0")
+}
+
+fn get_folder_artist(path: &Path) -> Option<String> {
+    path.parent()
+        .and_then(|p| p.parent())
+        .and_then(|p| p.file_name())
+        .map(|s| s.to_string_lossy().trim().to_string())
+        .filter(|s| !s.is_empty() && s != "Music" && s != "Download" && s != "Musica" && s != "0")
 }
 
 fn parse_artist_title(stem: &str) -> Option<(String, String)> {

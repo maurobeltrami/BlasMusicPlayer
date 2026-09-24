@@ -54,6 +54,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
             if (!path) path = stateManager.getLastFolder() || (await window.__TAURI__.core.invoke('get_music_dir'));
             currentDirectory = path;
             stateManager.setLastFolder(path);
+            libOrg.clearRecursiveCache();
             if (currentDirDisplay) { currentDirDisplay.textContent = path; currentDirDisplay.title = path; }
             const items = await window.__TAURI__.core.invoke('scan_directory', { dirPath: path });
             if (!dirList) return;

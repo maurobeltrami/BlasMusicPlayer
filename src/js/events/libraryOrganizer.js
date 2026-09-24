@@ -1,14 +1,19 @@
 // events/libraryOrganizer.js - Raggruppamento per Artisti, Album e Ricerca in tempo reale
 import * as pl from '../data/playlist.js';
+import * as stateManager from '../core/stateManager.js';
+import { groupByKey, renderGroupDetail, renderMapList, renderPlainTracks } from './libraryRenderer.js';
 
 let currentMode = 'folders';
 let searchQuery = '';
 let cachedTracks = [];
+let recursiveTracks = null;
+let selectedGroup = null;
 
 export const getLibraryMode = () => currentMode;
+export const clearRecursiveCache = () => { recursiveTracks = null; selectedGroup = null; };
 export const updateLibraryTracks = (tracks) => { cachedTracks = tracks || []; };
 
-export function setupLibraryOrganizer(loadTrackCallback, renderUICallback, renderFolderCallback) {
+export function setupLibraryOrganizer(loadTrackCb, renderUICb, renderFolderCb) {
     const searchInput = document.getElementById('librarySearchInput');
     const clearSearchBtn = document.getElementById('clearLibrarySearchBtn');
     const folderControls = document.getElementById('folderNavControls');
@@ -16,8 +21,9 @@ export function setupLibraryOrganizer(loadTrackCallback, renderUICallback, rende
     const dirList = document.getElementById('dirList');
     const tabs = ['tabModeFolders', 'tabModeArtists', 'tabModeAlbums'];
 
-    const setMode = (mode) => {
+    const setMode = async (mode) => {
         currentMode = mode;
+        selectedGroup = null;
         tabs.forEach(id => {
             const btn = document.getElementById(id);
             if (!btn) return;
@@ -31,9 +37,9 @@ export function setupLibraryOrganizer(loadTrackCallback, renderUICallback, rende
 
         if (mode === 'folders' && searchQuery.length === 0) {
             updateLabel('<i class="fas fa-folder mr-1"></i> Memoria & Cartelle');
-            renderFolderCallback();
+            renderFolderCb();
         } else {
-            renderGroupedUI(dirList, loadTrackCallback, renderUICallback);
+            await ensureAndRender(dirList, loadTrackCb, renderUICb);
         }
     };
 
@@ -43,11 +49,12 @@ export function setupLibraryOrganizer(loadTrackCallback, renderUICallback, rende
     });
 
     if (searchInput) {
-        searchInput.oninput = (e) => {
+        searchInput.oninput = async (e) => {
             searchQuery = (e.target.value || '').trim().toLowerCase();
+            selectedGroup = null;
             if (clearSearchBtn) clearSearchBtn.classList.toggle('hidden', searchQuery.length === 0);
             if (folderControls) folderControls.classList.toggle('hidden', currentMode !== 'folders' || searchQuery.length > 0);
-            renderGroupedUI(dirList, loadTrackCallback, renderUICallback);
+            await ensureAndRender(dirList, loadTrackCb, renderUICb);
         };
     }
 
@@ -59,7 +66,6 @@ export function setupLibraryOrganizer(loadTrackCallback, renderUICallback, rende
             setMode(currentMode);
         };
     }
-    return { setMode };
 }
 
 const updateLabel = (html) => {
@@ -67,9 +73,28 @@ const updateLabel = (html) => {
     if (el) el.innerHTML = html;
 };
 
-function renderGroupedUI(container, loadTrackCallback, renderUICallback) {
+async function ensureAndRender(container, loadTrackCb, renderUICb) {
     if (!container) return;
-    let tracks = cachedTracks;
+    if (!recursiveTracks && window.__TAURI__?.core) {
+        container.innerHTML = '<div class="p-4 text-center text-xs opacity-70"><i class="fas fa-spinner fa-spin mr-1"></i> Scansione libreria audio...</div>';
+        try {
+            const path = stateManager.getLastFolder() || (await window.__TAURI__.core.invoke('get_music_dir'));
+            const raw = await window.__TAURI__.core.invoke('scan_folder_recursive', { dirPath: path });
+            recursiveTracks = (raw || []).map(t => ({
+                title: t.title,
+                path: t.path,
+                artist: (t.artist && t.artist !== "Locale") ? t.artist : "",
+                album: t.album || "",
+                cover: t.cover
+            }));
+        } catch (_) { recursiveTracks = []; }
+    }
+    renderGroupedUI(container, loadTrackCb, renderUICb);
+}
+
+function renderGroupedUI(container, loadTrackCb, renderUICb) {
+    const all = (recursiveTracks && recursiveTracks.length > 0) ? recursiveTracks : cachedTracks;
+    let tracks = all;
     if (searchQuery.length > 0) {
         tracks = tracks.filter(t => (t.title || '').toLowerCase().includes(searchQuery) ||
                                     (t.artist || '').toLowerCase().includes(searchQuery) ||
@@ -85,55 +110,24 @@ function renderGroupedUI(container, loadTrackCallback, renderUICallback) {
         return;
     }
 
-    if (currentMode === 'artists' && searchQuery.length === 0) {
-        renderMapList(container, groupByKey(tracks, t => t.artist || 'Sconosciuto'), 'fa-microphone', 'text-acid-green', loadTrackCallback, renderUICallback);
-    } else if (currentMode === 'albums' && searchQuery.length === 0) {
-        renderMapList(container, groupByKey(tracks, t => t.album || 'Singoli'), 'fa-compact-disc', 'text-acid-pink', loadTrackCallback, renderUICallback);
-    } else {
-        renderPlainTracks(container, tracks, loadTrackCallback, renderUICallback);
+    if (selectedGroup) {
+        const isArt = currentMode === 'artists';
+        renderGroupDetail(container, tracks, selectedGroup, isArt, 
+            () => { selectedGroup = null; renderGroupedUI(container, loadTrackCb, renderUICb); },
+            (list) => { pl.setPlaylists(list); renderUICb(); loadTrackCb(0, true); },
+            loadTrackCb, renderUICb);
+        return;
     }
-}
 
-function groupByKey(list, keyGetter) {
-    const map = new Map();
-    list.forEach(item => {
-        const k = keyGetter(item);
-        if (!map.has(k)) map.set(k, []);
-        map.get(k).push(item);
-    });
-    return map;
-}
-
-function renderMapList(container, map, icon, colorClass, loadTrackCallback, renderUICallback) {
-    Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0])).forEach(([name, trackList]) => {
-        const div = document.createElement('div');
-        div.className = 'p-2 bg-theme-bg/60 hover:bg-theme-accent hover:text-white rounded text-xs font-semibold flex items-center justify-between gap-1.5 transition-colors cursor-pointer touch-manipulation group';
-        div.innerHTML = `
-            <div class="flex items-center gap-2 truncate flex-1 min-w-0">
-                <i class="fas ${icon} ${colorClass} group-hover:text-white text-sm shrink-0"></i>
-                <span class="truncate font-bold">${name}</span>
-                <span class="text-[10px] opacity-70 bg-box-bg px-1.5 py-0.2 rounded border border-box-border shrink-0">${trackList.length}</span>
-            </div>
-            <div class="flex items-center gap-1 shrink-0">
-                <button class="p-1 px-2 text-white bg-black/40 hover:bg-black/80 rounded play-grp-btn" title="Riproduci"><i class="fas fa-play text-[10px]"></i></button>
-                <button class="p-1 px-2 text-white bg-black/40 hover:bg-black/80 rounded add-grp-btn" title="Aggiungi"><i class="fas fa-plus text-[10px]"></i></button>
-            </div>
-        `;
-        div.querySelector('.play-grp-btn').onclick = (e) => { e.stopPropagation(); pl.setPlaylists(trackList); renderUICallback(); loadTrackCallback(0, true); };
-        div.querySelector('.add-grp-btn').onclick = (e) => { e.stopPropagation(); trackList.forEach(t => pl.currentPlaylist.push(t)); renderUICallback(); };
-        div.onclick = () => div.querySelector('.play-grp-btn').click();
-        container.appendChild(div);
-    });
-}
-
-function renderPlainTracks(container, tracks, loadTrackCallback, renderUICallback) {
-    tracks.forEach((track, idx) => {
-        const row = document.createElement('div');
-        row.className = 'group flex items-center justify-between gap-1.5 p-2 hover:bg-theme-accent hover:text-white rounded text-xs font-semibold transition-colors cursor-pointer touch-manipulation';
-        const artist = track.artist ? `<span class="opacity-60 text-[10px] ml-1">(${track.artist})</span>` : '';
-        row.innerHTML = `<div class="flex items-center gap-2 truncate flex-1 min-w-0"><i class="fas fa-music text-acid-pink group-hover:text-white text-sm shrink-0"></i><span class="truncate">${track.title}</span>${artist}</div><button class="p-1 px-2 text-white bg-black/40 hover:bg-black/80 rounded add-btn shrink-0" title="Aggiungi"><i class="fas fa-plus text-[10px]"></i></button>`;
-        row.onclick = () => { pl.setPlaylists(tracks); renderUICallback(); loadTrackCallback(idx, true); };
-        row.querySelector('.add-btn').onclick = (e) => { e.stopPropagation(); pl.currentPlaylist.push(track); renderUICallback(); };
-        container.appendChild(row);
-    });
+    if (currentMode === 'artists' && searchQuery.length === 0) {
+        const onSelect = (name) => { selectedGroup = name; renderGroupedUI(container, loadTrackCb, renderUICb); };
+        const onPlay = (list) => { pl.setPlaylists(list); renderUICb(); loadTrackCb(0, true); };
+        renderMapList(container, groupByKey(tracks, t => t.artist || 'Sconosciuto'), 'fa-microphone', 'text-acid-green', onSelect, onPlay);
+    } else if (currentMode === 'albums' && searchQuery.length === 0) {
+        const onSelect = (name) => { selectedGroup = name; renderGroupedUI(container, loadTrackCb, renderUICb); };
+        const onPlay = (list) => { pl.setPlaylists(list); renderUICb(); loadTrackCb(0, true); };
+        renderMapList(container, groupByKey(tracks, t => t.album || 'Singoli'), 'fa-compact-disc', 'text-acid-pink', onSelect, onPlay);
+    } else {
+        renderPlainTracks(container, tracks, loadTrackCb, renderUICb);
+    }
 }
