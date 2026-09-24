@@ -26,10 +26,11 @@ export function updatePlaylistView(playlist, currentIndex, isPlaying, elements, 
         const addBtn = document.createElement('button');
         addBtn.innerHTML = '<i class="fas fa-plus-circle fa-lg pointer-events-none"></i>';
         addBtn.className = `transition-transform hover:scale-125 p-1 ${isCurrent ? 'opacity-80 hover:opacity-100' : 'opacity-50 hover:opacity-100 text-theme-accent'}`;
+        addBtn.title = "Aggiungi a una playlist";
         addBtn.onclick = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            actions.onAddToPlaylist(track.id);
+            actions.onAddToPlaylist(track);
         };
 
         const removeBtn = document.createElement('button');

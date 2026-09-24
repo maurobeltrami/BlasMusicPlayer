@@ -73,3 +73,53 @@ Il gestore delle playlist ([`src/js/events/playlistsManager.js`](file:///Users/m
 2. **Play Rapido Sottocartelle:**
    * Accanto a ogni cartella nella visualizzazione principale è presente un'icona Play.
    * Facendo click su di essa, il backend Rust raccoglie ricorsivamente tutti i brani supportati e avvia subito la riproduzione dell'intero album o cartella.
+
+---
+
+## 5. CRUD Completo delle Playlist (Update — Implementato in data 11/09/2026)
+
+Le operazioni CRUD sono ora complete. Oltre alla **Creazione (C)**, **Lettura (R)** ed **Eliminazione (D)** già presenti, è stato implementato l'**Aggiornamento (U)** con le seguenti funzionalità:
+
+### 5.1 Rinomina Playlist — `stateManager.renamePlaylist(oldName, newName)`
+
+La funzione opera sullo stato locale in memoria, applica la validazione del conflitto nome e persiste via `saveAppState()` in modo atomico (localStorage + file nativo Tauri). La firma è:
+
+```js
+// core/stateManager.js
+export async function renamePlaylist(oldName, newName)
+// Restituisce { ok: true } oppure { ok: false, error: 'descrizione' }
+```
+
+Il pattern di **upsert per nome** già presente in `savePlaylist` garantisce che la modifica dei brani e la rinomina possano avvenire in fasi separate senza rischio di duplicati.
+
+### 5.2 Compositore Unificato — `playlistComposer.js`
+
+Invece di aprire pannelli esterni ridondanti, la modifica sfrutta direttamente il riquadro di composizione a destra:
+
+```
+loadPlaylistForEditing(playlist)
+  → popola draftTracks[] con le tracce esistenti
+  → aggiorna intestazione e mostra pulsante "Annulla"
+  → renderDraftUI() con controlli ▲ ▼ ✕
+  → [Salva Modifiche] → renamePlaylist + savePlaylist atomici
+  → [Annulla] → cancelEditing() e reset bozza vuota
+```
+
+### 5.3 Riordino Brani — Pattern di Swap in-place
+
+Il riordino avviene tramite swap atomico di due elementi adiacenti nell'array `draftTracks`:
+
+```js
+// playlistComposer.js — moveTrack(idx, delta)
+[draftTracks[idx], draftTracks[idx + delta]] =
+[draftTracks[idx + delta], draftTracks[idx]];
+```
+
+Nessuna libreria esterna: $O(1)$ in spazio, $O(n)$ in rendering (re-render completo della lista). Compatibile al 100% con touch Android.
+
+### 5.4 Modale Rapida di Aggiunta da Coda — `playlistModal.js`
+
+Per consentire l'organizzazione rapida durante l'ascolto senza dover abbandonare la schermata Home:
+* Cliccando sul tasto `+` accanto a qualsiasi brano nella coda, `playlistRenderer.js` attiva `openAddToPlaylistModal(track)`.
+* La modale interroga `stateManager.getSavedPlaylists()` e visualizza ciascuna playlist con una checkbox attiva se `p.tracks.some(t => t.path === track.path)`.
+* Il toggle della spunta inserisce o rimuove la traccia e persiste istantaneamente lo stato, sincronizzando la UI senza ricaricamenti.

@@ -44,10 +44,27 @@ BlasMusicPlayer include un sistema completo per la gestione delle proprie playli
 
 ### ➕ Creare una Nuova Playlist (Pagina Playlist)
 1. Clicca sulla scheda **"Playlist"** nella barra di navigazione in alto.
-2. Inserisci il nome della nuova playlist nel campo di testo dedicato.
-3. Esplora le tue cartelle musicali nel pannello di composizione.
-4. Ogni brano mostra un pulsante **`+`**: fai clic su di esso per aggiungere la canzone alla tua nuova playlist!
-5. Clicca su **"Salva Playlist"**: la playlist verrà memorizzata in modo permanente sul tuo dispositivo (salvataggio locale).
+2. Inserisci il nome della nuova playlist nel campo di testo dedicato nel riquadro a destra (*Bozza Nuova Playlist*).
+3. Esplora le tue cartelle musicali nel navigatore a sinistra.
+4. Ogni brano mostra un pulsante **`+`**: fai clic su di esso per aggiungere la canzone alla bozza!
+5. Clicca su **"Salva"**: la playlist verrà memorizzata in modo permanente sul tuo dispositivo (salvataggio locale).
+
+### ✏️ Modifica di una Playlist Esistente (Compositore Unificato)
+Accanto a ciascuna playlist salvata nell'elenco trovi il pulsante **`✏️ Modifica`**:
+1. **Riapertura Immediata nel Compositore:** La playlist viene caricata direttamente nel riquadro principale a destra, proprio come durante la creazione.
+2. **Rinominare la Playlist:** Modifica il testo nel campo del titolo; se modifichi il nome, il sistema aggiorna la playlist senza creare duplicati.
+3. **Riordinare i Brani:** Usa i pulsanti **`▲`** (sposta in alto) e **`▼`** (sposta in basso) accanto a ciascuna traccia per cambiare l'ordine di riproduzione.
+4. **Rimuovere una Canzone:** Clicca sul pulsante **`✕`** accanto al brano per rimuoverlo dalla playlist.
+5. **Aggiungere Nuovi Brani:** Clicca sui tasti **`+`** dei file nel navigatore a sinistra per inserire nuove canzoni direttamente nella playlist in modifica.
+6. **Salvare o Annullare:** Clicca su **`Salva Modifiche`** per registrare i cambiamenti, oppure su **`✕ Annulla`** per tornare alla modalità bozza vuota.
+
+### 🌟 Aggiunta Rapida da Coda di Riproduzione (Schermata Home)
+Nella schermata principale (Home), accanto a qualsiasi brano presente nella coda di riproduzione:
+* Clicca sull'icona **`+`** (Aggiungi a Playlist).
+* Si aprirà una comoda finestra modale con l'elenco di tutte le tue playlist salvate.
+* Le caselle di spunta (checkbox) indicano se il brano è già presente o meno:
+  * **Spunta attiva:** il brano fa parte della playlist.
+  * **Attiva o disattiva la spunta:** il brano viene istantaneamente aggiunto o rimosso dalla playlist scelta, con salvataggio immediato in locale!
 
 ---
 

@@ -1,4 +1,5 @@
 import { formatTime, getClientX } from '../utils/helpers.js';
+import * as audioEngine from '../core/audioEngine.js';
 
 export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
     audioPlayer.ontimeupdate = () => {
@@ -18,8 +19,29 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
         }
     };
 
+    let errorStreak = 0;
+
     audioPlayer.onended = () => {
+        errorStreak = 0;
         loadNextTrackCallback();
+    };
+
+    audioPlayer.onplaying = async () => {
+        errorStreak = 0;
+        // Garantisce che il grafo Web Audio API sia attivo e che l'uscita non resti muta
+        await audioEngine.ensureAudioRunning();
+    };
+
+    audioPlayer.onerror = () => {
+        // Ignora l'errore di abort (code 1) che si verifica al cambio normale di src
+        if (audioPlayer.error?.code === 1) return;
+        console.warn("Errore HTML5 Audio:", audioPlayer.error?.code, audioPlayer.error?.message);
+        errorStreak++;
+        if (errorStreak < 5) {
+            setTimeout(() => {
+                loadNextTrackCallback();
+            }, 1000);
+        }
     };
 
     const handleSeek = (e) => {

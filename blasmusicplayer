@@ -1,6 +1,10 @@
 #!/bin/bash
 DIR="$(cd "$(dirname "$0")" && pwd)"
-open "$DIR/src-tauri/target/debug/bundle/macos/BlasMusicPlayer.app"
+if [ -d "$DIR/BlasMusicPlayer.app" ]; then
+    open "$DIR/BlasMusicPlayer.app"
+else
+    open "$DIR/src-tauri/target/release/bundle/macos/BlasMusicPlayer.app"
+fi
 
 # Se avviato con doppio click da Finder (che apre Terminale), chiudi automaticamente la finestra
 if [ -n "$TERM_PROGRAM" ]; then

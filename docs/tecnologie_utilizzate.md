@@ -21,11 +21,20 @@ Il nucleo di **BlasMusicPlayer v1.0** adotta un'architettura ibrida ad altissime
   * `BiquadFilterNode` per l'equalizzatore a 3 bande (Bassi, Medi, Alti) ed elaborazione del suono in tempo reale.
   * `DynamicsCompressorNode` per la prevenzione di clipping e saturazione acustica.
   * `AnalyserNode` con FFT a 128 bande per il campionamento dello spettro di frequenza e delle forme d'onda.
+  * **Ciclo di Vita & Standby Recovery (`ensureAudioRunning`):** Gestione resiliente degli stati `'suspended'` e `'interrupted'` con riattivazione istantanea del grafo audio allo sblocco del sistema operativo o cambio periferica.
 * **HTML5 Canvas a 60 FPS:** Rendering hardware accelerato dei visualizzatori (spettro a barre, oscilloscopio, anelli reattivi, disco in vinile rotante).
 * **CSS Moderno & Design System Modulare:**
   * **Tema Modern Dark:** Ispirato a Spotify con tonalità `#121212` e accenti verdi `#1DB954`.
   * **Tema Punk:** Ispirato all'estetica acid/punk con pattern leopardato (`.leopard-bg`) incorporato e accenti al neon `#CCFF00` e `#FF00FF`.
-* **Local-First Data Persistence:** Utilizzo di `window.localStorage` per la memorizzazione permanente delle playlist create dall'utente e dell'ultima cartella visitata.
+* **Local-First Data Persistence & CRUD Playlist:**
+  * Utilizzo di `window.localStorage` combinato alla persistenza su file atomico JSON (`state.rs`).
+  * Compositore unificato `playlistComposer.js` con algoritmo di riordino swap $O(1)$, rinomina e deduplicazione.
+  * Modale rapida `playlistModal.js` per aggiungere/rimuovere al volo brani della coda alle playlist con spunte istantanee.
+
+### 📱 Sottosistema Mobile Android Nativo (Kotlin + Foreground Service)
+* **AudioService.kt:** Servizio Foreground Android con `ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` e notifica persistente in `NotificationChannel` dedicato. Impedisce il deep sleep (Doze Mode) della CPU a schermo spento.
+* **Wakelock & Webview Retention:** Acquisizione preventiva di `PowerManager.PARTIAL_WAKE_LOCK` e mantenimento attivo del motore WebKit tramite `webViewRef?.onResume()` in `MainActivity.kt`.
+* **Asset Mipmap Adaptive:** Generazione automatica di icone multi-risoluzione (`mipmap-mdpi` fino a `xxxhdpi`) per supporto nativo ad Android 8.0+.
 
 ---
 

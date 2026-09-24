@@ -12,6 +12,7 @@ import { setupPlaybackControls } from './events/playback.js';
 import { setupNavigation } from './events/navigation.js';
 import { setupEqualizer } from './events/equalizer.js';
 import { setupPlaylistsManager } from './events/playlistsManager.js';
+import { setupPlaylistModal, openAddToPlaylistModal } from './events/playlistModal.js';
 
 window.addEventListener('DOMContentLoaded', async () => {
     initTheme();
@@ -31,12 +32,15 @@ window.addEventListener('DOMContentLoaded', async () => {
         }, {
             onLoadTrack: (idx) => loadTrackCallback(idx, true),
             onRemoveTrack: (idx) => { pl.removeTrack(idx); renderUICallback(); },
-            onAddToPlaylist: () => {},
+            onAddToPlaylist: (tr) => openAddToPlaylistModal(tr, () => {
+                if (plManager?.refreshPlaylistsUI) plManager.refreshPlaylistsUI();
+            }),
             isShuffling: pl.isShuffling
         });
         const countEl = document.getElementById('playlistCount');
         if (countEl) countEl.textContent = pl.currentPlaylist.length;
-        if (plManager?.refreshPlaylistsUI) plManager.refreshPlaylistsUI();
+        const qCount = document.getElementById('queueTracksCount');
+        if (qCount) qCount.textContent = pl.currentPlaylist.length;
         stateManager.saveQueueState(pl.currentPlaylist, pl.currentTrackIndex);
     };
 
@@ -44,14 +48,19 @@ window.addEventListener('DOMContentLoaded', async () => {
         mediaLoader.loadTrack(audioPlayer, index, autoPlay, renderUICallback);
     };
 
+    let isTransitioning = false;
     const loadNextTrackCallback = () => {
+        if (isTransitioning) return;
+        isTransitioning = true;
         loadTrackCallback(pl.getNextTrackIndex(), true);
+        setTimeout(() => { isTransitioning = false; }, 300);
     };
 
     setupAudioEvents(audioPlayer, loadNextTrackCallback);
     setupPlaybackControls(audioPlayer, loadTrackCallback, renderUICallback);
     setupRouter();
     setupEqualizer();
+    setupPlaylistModal();
     plManager = await setupPlaylistsManager(loadTrackCallback, renderUICallback);
 
     // Ripristino coda e traccia precedente all'avvio
@@ -66,10 +75,25 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     await setupNavigation(loadTrackCallback, renderUICallback);
 
-    // Resume AudioContext on any user interaction
-    document.addEventListener('pointerdown', () => {
-        if (audioEngine.audioContext?.state === 'suspended') audioEngine.audioContext.resume();
-    }, { once: false });
+    // Accordion / Menu a Tendina per Comprimere la Libreria Cartelle & Playlist
+    const libToggleBtn = document.getElementById('libraryToggleBtn');
+    const libContent = document.getElementById('libraryContent');
+    const libToggleText = document.getElementById('libraryToggleText');
+    const libToggleIcon = document.getElementById('libraryToggleIcon');
+    if (libToggleBtn && libContent) {
+        libToggleBtn.addEventListener('click', () => {
+            const isHidden = libContent.classList.toggle('hidden');
+            if (libToggleText) libToggleText.textContent = isHidden ? 'Mostra' : 'Nascondi';
+            if (libToggleIcon) {
+                libToggleIcon.className = isHidden 
+                    ? 'fas fa-chevron-down transition-transform duration-200' 
+                    : 'fas fa-chevron-up transition-transform duration-200';
+            }
+        });
+    }
+
+    // Registrazione listener per il risveglio da standby e recupero AudioContext
+    audioEngine.setupWakeupListeners();
 
     // Visualizer Loop a 60 FPS
     let frame = 0;

@@ -4,7 +4,8 @@
 ![Rust](https://img.shields.io/badge/Rust-2021-orange.svg)
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-HTML5%20%2F%20CSS3-yellowgreen.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)
+![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows%20%7C%20Android-lightgrey.svg)
+![Version](https://img.shields.io/badge/Version-1.0.1-blue.svg)
 ![Zero-Terminal](https://img.shields.io/badge/Zero--Terminal-100%25%20Compliant-brightgreen.svg)
 
 **BlasMusicPlayer** è un riproduttore musicale desktop moderno, nativo, ultra-leggero e rigorosamente conforme ai principi **Local-First & Zero-Terminal** dell'ecosistema **[BlasOpen](../../COSTITUZIONE.md)**.
@@ -16,12 +17,15 @@ Combina la velocità e la sicurezza di un backend nativo in **Rust** (su archite
 ## ✨ Caratteristiche Principali
 
 * **Regola Zero-Terminal:** Nessun interprete esterno da installare o comando da digitare. Si avvia istantaneamente con un doppio clic su `BlasMusicPlayer.app` o tramite lo script `./blasmusicplayer`.
+* **🎨 Nuova Icona Ufficiale Punk Stencil:** Monogramma musicale verde acido su fondo nero con finitura stencil, ottimizzato per macOS Dock (`.icns`), Windows (`.ico`) e mobile Android (`mipmap` adaptive).
 * **Navigazione Cartelle & Play Sottocartelle:** Esplora la tua musica locale liberamente. Ogni cartella o sottocartella include un pulsante Play rapido per ascoltarne direttamente l'intero contenuto.
-* **Sistema Playlist Persistente:** Crea, personalizza e conserva le tue playlist in locale. Pagina dedicata con navigazione a cartelle e pulsante `+` per comporre playlist traccia per traccia.
+* **📑 Sistema Playlist con CRUD Completo & Modale Rapida:** Creazione e modifica fluida direttamente nel compositore unificato (riordino ▲▼, rinomina, rimozione). Aggiunta o rimozione istantanea di brani da qualsiasi playlist con un solo click sul tasto `+` direttamente dalla coda in riproduzione nella Home.
 * **Memoria di Stato Automatica:** L'applicazione ricorda sempre l'ultima cartella esplorata, riaprendola immediatamente all'avvio.
 * **Metadati e Copertine Native:** Analisi binaria ad alte prestazioni con la crate Rust `lofty`: visualizzazione in tempo reale di Artista, Titolo e Cover Art originale embedded.
 * **Visualizzatore Audio a 60 FPS:** Analizzatore di spettro (Barre), Forma d'onda (Oscilloscopio), Anelli d'onda reattivi e Vinile rotante animato.
 * **Equalizzatore Master a 3 Bande:** Bassi, Medi, Alti e processamento dinamico senza latenza.
+* **🌙 Resilienza allo Standby & Ripristino Istantaneo:** Risveglio automatico e trasparente del grafo Web Audio API dopo la sospensione (sleep) del computer o lo sblocco dello schermo, azzerando qualsiasi blocco o desincronizzazione audio.
+* **⌨️ Scorciatoie da Tastiera Intuitive:** Controllo desktop immediato tramite barra spaziatrice per Play/Pausa e tasti dedicati.
 * **Doppio Tema Grafico:** Look *Modern Dark* (stile Spotify) e look *Punk Acid* con lo sfondo leopardato originale (`.leopard-bg`) e accenti al neon.
 
 ---
@@ -66,6 +70,10 @@ Puoi scaricare l'applicazione già compilata per il tuo sistema operativo dirett
 1. Scarica il pacchetto **`.deb`** (per Ubuntu/Debian) oppure **`BlasMusicPlayer_1.0.0_amd64.AppImage`**.
 2. Con l'AppImage, rendila eseguibile con un clic destro ➔ *Proprietà* ➔ *Permessi* ➔ *Consenti l'esecuzione* (oppure `chmod +x *.AppImage`) e fai doppio clic per avviare.
 
+### 📱 Android (Smartphone e Tablet)
+1. Scarica il file **`BlasMusicPlayer-release.apk`** (15 MB, pronto nelle Releases).
+2. Sullo smartphone, tocca l'APK scaricato da Telegram o File Manager per procedere con l'installazione o l'aggiornamento automatico (senza perdere playlist o dati locali).
+
 ---
 
 ## 🛠️ Per gli Sviluppatori (Compilazione da sorgente)
@@ -101,6 +109,8 @@ BlasMusicPlayer rispetta i principi di etica, privacy, modularità (limite tassa
   * [06. Architettura Moderna: Tauri 2.0 e IPC](docs/06_architettura_tauri_e_ipc.md)
   * [07. Gestione Metadati, Copertine e Playlist](docs/07_gestione_metadati_e_playlist_persistenti.md)
   * [Manuale Utente Ufficiale](docs/manuali/manuale_utente.md)
+  * [Guida Aggiornamento e Compilazione Android](docs/manuali/guida_aggiornamento_android.md)
+  * [Guida Icone Ufficiali e Logo](docs/manuali/guida_icone_e_logo.md)
   * [Censimento Tecnologie Utilizzate](docs/tecnologie_utilizzate.md)
 
 *(Nota didattica: il prototipo iniziale sviluppato in C++17 e Raylib 6.0 è interamente conservato e consultabile all'interno della cartella `legacy_cpp/`).*

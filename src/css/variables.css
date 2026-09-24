@@ -66,9 +66,29 @@
     
     --leopard-pattern: url('/img/leopard_bg.png');
     
-    /* Layout Variables */
     --box-border-width: 3px;
     --box-border-color: black;
     --shadow-color: var(--acid-green);
     --leopard-shadow: var(--acid-blue);
+}
+
+/* Gestione Safe Area e margini per schermi mobile */
+:root {
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+}
+.pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 768px) {
+    .pt-safe {
+        padding-top: max(env(safe-area-inset-top, 0px), 36px);
+    }
+    .pb-safe {
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+    }
 }

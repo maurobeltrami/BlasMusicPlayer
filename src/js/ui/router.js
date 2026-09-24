@@ -14,7 +14,7 @@ export function navigateTo(targetViewId) {
         targetView.classList.add('block');
     }
 
-    // Toggle bottom player based on view
+    // Mostra/nasconde il mini-player sticky in base alla vista corrente
     const bottomPlayer = document.getElementById('bottom-player');
     if (targetViewId === 'view-home') {
         bottomPlayer.classList.add('hidden');
