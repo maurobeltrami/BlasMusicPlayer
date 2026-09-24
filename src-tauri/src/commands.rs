@@ -76,12 +76,12 @@ pub fn scan_directory(dir_path: String) -> Vec<FileItemDto> {
             let name = p.file_name().unwrap_or_default().to_string_lossy().to_string();
             if name.starts_with('.') { continue; }
             if p.is_dir() {
-                items.push(FileItemDto { name, title: None, artist: None, path: p.to_string_lossy().to_string(), is_dir: true, cover: None });
+                items.push(FileItemDto { name, title: None, artist: None, album: None, path: p.to_string_lossy().to_string(), is_dir: true, cover: None });
             } else if let Some(ext) = p.extension() {
                 if metadata::is_audio(&ext.to_string_lossy()) {
                     let meta = metadata::extract_metadata(&p);
                     let c = if meta.has_cover { Some(p.to_string_lossy().to_string()) } else { cover.clone() };
-                    items.push(FileItemDto { name, title: Some(meta.title), artist: meta.artist, path: p.to_string_lossy().to_string(), is_dir: false, cover: c });
+                    items.push(FileItemDto { name, title: Some(meta.title), artist: meta.artist, album: meta.album, path: p.to_string_lossy().to_string(), is_dir: false, cover: c });
                 }
             }
         }
@@ -108,7 +108,7 @@ pub fn scan_folder_recursive(dir_path: String) -> Vec<TrackDto> {
                     if metadata::is_audio(&ext_str) {
                         let meta = metadata::extract_metadata(&p);
                         let c = if meta.has_cover { Some(p.to_string_lossy().to_string()) } else { dir_cover.clone() };
-                        tracks.push(TrackDto { title: meta.title, artist: meta.artist, path: p.to_string_lossy().to_string(), extension: ext_str, cover: c });
+                        tracks.push(TrackDto { title: meta.title, artist: meta.artist, album: meta.album, path: p.to_string_lossy().to_string(), extension: ext_str, cover: c });
                     }
                 }
             }

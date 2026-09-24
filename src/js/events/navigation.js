@@ -1,6 +1,7 @@
 // events/navigation.js - Navigazione cartelle nativa e riproduzione sottocartelle
 import * as pl from '../data/playlist.js';
 import * as stateManager from '../core/stateManager.js';
+import * as libOrg from './libraryOrganizer.js';
 
 export let currentDirectory = "";
 
@@ -56,14 +57,19 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
             if (currentDirDisplay) { currentDirDisplay.textContent = path; currentDirDisplay.title = path; }
             const items = await window.__TAURI__.core.invoke('scan_directory', { dirPath: path });
             if (!dirList) return;
-            dirList.innerHTML = items.length === 0 ? '<div class="p-3 text-center text-xs opacity-70 font-semibold italic">Nessun file audio o cartella trovato</div>' : '';
 
             const folderTracks = items.filter(it => !it.is_dir).map(it => ({
                 title: it.title || it.name.replace(/\.[^/.]+$/, ""),
                 path: it.path,
                 artist: (it.artist && it.artist !== "Locale") ? it.artist : "",
+                album: it.album || "",
                 cover: it.cover
             }));
+
+            libOrg.updateLibraryTracks(folderTracks);
+            if (libOrg.getLibraryMode() !== 'folders') return;
+
+            dirList.innerHTML = items.length === 0 ? '<div class="p-3 text-center text-xs opacity-70 font-semibold italic">Nessun file audio o cartella trovato</div>' : '';
 
             items.forEach(item => {
                 const row = document.createElement('div');
@@ -76,7 +82,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
                     row.onclick = () => navigate(item.path);
                     const actions = document.createElement('div');
                     actions.className = 'flex items-center gap-1 shrink-0';
-                    actions.innerHTML = `<button class="p-1.5 px-2 text-white bg-black/40 hover:bg-black/80 rounded transition-transform active:scale-95 play-sub-btn" title="Riproduci"><i class="fas fa-play text-xs pointer-events-none"></i></button><button class="p-1.5 px-2 text-white bg-black/40 hover:bg-black/80 rounded transition-transform active:scale-95 add-sub-btn" title="Aggiungi"><i class="fas fa-plus text-xs pointer-events-none"></i></button>`;
+                    actions.innerHTML = `<button class="p-1.5 px-2 text-white bg-black/40 hover:bg-black/80 rounded play-sub-btn" title="Riproduci"><i class="fas fa-play text-xs pointer-events-none"></i></button><button class="p-1.5 px-2 text-white bg-black/40 hover:bg-black/80 rounded add-sub-btn" title="Aggiungi"><i class="fas fa-plus text-xs pointer-events-none"></i></button>`;
                     actions.querySelector('.play-sub-btn').onclick = (e) => { e.stopPropagation(); playFolderTracks(item.path, false); };
                     actions.querySelector('.add-sub-btn').onclick = (e) => { e.stopPropagation(); playFolderTracks(item.path, true); };
                     row.appendChild(left);
@@ -86,7 +92,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
                     const trackArtist = (item.artist && item.artist !== "Locale") ? item.artist : "";
                     const artistBadge = trackArtist ? `<span class="opacity-60 text-xs font-normal ml-1">(${trackArtist})</span>` : '';
                     left.innerHTML = `<i class="fas fa-music text-acid-pink group-hover:text-white text-sm"></i> <span class="truncate" title="${trackTitle}">${trackTitle}</span> ${artistBadge}`;
-                    const track = { title: trackTitle, path: item.path, artist: trackArtist, cover: item.cover };
+                    const track = { title: trackTitle, path: item.path, artist: trackArtist, album: item.album, cover: item.cover };
                     
                     row.onclick = () => {
                         const startIdx = folderTracks.findIndex(t => t.path === track.path);
@@ -96,7 +102,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
                     };
 
                     const addBtn = document.createElement('button');
-                    addBtn.className = 'p-1.5 px-2.5 text-white bg-black/40 hover:bg-black/80 rounded transition-transform active:scale-95 shrink-0';
+                    addBtn.className = 'p-1.5 px-2.5 text-white bg-black/40 hover:bg-black/80 rounded shrink-0';
                     addBtn.title = 'Aggiungi alla coda';
                     addBtn.innerHTML = '<i class="fas fa-plus text-xs pointer-events-none"></i>';
                     addBtn.onclick = (e) => { e.stopPropagation(); pl.currentPlaylist.push(track); renderUICallback(); };
@@ -111,14 +117,9 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
     if (dirUpBtn) {
         dirUpBtn.onclick = () => {
             if (!currentDirectory || currentDirectory === '/storage/emulated/0') return;
-            if (currentDirectory.includes('/Android/data') || currentDirectory.includes('/Android/obb')) {
-                navigate('/storage/emulated/0'); return;
-            }
+            if (currentDirectory.includes('/Android/data') || currentDirectory.includes('/Android/obb')) { navigate('/storage/emulated/0'); return; }
             const parts = currentDirectory.split(/[\/\\]/).filter(Boolean);
-            if (parts.length > 0) {
-                parts.pop();
-                navigate((currentDirectory.startsWith('/') ? '/' : '') + parts.join('/') || '/');
-            }
+            if (parts.length > 0) { parts.pop(); navigate((currentDirectory.startsWith('/') ? '/' : '') + parts.join('/') || '/'); }
         };
     }
     if (playCurrentFolderBtn) playCurrentFolderBtn.onclick = () => playFolderTracks(currentDirectory, false);
@@ -140,6 +141,7 @@ export async function setupNavigation(loadTrackCallback, renderUICallback) {
         };
     }
 
+    libOrg.setupLibraryOrganizer(loadTrackCallback, renderUICallback, () => navigate(currentDirectory));
     await loadShortcuts();
     await navigate('');
 }
