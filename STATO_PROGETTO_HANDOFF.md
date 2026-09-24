@@ -1,10 +1,11 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 23 Settembre 2026 (Sessione 4)
+> **Data:** 24 Settembre 2026 (Sessione 5)
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
 > **Branch Corrente:** `feature/responsive-android`
-> **Ultimo Commit:** in fase di commit — "docs: completata documentazione, guida aggiornamento Android e allineamento costituzionale"
+> **Ultimo Commit:** build: compilato APK Android universale con sincronizzazione playlist e UI
 > **Bundle Desktop Pronto:** `./BlasMusicPlayer.app` (compilato in release, firmato e verificato)
+> **Pacchetto Android Pronto:** `./app-universal-debug.apk` (compilato con successo, pronto per installazione)
 > **Guida Android:** `docs/manuali/guida_aggiornamento_android.md`
 
 ---
@@ -99,12 +100,15 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - La modifica riapre la playlist direttamente nel riquadro di composizione/creazione a destra (con riordino ▲▼, rinomina e rimozione ✕), eliminando il vecchio modulo separato.
 13. **Modale Rapida Aggiunta Playlist da Coda (Home)** ✅
    - Tasto `+` sui brani della coda attiva con modale a caselle di spunta (checkbox) per associare o rimuovere il brano dalle playlist in un click.
+14. **Compilazione & Packaging APK Android Sincronizzato** ✅
+   - Compilato con successo l'APK universale (`app-universal-debug.apk`, 154 MB) contenente tutte le ultime novità: compositore playlist unificato, modale rapida checkbox, fix risveglio standby, icone punk adaptive e foreground service.
+   - Posizionato nella root del progetto (`./app-universal-debug.apk`) in conformità con la Regola Zero-Terminal.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Compilazione APK Android:** Eseguire la compilazione del nuovo pacchetto APK seguendo la guida creata in `docs/manuali/guida_aggiornamento_android.md`.
-2. **Test su Dispositivo Mobile Reale:** Verificare la riproduzione in background, la nuova modale con checkbox e il compositore unificato su smartphone Android.
+1. **Invio e Installazione su Smartphone:** Trasferire `app-universal-debug.apk` sul telefono (tramite Telegram Desktop / Web, cavo USB o AirDrop/condivisione) e procedere all'installazione.
+2. **Collaudo su Dispositivo Mobile Reale:** Verificare la riproduzione in background a schermo spento con `AudioService.kt`, la nuova modale con checkbox e il compositore unificato.
 
 ---
 
