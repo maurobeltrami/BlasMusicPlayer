@@ -5,7 +5,7 @@
 > **Branch Corrente:** `feature/responsive-android`
 > **Ultimo Commit:** build: compilato APK Android universale con sincronizzazione playlist e UI
 > **Bundle Desktop Pronto:** `./BlasMusicPlayer.app` (compilato in release, firmato e verificato)
-> **Pacchetto Android Pronto:** `./app-universal-debug.apk` (compilato con successo, pronto per installazione)
+> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, firmato con `blas-release.keystore`, inviato via DevBot Telegram) e `./app-universal-debug.apk` (debug universale)
 > **Guida Android:** `docs/manuali/guida_aggiornamento_android.md`
 
 ---
