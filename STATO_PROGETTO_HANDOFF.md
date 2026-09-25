@@ -119,15 +119,19 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 18. **Stile Skate-Punk, Bordi Logori/Strappati, Dettagli Verde Acido & Pagina Playlist** ✅
    - Risolta l'illeggibilità dei testi nella pagina Playlist: creato il modulo dedicato `src/css/themes/punk-playlists.css` (133 righe). Brani del navigatore cartelle, directory, testi e comandi della bozza ora hanno contrasto massimo (bianco su viola scuro / hover verde acido).
    - Card delle playlist salvate con badge "X brani" verde acido adesivo (`#CCFF00`, testo nero bold), pulsante "+ Coda" nero con testo verde acido ben visibile, e bottoni Play/Modifica/Elimina ad alta visibilità.
-   - Aggiunta estetica Skate-Punk con bordi logori e strappati a fanzine (clip-path irregolare su `.torn-paper`), nastro adesivo da skate (duct tape) fluorescente agli angoli dei box, e accenti verde acido diffusi (progress bar con sfumatura neon, visualizer container, slider e pulsanti).
-   - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
-   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 72).
-   - Rispetto ferreo della regola $\le 150$ righe per tutti i file sorgente proprietari.
+   - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS e Mobile Android (APK inviato con ID 72).
+19. **Bordi Ultra-Irregolari, Logori e Strappati a Denti di Sega (Skate Fanzine Ripped Paper)** ✅
+   - Applicato un `clip-path` poligonale complesso su 4 lati a tutte le card e contenitori (`.stencil-box`, `.torn-paper`, `#displayScreen`, `#view-playlists`), creando strappi profondi a denti di sega (7-10px), morsi agli angoli e sfilacciature organiche lungo i bordi.
+   - Sostituite le cornici rigide rettangolari con bordi asimmetrici fatti a mano (`border-radius: 255px 18px 225px 15px / 15px 225px 18px 255px`), spessori variabili e rotazioni anarchiche alternate tra le card (`-0.5°` e `+0.6°`).
+   - Nastro adesivo verde acido (duct tape) rimodellato con strappo dentellato realistico su entrambi i lati (`clip-path` a zigzag da strappo manuale).
+   - Sincronizzate e ricompilate tutte le release: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
+   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 73).
+   - Confermata la piena aderenza alla regola $\le 150$ righe per file.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi contrasti della schermata Playlist e i dettagli skate-punk.
+1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi bordi strappati e irregolari.
 2. **Eventuali Ulteriori Temi:** Utilizzare la guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente altri stili visivi.
 
 ---

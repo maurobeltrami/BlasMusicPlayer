@@ -1,8 +1,6 @@
 /* --- css/themes/punk-effects.css --- */
-
 /* Sfondo cromatico punk ad alta energia: viola notturno con spray acidi */
-[data-theme="punk"] body,
-body[data-theme="punk"] {
+[data-theme="punk"] body, body[data-theme="punk"] {
     background-color: #160026 !important;
     background-image: 
         radial-gradient(ellipse 600px 400px at 85% 10%, rgba(255, 0, 128, 0.35) 0%, transparent 70%),
@@ -12,89 +10,84 @@ body[data-theme="punk"] {
     background-attachment: fixed;
 }
 
-/* Torn Paper & Jagged Edge Effect: bordo logoro e strappato stile skate fanzine */
-.torn-paper {
-    position: relative;
-    border-radius: var(--box-radius, 8px);
-}
-[data-theme="punk"] .torn-paper {
-    border: 3px solid #000000 !important;
-    box-shadow: 5px 5px 0px var(--acid-green), 9px 9px 0px #000000 !important;
-    clip-path: polygon(
-        0% 0%, 100% 0%, 100% calc(100% - 9px),
-        97% 100%, 94% calc(100% - 6px), 91% 100%, 88% calc(100% - 8px),
-        84% 100%, 80% calc(100% - 5px), 76% 100%, 72% calc(100% - 7px),
-        68% 100%, 64% calc(100% - 6px), 60% 100%, 56% calc(100% - 8px),
-        52% 100%, 48% calc(100% - 5px), 44% 100%, 40% calc(100% - 7px),
-        36% 100%, 32% calc(100% - 6px), 28% 100%, 24% calc(100% - 8px),
-        20% 100%, 16% calc(100% - 5px), 12% 100%, 8% calc(100% - 7px),
-        4% 100%, 2% calc(100% - 5px), 0% calc(100% - 9px)
-    ) !important;
-    padding-bottom: 1.5rem !important;
-}
-
-/* Nastro adesivo skate verde acido agli angoli dei box */
+/* 1. Bordi Logori, Strappati & Irregolari (Skate Fanzine Ripped Paper) */
 .stencil-box { position: relative; }
-[data-theme="punk"] .stencil-box::after {
+[data-theme="punk"] .stencil-box,
+[data-theme="punk"] .torn-paper {
+    background-color: var(--box-bg);
+    border: 3.5px solid #000000 !important;
+    border-radius: 255px 18px 225px 15px / 15px 225px 18px 255px !important;
+    background-image: var(--concrete-pattern);
+    filter: drop-shadow(4px 4px 0px var(--acid-green)) drop-shadow(8px 8px 0px #000000) !important;
+    clip-path: polygon(
+        0% 12px, 3px 5px, 14px 0%,
+        28% 3px, 38% 0%, 52% 4px, 68% 0%, 82% 3px, 94% 0%,
+        100% 14px, 98.5% 32%, 100% 48%, 98% 64%, 100% 80%, 98.5% 92%,
+        calc(100% - 14px) 100%, 86% calc(100% - 9px), 74% 100%, 62% calc(100% - 7px),
+        50% 100%, 38% calc(100% - 10px), 26% 100%, 14% calc(100% - 7px),
+        0% calc(100% - 14px), 2% 82%, 0% 64%, 2.5% 48%, 0% 32%, 1.5% 18%
+    ) !important;
+}
+[data-theme="punk"] section.stencil-box { transform: rotate(-0.5deg); }
+[data-theme="punk"] aside.stencil-box, [data-theme="punk"] #libraryAside { transform: rotate(0.6deg); }
+
+/* 2. Nastro Adesivo da Skate (Duct Tape Verde Acido con Strappo a Denti) */
+[data-theme="punk"] .stencil-box::after,
+[data-theme="punk"] .torn-paper::after {
     content: '';
     position: absolute;
-    top: -10px;
-    right: 28px;
-    width: 68px;
-    height: 20px;
+    top: -12px;
+    right: 22px;
+    width: 82px;
+    height: 24px;
     background-color: var(--acid-green);
-    opacity: 0.9;
-    transform: rotate(3deg);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
-    border-left: 2px dashed rgba(0, 0, 0, 0.35);
-    border-right: 2px dashed rgba(0, 0, 0, 0.35);
+    opacity: 0.94;
+    transform: rotate(3.5deg);
+    clip-path: polygon(
+        0% 0%, 100% 0%, 95% 20%, 100% 40%, 94% 60%, 100% 80%, 95% 100%,
+        0% 100%, 5% 80%, 0% 60%, 6% 40%, 0% 20%
+    ) !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.4);
     pointer-events: none;
     z-index: 40;
 }
-[data-theme="punk"] #view-playlists::after { left: 28px; right: auto; transform: rotate(-3deg); }
+[data-theme="punk"] #view-playlists::after { left: 24px; right: auto; transform: rotate(-3.5deg); }
 
-/* Graffiti Title con doppio drop-shadow punk */
-.graffiti-title {
-    font-family: var(--font-title);
-    color: var(--accent-red);
+/* 3. Display Centrale e Visualizzatore Irregolare */
+[data-theme="punk"] #displayScreen {
+    border: 3.5px solid #000000 !important;
+    border-radius: 190px 12px 180px 15px / 14px 185px 12px 195px !important;
+    transform: rotate(0.4deg);
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.85), 3px 3px 0px var(--acid-green) !important;
 }
+[data-theme="punk"] #visualizerContainer {
+    border: 3.5px solid var(--acid-green) !important;
+    border-radius: 12px 4px 14px 3px !important;
+    box-shadow: 0 0 14px rgba(204, 255, 0, 0.35) !important;
+}
+
+/* 4. Graffiti Title con doppio drop-shadow punk */
+.graffiti-title { font-family: var(--font-title); color: var(--accent-red); }
 [data-theme="punk"] .graffiti-title {
     font-family: var(--font-title);
     color: #FFFFFF;
     text-shadow: 3px 3px 0px #000000, 5px 5px 0px var(--acid-pink);
-    transform: rotate(-1deg);
+    transform: rotate(-1.5deg);
 }
 [data-theme="punk"] .graffiti-title span.text-theme-accent {
     color: var(--acid-green) !important;
     text-shadow: 3px 3px 0px #000000, 5px 5px 0px var(--acid-green);
 }
 
-/* Stencil Box con doppio rilievo skate-punk */
-.stencil-box {
-    background-color: var(--box-bg);
-    border: var(--box-border-width) solid var(--box-border-color);
-    border-radius: var(--box-radius, 8px);
-    box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-[data-theme="punk"] .stencil-box {
-    background-color: var(--box-bg);
-    border: 3px solid #000000 !important;
-    border-radius: 0px !important;
-    box-shadow: 5px 5px 0px var(--acid-green), 10px 10px 0px #000000 !important;
-    background-image: var(--concrete-pattern);
-}
-
-/* Dettagli Verde Acido: Progress Bar, Visualizer e Cursori */
+/* 5. Cursori e Progress Bar Skate Verde Acido */
 [data-theme="punk"] #progressBar {
-    background: linear-gradient(90deg, var(--acid-green), #99FF00) !important;
-    box-shadow: 0 0 10px var(--acid-green) !important;
-}
-[data-theme="punk"] #visualizerContainer {
-    border: 3px solid var(--acid-green) !important;
-    box-shadow: 0 0 12px rgba(204, 255, 0, 0.3) !important;
+    background: linear-gradient(90deg, var(--acid-green), #A6FF00) !important;
+    box-shadow: 0 0 12px var(--acid-green) !important;
 }
 [data-theme="punk"] input[type="range"]::-webkit-slider-thumb {
     background: var(--acid-green) !important;
     border: 2px solid #000000 !important;
+    transform: scale(1.15);
 }
-

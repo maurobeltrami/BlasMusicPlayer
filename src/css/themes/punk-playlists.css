@@ -1,16 +1,18 @@
 /* --- css/themes/punk-playlists.css --- */
 /* Stile skate-punk ad alto contrasto per la vista Gestione Playlist */
 
-/* 1. Contenitore principale e sezioni */
+/* 1. Contenitore principale e sezioni con bordi logori e asimmetrici */
 [data-theme="punk"] #view-playlists {
     background-color: #120021 !important;
-    border: 3px solid #000000 !important;
+    border: 3.5px solid #000000 !important;
+    border-radius: 255px 18px 225px 15px / 15px 225px 18px 255px !important;
     box-shadow: 6px 6px 0px var(--acid-green), 12px 12px 0px #000000 !important;
 }
 [data-theme="punk"] #view-playlists header p { color: #D1B3FF !important; }
 [data-theme="punk"] #view-playlists .bg-theme-bg {
     background-color: #1a002e !important;
-    border: 3px solid #000000 !important;
+    border: 3.5px solid #000000 !important;
+    border-radius: 255px 14px 225px 12px / 14px 225px 12px 255px !important;
     box-shadow: 5px 5px 0px var(--acid-green) !important;
     color: #FFFFFF !important;
 }
@@ -40,11 +42,12 @@
     border: 1px solid var(--acid-green) !important;
 }
 
-/* 3. Controlli Cartelle e Scorciatoie */
+/* 3. Controlli Cartelle, Path e Scorciatoie */
 [data-theme="punk"] #view-playlists #plQuickDirsContainer button {
     background-color: #000000 !important;
     color: #FFFFFF !important;
-    border: 1.5px solid var(--acid-green) !important;
+    border: 2px solid var(--acid-green) !important;
+    border-radius: 4px 12px 3px 10px !important;
     box-shadow: 2px 2px 0px #000000 !important;
 }
 [data-theme="punk"] #view-playlists #plQuickDirsContainer button:hover { background-color: var(--acid-green) !important; color: #000000 !important; }
@@ -86,7 +89,7 @@
 [data-theme="punk"] #view-playlists #clearDraftBtn:hover { color: var(--accent-red) !important; }
 [data-theme="punk"] #view-playlists #saveCurrentQueueAsPlaylistBtn { color: var(--acid-green) !important; font-weight: 900; }
 
-/* 5. Elenco Playlist Salvate */
+/* 5. Elenco Playlist Salvate con Bordi Tagliati e Tilt Anarchico */
 [data-theme="punk"] #view-playlists #savedPlaylistsCount {
     background-color: var(--acid-green) !important;
     color: #000000 !important;
@@ -97,9 +100,12 @@
 [data-theme="punk"] #view-playlists #savedPlaylistsList li {
     background-color: #FFFFFF !important;
     color: #000000 !important;
-    border: 3px solid #000000 !important;
+    border: 3.5px solid #000000 !important;
+    border-radius: 255px 12px 225px 10px / 10px 225px 12px 255px !important;
     box-shadow: 5px 5px 0px var(--acid-green), 9px 9px 0px #000000 !important;
+    transform: rotate(-0.5deg);
 }
+[data-theme="punk"] #view-playlists #savedPlaylistsList li:nth-child(even) { transform: rotate(0.6deg); }
 [data-theme="punk"] #view-playlists #savedPlaylistsList li span.font-bold { color: #000000 !important; font-weight: 900 !important; }
 [data-theme="punk"] #view-playlists #savedPlaylistsList li span.uppercase {
     background-color: var(--acid-green) !important;
@@ -107,6 +113,8 @@
     border: 2px solid #000000 !important;
     font-weight: 900 !important;
     opacity: 1 !important;
+    transform: rotate(-2deg);
+    display: inline-block;
     box-shadow: 2px 2px 0px #000000;
 }
 [data-theme="punk"] #view-playlists #savedPlaylistsList .play-pl-btn {
