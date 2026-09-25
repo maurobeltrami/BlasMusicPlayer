@@ -12,6 +12,17 @@
     --text-muted: var(--box-text-muted);
     color: var(--box-text);
 }
+/* Hover Coda Playlist: sfondo nero, titolo verde acido, metadati e bottoni bianchi/verdi */
+[data-theme="punk"] .playlist-item:hover:not(.active) {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-left: 4px solid var(--acid-green) !important;
+    box-shadow: 2px 2px 0px var(--acid-green) !important;
+}
+[data-theme="punk"] .playlist-item:hover:not(.active) span { color: #FFFFFF !important; }
+[data-theme="punk"] .playlist-item:hover:not(.active) span.font-semibold { color: var(--acid-green) !important; font-weight: 800 !important; }
+[data-theme="punk"] .playlist-item:hover:not(.active) button { color: var(--acid-green) !important; opacity: 1 !important; }
+
 
 /* 2. Tasti di Riproduzione Principali (Massimo contrasto e stile punk) */
 [data-theme="punk"] #shuffleBtn,

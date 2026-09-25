@@ -10,61 +10,50 @@
     background-attachment: fixed;
 }
 
-/* 1. Bordi Logori, Strappati & Irregolari (Skate Fanzine Ripped Paper) */
+/* 1. Stencil Box e Card Skate-Punk: bordi solidi, netti, definiti e puliti */
 .stencil-box { position: relative; }
 [data-theme="punk"] .stencil-box,
 [data-theme="punk"] .torn-paper {
     background-color: var(--box-bg);
-    border: 3.5px solid #000000 !important;
-    border-radius: 255px 18px 225px 15px / 15px 225px 18px 255px !important;
+    border: 3px solid #000000 !important;
+    border-radius: 0px !important;
     background-image: var(--concrete-pattern);
-    filter: drop-shadow(4px 4px 0px var(--acid-green)) drop-shadow(8px 8px 0px #000000) !important;
-    clip-path: polygon(
-        0% 12px, 3px 5px, 14px 0%,
-        28% 3px, 38% 0%, 52% 4px, 68% 0%, 82% 3px, 94% 0%,
-        100% 14px, 98.5% 32%, 100% 48%, 98% 64%, 100% 80%, 98.5% 92%,
-        calc(100% - 14px) 100%, 86% calc(100% - 9px), 74% 100%, 62% calc(100% - 7px),
-        50% 100%, 38% calc(100% - 10px), 26% 100%, 14% calc(100% - 7px),
-        0% calc(100% - 14px), 2% 82%, 0% 64%, 2.5% 48%, 0% 32%, 1.5% 18%
-    ) !important;
+    box-shadow: 6px 6px 0px var(--acid-green), 12px 12px 0px #000000 !important;
 }
-[data-theme="punk"] section.stencil-box { transform: rotate(-0.5deg); }
-[data-theme="punk"] aside.stencil-box, [data-theme="punk"] #libraryAside { transform: rotate(0.6deg); }
 
-/* 2. Nastro Adesivo da Skate (Duct Tape Verde Acido con Strappo a Denti) */
+/* 2. Nastro Adesivo da Skate (Duct Tape Verde Acido con Strappo Dentellato) */
 [data-theme="punk"] .stencil-box::after,
 [data-theme="punk"] .torn-paper::after {
     content: '';
     position: absolute;
-    top: -12px;
-    right: 22px;
-    width: 82px;
-    height: 24px;
+    top: -11px;
+    right: 28px;
+    width: 78px;
+    height: 22px;
     background-color: var(--acid-green);
-    opacity: 0.94;
-    transform: rotate(3.5deg);
+    opacity: 0.95;
+    transform: rotate(3deg);
     clip-path: polygon(
-        0% 0%, 100% 0%, 95% 20%, 100% 40%, 94% 60%, 100% 80%, 95% 100%,
-        0% 100%, 5% 80%, 0% 60%, 6% 40%, 0% 20%
-    ) !important;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+        0% 0%, 100% 0%, 96% 25%, 100% 50%, 95% 75%, 100% 100%,
+        0% 100%, 4% 75%, 0% 50%, 5% 25%
+    );
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     border-top: 1.5px solid rgba(255, 255, 255, 0.6);
     border-bottom: 1.5px solid rgba(0, 0, 0, 0.4);
     pointer-events: none;
     z-index: 40;
 }
-[data-theme="punk"] #view-playlists::after { left: 24px; right: auto; transform: rotate(-3.5deg); }
+[data-theme="punk"] #view-playlists::after { left: 28px; right: auto; transform: rotate(-3deg); }
 
-/* 3. Display Centrale e Visualizzatore Irregolare */
+/* 3. Display Centrale e Visualizzatore */
 [data-theme="punk"] #displayScreen {
-    border: 3.5px solid #000000 !important;
-    border-radius: 190px 12px 180px 15px / 14px 185px 12px 195px !important;
-    transform: rotate(0.4deg);
-    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.85), 3px 3px 0px var(--acid-green) !important;
+    border: 3px solid #000000 !important;
+    border-radius: 0px !important;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.85), 4px 4px 0px var(--acid-green) !important;
 }
 [data-theme="punk"] #visualizerContainer {
-    border: 3.5px solid var(--acid-green) !important;
-    border-radius: 12px 4px 14px 3px !important;
+    border: 3px solid var(--acid-green) !important;
+    border-radius: 2px !important;
     box-shadow: 0 0 14px rgba(204, 255, 0, 0.35) !important;
 }
 

@@ -121,17 +121,19 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - Card delle playlist salvate con badge "X brani" verde acido adesivo (`#CCFF00`, testo nero bold), pulsante "+ Coda" nero con testo verde acido ben visibile, e bottoni Play/Modifica/Elimina ad alta visibilità.
    - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS e Mobile Android (APK inviato con ID 72).
 19. **Bordi Ultra-Irregolari, Logori e Strappati a Denti di Sega (Skate Fanzine Ripped Paper)** ✅
-   - Applicato un `clip-path` poligonale complesso su 4 lati a tutte le card e contenitori (`.stencil-box`, `.torn-paper`, `#displayScreen`, `#view-playlists`), creando strappi profondi a denti di sega (7-10px), morsi agli angoli e sfilacciature organiche lungo i bordi.
-   - Sostituite le cornici rigide rettangolari con bordi asimmetrici fatti a mano (`border-radius: 255px 18px 225px 15px / 15px 225px 18px 255px`), spessori variabili e rotazioni anarchiche alternate tra le card (`-0.5°` e `+0.6°`).
-   - Nastro adesivo verde acido (duct tape) rimodellato con strappo dentellato realistico su entrambi i lati (`clip-path` a zigzag da strappo manuale).
-   - Sincronizzate e ricompilate tutte le release: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
-   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 73).
-   - Confermata la piena aderenza alla regola $\le 150$ righe per file.
+   - Sincronizzate e ricompilate tutte le release: Desktop macOS e Mobile Android (APK inviato con ID 73).
+20. **Risoluzione Bordi Desktop (Netti, Solidi, Zero Glitch) & Hover Brani ad Alto Contrasto** ✅
+   - Eliminato il clip-path poligonale dai container principali e le rotazioni d'inclinazione che creavano artefatti visivi, pixel bianchi spuri e bordi confusi su desktop.
+   - Ripristinate linee di contorno skate-punk solide, nitide e pulite (`border: 3px solid #000000`) con drop-shadow pop-art skate a contrasto pieno (`6px 6px 0px var(--acid-green), 12px 12px 0px #000000`). Mantenuto il nastro adesivo da skate (duct tape) come tocco stilistico agli angoli senza alterare la geometria.
+   - Risolto il difetto dell'hover nero sulle canzoni (sia desktop che mobile): passando il mouse o toccando un brano della coda, lo sfondo nero fa ora risaltare il titolo in **verde acido neon** (`#CCFF00 !important`), numeri e artisti in **bianco puro** (`#FFFFFF !important`), e i comandi in verde acido con hover fucsia, eliminando l'effetto "barra nera illeggibile".
+   - Sincronizzate e ricompilate tutte le versioni: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
+   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 75).
+   - Confermata la piena aderenza alla regola $\le 150$ righe per tutti i file.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi bordi strappati e irregolari.
+1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi bordi nitidi e l'hover verde acido sulle canzoni.
 2. **Eventuali Ulteriori Temi:** Utilizzare la guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente altri stili visivi.
 
 ---
