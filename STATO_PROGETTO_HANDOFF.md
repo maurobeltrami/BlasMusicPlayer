@@ -116,13 +116,19 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - Sfondo punk arricchito cromaticamente: violetto scuro profondo (`#160026`) stratificato con tre gradienti radiali acid spray (Acid Pink, Acid Cyan, Toxic Green) e texture organica di asfalto scuro.
    - Sincronizzate e ricompilate tutte le build: Desktop macOS (`BlasMusicPlayer.dmg` 5.0 MB, `BlasMusicPlayer.app` firmata ad-hoc) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
    - Inviata con successo l'APK release al DevBot Telegram di Mauro (`@Maurobeltramidevbot`, ID messaggio 71).
-   - Verificata la piena conformità alla Costituzione BlasOpen e alla regola delle $\le 150$ righe per file.
+18. **Stile Skate-Punk, Bordi Logori/Strappati, Dettagli Verde Acido & Pagina Playlist** ✅
+   - Risolta l'illeggibilità dei testi nella pagina Playlist: creato il modulo dedicato `src/css/themes/punk-playlists.css` (133 righe). Brani del navigatore cartelle, directory, testi e comandi della bozza ora hanno contrasto massimo (bianco su viola scuro / hover verde acido).
+   - Card delle playlist salvate con badge "X brani" verde acido adesivo (`#CCFF00`, testo nero bold), pulsante "+ Coda" nero con testo verde acido ben visibile, e bottoni Play/Modifica/Elimina ad alta visibilità.
+   - Aggiunta estetica Skate-Punk con bordi logori e strappati a fanzine (clip-path irregolare su `.torn-paper`), nastro adesivo da skate (duct tape) fluorescente agli angoli dei box, e accenti verde acido diffusi (progress bar con sfumatura neon, visualizer container, slider e pulsanti).
+   - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
+   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 72).
+   - Rispetto ferreo della regola $\le 150$ righe per tutti i file sorgente proprietari.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi contrasti e lo sfondo punk.
-2. **Eventuali Ulteriori Temi:** Utilizzare la nuova guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente nuovi temi (es. Cyberpunk, Vaporwave, Minimalist).
+1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi contrasti della schermata Playlist e i dettagli skate-punk.
+2. **Eventuali Ulteriori Temi:** Utilizzare la guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente altri stili visivi.
 
 ---
 
