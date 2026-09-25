@@ -123,17 +123,21 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 19. **Bordi Ultra-Irregolari, Logori e Strappati a Denti di Sega (Skate Fanzine Ripped Paper)** ✅
    - Sincronizzate e ricompilate tutte le release: Desktop macOS e Mobile Android (APK inviato con ID 73).
 20. **Risoluzione Bordi Desktop (Netti, Solidi, Zero Glitch) & Hover Brani ad Alto Contrasto** ✅
-   - Eliminato il clip-path poligonale dai container principali e le rotazioni d'inclinazione che creavano artefatti visivi, pixel bianchi spuri e bordi confusi su desktop.
-   - Ripristinate linee di contorno skate-punk solide, nitide e pulite (`border: 3px solid #000000`) con drop-shadow pop-art skate a contrasto pieno (`6px 6px 0px var(--acid-green), 12px 12px 0px #000000`). Mantenuto il nastro adesivo da skate (duct tape) come tocco stilistico agli angoli senza alterare la geometria.
    - Risolto il difetto dell'hover nero sulle canzoni (sia desktop che mobile): passando il mouse o toccando un brano della coda, lo sfondo nero fa ora risaltare il titolo in **verde acido neon** (`#CCFF00 !important`), numeri e artisti in **bianco puro** (`#FFFFFF !important`), e i comandi in verde acido con hover fucsia, eliminando l'effetto "barra nera illeggibile".
-   - Sincronizzate e ricompilate tutte le versioni: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
-   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 75).
-   - Confermata la piena aderenza alla regola $\le 150$ righe per tutti i file.
+   - Sincronizzate e ricompilate tutte le versioni: Desktop macOS e Mobile Android (APK inviato con ID 75).
+21. **Perfezionamento Stile Strappato (Skate Fanzine Torn Bottom Edge)** ✅
+   - Risolto il problema della resa caotica su desktop senza rinunciare allo stile strappato tanto apprezzato su mobile: anziché applicare tagli casuali sui 4 lati (che su desktop amputavano i bordi verticali tra colonne adiacenti), lo strappo a denti seghettati realistici è stato concentrato sul **bordo inferiore** di card e contenitori (`.stencil-box`, `.torn-paper`, `#view-playlists`).
+   - I lati verticali e il lato superiore mantengono una linea di contorno solida da 3px nero (`#000000`), garantendo perfetto allineamento e parallelismo nella griglia a 2 colonne su desktop (`#libraryAside` e player centrale), senza pixel bianchi orfani né sovrapposizioni spurie.
+   - Armonizzati i bordi e le ombre della libreria leopardo con quelli del player (entrambi con contorno solido 3px nero e drop-shadow skate verde acido + nero).
+   - Su mobile, ogni card impilata mantiene l'effetto caratteristico di foglio di zine strappato sovrapposto al successivo.
+   - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
+   - Inviato l'APK aggiornato al DevBot Telegram (`@Maurobeltramidevbot`, ID messaggio 76).
+   - Confermata la piena conformità alla regola $\le 150$ righe per file.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi bordi nitidi e l'hover verde acido sulle canzoni.
+1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare il bordo strappato fanzine calibrato e il perfetto contrasto dell'hover.
 2. **Eventuali Ulteriori Temi:** Utilizzare la guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente altri stili visivi.
 
 ---

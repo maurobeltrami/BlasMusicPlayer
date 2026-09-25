@@ -36,9 +36,12 @@
     background-image: var(--leopard-data-uri), url('/img/leopard_bg.png') !important;
     background-size: 250px !important;
     background-repeat: repeat !important;
-    border: var(--box-border-width) solid var(--acid-pink) !important;
-    box-shadow: 6px 6px 0px var(--leopard-shadow) !important;
+    border-top: 3px solid #000000 !important;
+    border-left: 3px solid #000000 !important;
+    border-right: 3px solid #000000 !important;
+    border-bottom: none !important;
 }
+
 
 [data-theme="punk"] .leopard-text {
     background-color: black;

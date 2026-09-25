@@ -1,13 +1,11 @@
 /* --- css/themes/punk-playlists.css --- */
 /* Stile skate-punk ad alto contrasto per la vista Gestione Playlist */
 
-/* 1. Contenitore principale e sezioni: bordi solidi, netti e definiti */
+/* 1. Contenitore principale e sezioni */
 [data-theme="punk"] #view-playlists {
     background-color: #120021 !important;
-    border: 3px solid #000000 !important;
-    border-radius: 0px !important;
-    box-shadow: 6px 6px 0px var(--acid-green), 12px 12px 0px #000000 !important;
 }
+
 [data-theme="punk"] #view-playlists header p { color: #D1B3FF !important; }
 [data-theme="punk"] #view-playlists .bg-theme-bg {
     background-color: #1a002e !important;

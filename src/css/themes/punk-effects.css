@@ -10,15 +10,39 @@
     background-attachment: fixed;
 }
 
-/* 1. Stencil Box e Card Skate-Punk: bordi solidi, netti, definiti e puliti */
+/* 1. Stencil Box e Card Skate-Punk con Bordo Strappato Fanzine (Serrato in basso) */
 .stencil-box { position: relative; }
 [data-theme="punk"] .stencil-box,
 [data-theme="punk"] .torn-paper {
     background-color: var(--box-bg);
-    border: 3px solid #000000 !important;
+    border-top: 3px solid #000000 !important;
+    border-left: 3px solid #000000 !important;
+    border-right: 3px solid #000000 !important;
+    border-bottom: none !important;
     border-radius: 0px !important;
     background-image: var(--concrete-pattern);
-    box-shadow: 6px 6px 0px var(--acid-green), 12px 12px 0px #000000 !important;
+    padding-bottom: 24px !important;
+    clip-path: polygon(
+        0% 0%, 100% 0%, 100% calc(100% - 14px),
+        98% calc(100% - 4px), 96% calc(100% - 12px), 94% calc(100% - 3px),
+        92% calc(100% - 13px), 90% calc(100% - 5px), 88% calc(100% - 11px),
+        86% calc(100% - 4px), 84% calc(100% - 14px), 82% calc(100% - 6px),
+        80% calc(100% - 12px), 78% calc(100% - 4px), 76% calc(100% - 13px),
+        74% calc(100% - 5px), 72% calc(100% - 11px), 70% calc(100% - 3px),
+        68% calc(100% - 14px), 66% calc(100% - 6px), 64% calc(100% - 12px),
+        62% calc(100% - 4px), 60% calc(100% - 13px), 58% calc(100% - 5px),
+        56% calc(100% - 11px), 54% calc(100% - 3px), 52% calc(100% - 14px),
+        50% calc(100% - 5px), 48% calc(100% - 12px), 46% calc(100% - 4px),
+        44% calc(100% - 13px), 42% calc(100% - 6px), 40% calc(100% - 11px),
+        38% calc(100% - 3px), 36% calc(100% - 14px), 34% calc(100% - 5px),
+        32% calc(100% - 12px), 30% calc(100% - 4px), 28% calc(100% - 13px),
+        26% calc(100% - 6px), 24% calc(100% - 11px), 22% calc(100% - 3px),
+        20% calc(100% - 14px), 18% calc(100% - 5px), 16% calc(100% - 12px),
+        14% calc(100% - 4px), 12% calc(100% - 13px), 10% calc(100% - 6px),
+        8% calc(100% - 11px), 6% calc(100% - 3px), 4% calc(100% - 14px),
+        2% calc(100% - 5px), 0% calc(100% - 12px)
+    ) !important;
+    filter: drop-shadow(4px 4px 0px var(--acid-green)) drop-shadow(8px 8px 0px #000000) !important;
 }
 
 /* 2. Nastro Adesivo da Skate (Duct Tape Verde Acido con Strappo Dentellato) */
