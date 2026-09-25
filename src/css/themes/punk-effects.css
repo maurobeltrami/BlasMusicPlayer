@@ -10,39 +10,61 @@
     background-attachment: fixed;
 }
 
-/* 1. Stencil Box e Card Skate-Punk con Bordo Strappato Fanzine (Serrato in basso) */
+/* 1. Foglio Strappato Casualmente e Accartocciato su tutti e 4 i lati */
 .stencil-box { position: relative; }
 [data-theme="punk"] .stencil-box,
 [data-theme="punk"] .torn-paper {
     background-color: var(--box-bg);
-    border-top: 3px solid #000000 !important;
-    border-left: 3px solid #000000 !important;
-    border-right: 3px solid #000000 !important;
-    border-bottom: none !important;
+    background-image: 
+        linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 22%, rgba(0,0,0,0.07) 25%, transparent 32%),
+        linear-gradient(225deg, transparent 42%, rgba(0,0,0,0.10) 47%, rgba(255,255,255,0.22) 49%, transparent 56%),
+        linear-gradient(45deg, transparent 68%, rgba(0,0,0,0.06) 74%, rgba(255,255,255,0.14) 76%, transparent 84%),
+        var(--concrete-pattern);
+    border: none !important;
     border-radius: 0px !important;
-    background-image: var(--concrete-pattern);
-    padding-bottom: 24px !important;
+    padding: 1.25rem 1.25rem 1.75rem 1.25rem !important;
     clip-path: polygon(
-        0% 0%, 100% 0%, 100% calc(100% - 14px),
-        98% calc(100% - 4px), 96% calc(100% - 12px), 94% calc(100% - 3px),
-        92% calc(100% - 13px), 90% calc(100% - 5px), 88% calc(100% - 11px),
-        86% calc(100% - 4px), 84% calc(100% - 14px), 82% calc(100% - 6px),
-        80% calc(100% - 12px), 78% calc(100% - 4px), 76% calc(100% - 13px),
-        74% calc(100% - 5px), 72% calc(100% - 11px), 70% calc(100% - 3px),
-        68% calc(100% - 14px), 66% calc(100% - 6px), 64% calc(100% - 12px),
-        62% calc(100% - 4px), 60% calc(100% - 13px), 58% calc(100% - 5px),
-        56% calc(100% - 11px), 54% calc(100% - 3px), 52% calc(100% - 14px),
-        50% calc(100% - 5px), 48% calc(100% - 12px), 46% calc(100% - 4px),
-        44% calc(100% - 13px), 42% calc(100% - 6px), 40% calc(100% - 11px),
-        38% calc(100% - 3px), 36% calc(100% - 14px), 34% calc(100% - 5px),
-        32% calc(100% - 12px), 30% calc(100% - 4px), 28% calc(100% - 13px),
-        26% calc(100% - 6px), 24% calc(100% - 11px), 22% calc(100% - 3px),
-        20% calc(100% - 14px), 18% calc(100% - 5px), 16% calc(100% - 12px),
-        14% calc(100% - 4px), 12% calc(100% - 13px), 10% calc(100% - 6px),
-        8% calc(100% - 11px), 6% calc(100% - 3px), 4% calc(100% - 14px),
-        2% calc(100% - 5px), 0% calc(100% - 12px)
+        0% 6px, 4% 2px, 8% 7px, 14% 3px, 19% 8px, 25% 2px, 31% 6px, 37% 3px,
+        44% 8px, 50% 2px, 56% 7px, 63% 3px, 69% 8px, 75% 2px, 81% 6px, 88% 3px,
+        94% 7px, 98% 2px, 100% 8px,
+        calc(100% - 3px) 12%, 100% 19%, calc(100% - 6px) 27%, 100% 35%,
+        calc(100% - 3px) 43%, calc(100% - 7px) 51%, 100% 59%, calc(100% - 4px) 67%,
+        100% 75%, calc(100% - 7px) 83%, 100% 91%, calc(100% - 3px) 96%,
+        calc(100% - 8px) 100%, 93% calc(100% - 5px), 86% calc(100% - 10px),
+        80% calc(100% - 3px), 73% calc(100% - 9px), 67% calc(100% - 4px),
+        60% calc(100% - 11px), 54% calc(100% - 3px), 47% calc(100% - 9px),
+        41% calc(100% - 4px), 34% calc(100% - 11px), 28% calc(100% - 3px),
+        21% calc(100% - 9px), 15% calc(100% - 4px), 8% calc(100% - 10px),
+        2% calc(100% - 3px), 0% calc(100% - 9px),
+        3px 93%, 0% 85%, 6px 77%, 1px 69%, 5px 61%, 0% 53%,
+        6px 45%, 1px 37%, 5px 29%, 0% 21%, 5px 13%, 1px 6%
     ) !important;
-    filter: drop-shadow(4px 4px 0px var(--acid-green)) drop-shadow(8px 8px 0px #000000) !important;
+    filter: 
+        drop-shadow(1px 0px 0px #000000)
+        drop-shadow(-1px 0px 0px #000000)
+        drop-shadow(0px 1px 0px #000000)
+        drop-shadow(0px -1px 0px #000000)
+        drop-shadow(4px 4px 0px var(--acid-green))
+        drop-shadow(9px 9px 0px #000000) !important;
+}
+
+/* Strappo casuale complementare per la libreria leopardo */
+[data-theme="punk"] #libraryAside.leopard-bg {
+    clip-path: polygon(
+        0% 4px, 5% 7px, 11% 2px, 17% 6px, 23% 3px, 30% 8px, 36% 2px, 43% 6px,
+        49% 3px, 56% 8px, 62% 2px, 69% 7px, 75% 3px, 82% 8px, 88% 2px, 95% 6px, 100% 3px,
+        calc(100% - 5px) 11%, 100% 20%, calc(100% - 4px) 29%, 100% 38%,
+        calc(100% - 6px) 47%, 100% 56%, calc(100% - 3px) 65%, 100% 74%,
+        calc(100% - 7px) 83%, 100% 92%, calc(100% - 4px) 97%,
+        calc(100% - 6px) 100%, 94% calc(100% - 4px), 87% calc(100% - 9px),
+        81% calc(100% - 2px), 74% calc(100% - 8px), 68% calc(100% - 4px),
+        61% calc(100% - 10px), 55% calc(100% - 3px), 48% calc(100% - 9px),
+        42% calc(100% - 3px), 35% calc(100% - 10px), 29% calc(100% - 4px),
+        22% calc(100% - 9px), 16% calc(100% - 3px), 9% calc(100% - 10px),
+        3% calc(100% - 4px), 0% calc(100% - 7px),
+        5px 91%, 1px 83%, 6px 75%, 0% 67%, 5px 59%, 1px 51%,
+        6px 43%, 0% 35%, 5px 27%, 1px 19%, 6px 11%, 0% 5%
+    ) !important;
 }
 
 /* 2. Nastro Adesivo da Skate (Duct Tape Verde Acido con Strappo Dentellato) */
