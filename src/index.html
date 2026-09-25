@@ -13,8 +13,8 @@
             theme: {
                 extend: {
                     colors: {
-                        theme: { bg: 'var(--bg-main)', text: 'var(--text-main)', accent: 'var(--accent-red)' },
-                        box: { bg: 'var(--box-bg)', border: 'var(--box-border-color)' }
+                        theme: { bg: 'var(--bg-main)', text: 'var(--text-main)', accent: 'var(--accent-red)', muted: 'var(--text-muted)' },
+                        box: { bg: 'var(--box-bg)', border: 'var(--box-border-color)', text: 'var(--box-text)', muted: 'var(--box-text-muted)' }
                     },
                     fontFamily: { primary: ['var(--font-primary)'], title: ['var(--font-title)'] }
                 }
@@ -27,8 +27,8 @@
     <nav class="w-full bg-theme-bg text-theme-text px-3 sm:px-6 pt-safe pb-2 mb-3 flex items-center justify-between border-b-2 border-theme-accent sticky top-0 z-50 shadow-md font-title text-sm sm:text-base md:text-lg transition-colors duration-300">
         <div class="flex items-center gap-3 sm:gap-6">
             <button class="nav-btn text-theme-accent font-bold py-1 px-1.5 transition-transform active:scale-95" data-target="view-home">HOME</button>
-            <button class="nav-btn hover:text-theme-accent py-1 px-1.5 transition-transform active:scale-95" data-target="view-playlists">PLAYLIST</button>
-            <button class="nav-btn hover:text-theme-accent py-1 px-1.5 transition-transform active:scale-95" data-target="view-equalizer">EQUALIZER</button>
+            <button class="nav-btn opacity-75 hover:opacity-100 hover:text-theme-accent py-1 px-1.5 transition-transform active:scale-95" data-target="view-playlists">PLAYLIST</button>
+            <button class="nav-btn opacity-75 hover:opacity-100 hover:text-theme-accent py-1 px-1.5 transition-transform active:scale-95" data-target="view-equalizer">EQUALIZER</button>
         </div>
         <!-- Selettore Tema pulito e compatto -->
         <div class="flex items-center gap-1.5 font-primary text-xs bg-box-bg px-2 py-1 border border-box-border rounded shrink-0">

@@ -1,13 +1,13 @@
-/* Chaotic Rotation Classes */
-.rotate-scuff-1 {
+/* Chaotic Rotation Classes (attivi solo in tema punk) */
+[data-theme="punk"] .rotate-scuff-1 {
     transform: rotate(-1.5deg);
 }
 
-.rotate-scuff-2 {
+[data-theme="punk"] .rotate-scuff-2 {
     transform: rotate(2deg);
 }
 
-.rotate-scuff-3 {
+[data-theme="punk"] .rotate-scuff-3 {
     transform: rotate(-0.5deg);
 }
 
@@ -28,12 +28,7 @@
 }
 
 .leopard-bg {
-    background-color: #FFFF00;
-    background-image: var(--leopard-data-uri), url('/img/leopard_bg.png');
-    background-size: 250px;
-    background-repeat: repeat;
-    border: var(--box-border-width) solid var(--acid-pink);
-    box-shadow: 6px 6px 0px var(--leopard-shadow);
+    background-color: var(--box-bg);
 }
 
 [data-theme="punk"] .leopard-bg {

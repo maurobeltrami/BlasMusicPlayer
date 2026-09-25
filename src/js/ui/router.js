@@ -24,6 +24,17 @@ export function navigateTo(targetViewId) {
         bottomPlayer.classList.add('flex');
     }
 
+    // Aggiorna visivamente il pulsante di navigazione attivo
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-target') === targetViewId) {
+            btn.classList.add('text-theme-accent', 'font-bold');
+            btn.classList.remove('opacity-75');
+        } else {
+            btn.classList.remove('text-theme-accent', 'font-bold');
+            btn.classList.add('opacity-75');
+        }
+    });
+
     window.dispatchEvent(new CustomEvent('view-changed', { detail: { view: targetViewId } }));
 }
 

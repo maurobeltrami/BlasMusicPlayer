@@ -1,12 +1,12 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 24 Settembre 2026 (Sessione 5)
+> **Data:** 25 Settembre 2026 (Sessione 6)
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
 > **Versione Attuale:** `1.0.1`
-> **Ultimo Commit:** chore(release): bump version to 1.0.1 e preparazione pull request
-> **Bundle Desktop Pronto:** `./BlasMusicPlayer.app` (compilato in release, firmato e verificato)
-> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, v1.0.1 firmato con `blas-release.keystore`) e `./app-universal-debug.apk`
-> **Guida Android:** `docs/manuali/guida_aggiornamento_android.md`
+> **Ultimo Aggiornamento:** Fix contrasto tema punk, architettura temi dinamica, release desktop & mobile
+> **Bundle Desktop Pronto:** `./BlasMusicPlayer.dmg` (5.0 MB) e `./BlasMusicPlayer.app` (compilati in release e firmati)
+> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, v1.0.1 firmato con `blas-release.keystore`)
+> **Guide Disponibili:** `docs/manuali/guida_aggiornamento_android.md` e `docs/manuali/guida_creazione_temi.md`
 
 ---
 
@@ -106,12 +106,23 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - Risolto il difetto visivo su schermi mobile: la lista delle playlist salvate ora sfrutta una riga intera per il titolo e una riga per i bottoni, garantendo la lettura completa del titolo e touch ergonomico.
    - Incrementata la versione di progetto a `1.0.1` (`package.json`, `tauri.conf.json`, `Cargo.toml`, `tauri.properties`).
    - Compilato, verificato e rilasciato l'APK release v1.0.1 (`./BlasMusicPlayer-release.apk`, 15 MB).
+16. **Risoluzione Contrasto Tema Punk & Architettura Temi Modulare** ✅
+   - Risolti i difetti di leggibilità su mobile e desktop: navbar, titolo BLASMUSIC, tab libreria, display tempo, equalizzatore e modali ora hanno contrasto WCAG AA garantito.
+   - Creata architettura a 2 livelli (Canvas vs Card) con variabili semantiche e scoping automatico.
+   - Sostituito l'anti-pattern `body:not([data-theme="punk"])` con registro centralizzato `AVAILABLE_THEMES` in `themeManager.js`.
+   - Creata la guida passo-passo `docs/manuali/guida_creazione_temi.md`.
+17. **Tasti Riproduzione ad Alto Contrasto, Sfondo Punk Cromatico & Invio Telegram** ✅
+   - Risolta la visibilità dei tasti multimediali (#shuffleBtn, #prevBtn, #nextBtn, #muteToggleBtn): icone ora in nero solido `#000000` con contrasto netto sulla card stencil bianca, e tasto Play/Pause con bordo marcato e drop shadow verde acido.
+   - Sfondo punk arricchito cromaticamente: violetto scuro profondo (`#160026`) stratificato con tre gradienti radiali acid spray (Acid Pink, Acid Cyan, Toxic Green) e texture organica di asfalto scuro.
+   - Sincronizzate e ricompilate tutte le build: Desktop macOS (`BlasMusicPlayer.dmg` 5.0 MB, `BlasMusicPlayer.app` firmata ad-hoc) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
+   - Inviata con successo l'APK release al DevBot Telegram di Mauro (`@Maurobeltramidevbot`, ID messaggio 71).
+   - Verificata la piena conformità alla Costituzione BlasOpen e alla regola delle $\le 150$ righe per file.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Invio e Installazione su Smartphone:** Trasferire `app-universal-debug.apk` sul telefono (tramite Telegram Desktop / Web, cavo USB o AirDrop/condivisione) e procedere all'installazione.
-2. **Collaudo su Dispositivo Mobile Reale:** Verificare la riproduzione in background a schermo spento con `AudioService.kt`, la nuova modale con checkbox e il compositore unificato.
+1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare i nuovi contrasti e lo sfondo punk.
+2. **Eventuali Ulteriori Temi:** Utilizzare la nuova guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente nuovi temi (es. Cyberpunk, Vaporwave, Minimalist).
 
 ---
 

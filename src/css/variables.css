@@ -1,94 +1,87 @@
 /* --- css/variables.css --- */
 
 /* DEFAULT THEME (DARK / SPOTIFY STYLE) */
-:root {
-    /* Brand & Accent Colors */
-    --acid-green: #1DB954; /* Spotify Green */
-    --acid-pink: #1ED760;  /* Lighter Spotify Green */
+:root, [data-theme="dark"] {
+    --acid-green: #1DB954;
+    --acid-pink: #1ED760;
     --acid-blue: #1DB954;
     
-    /* Typography */
     --font-primary: 'Inter', sans-serif;
     --font-title: 'Inter', sans-serif;
     
-    /* Colors & Layout */
-    --bg-main: #121212;   /* Sfondo scuro elegante */
-    --text-main: #FFFFFF; /* Testo principale chiaro */
-    --text-muted: #E5E7EB; /* Testo secondario chiaro e leggibile */
-    --accent-red: #1DB954; /* Accento principale */
-    --box-bg: #181818;     /* Surface leggermente più chiara per cards/box */
+    --bg-main: #121212;
+    --text-main: #FFFFFF;
+    --text-muted: #E5E7EB;
+    --accent-red: #1DB954;
     
-    /* Rimuovi Patterns - Sfondi Tinta Unita */
+    --box-bg: #181818;
+    --box-text: #FFFFFF;
+    --box-text-muted: #A3A3A3;
+    --box-border-width: 1px;
+    --box-border-color: #282828;
+    --box-radius: 8px;
+    --shadow-color: rgba(0, 0, 0, 0.5); 
+    --leopard-shadow: transparent;
+    
     --body-bg-pattern: none;
     --concrete-pattern: none;
     --leopard-pattern: none;
-    
-    /* Layout Variables */
-    --box-border-width: 1px;
-    --box-border-color: #282828;
-    --shadow-color: rgba(0,0,0,0.5); 
-    --leopard-shadow: transparent;
 }
 
 /* OVERRIDE: TEMA CHIARO (LIGHT) */
 [data-theme="light"] {
-    --bg-main: #F9FAFB; /* Grigio chiarissimo */
-    --text-main: #111827; /* Testo scuro */
+    --bg-main: #F9FAFB;
+    --text-main: #111827;
     --text-muted: #4B5563;
-    --accent-red: #2563EB; /* Blu primario come accento elegante in light mode */
-    --box-bg: #FFFFFF;
+    --accent-red: #2563EB;
     
+    --box-bg: #FFFFFF;
+    --box-text: #111827;
+    --box-text-muted: #6B7280;
+    --box-border-width: 1px;
     --box-border-color: #E5E7EB;
-    --shadow-color: rgba(0,0,0,0.05); 
+    --box-radius: 8px;
+    --shadow-color: rgba(0, 0, 0, 0.05);
 }
 
-/* OVERRIDE: TEMA PUNK ORIGINALE */
+/* OVERRIDE: TEMA PUNK ACID STREET */
 [data-theme="punk"] {
-    /* Acid Colors Originali */
     --acid-green: #CCFF00;
     --acid-pink: #FF00FF;
     --acid-blue: #00FFFF;
     
-    /* Typography Originale */
     --font-primary: 'Special Elite', monospace;
     --font-title: 'Rubik Wet Paint', cursive;
     
-    /* Colors & Layout Originali */
-    --bg-main: #1a1a1a;
-    --text-main: #000;
-    --text-muted: #666;
-    --accent-red: #D00; /* Rosso Sangue */
-    --box-bg: white;
+    /* Sfondo cromatico: viola punk urbano vibrante */
+    --bg-main: #18002b;
+    --text-main: #F5F5F5;
+    --text-muted: #D1B3FF;
+    --accent-red: #E60000;
     
-    /* Background Images (Punk) */
-    --body-bg-pattern: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
-    --concrete-pattern: url('https://www.transparenttextures.com/patterns/concrete-wall.png');
-    
-    --leopard-pattern: url('/img/leopard_bg.png');
-    
+    --box-bg: #FFFFFF;
+    --box-text: #111111;
+    --box-text-muted: #555555;
     --box-border-width: 3px;
-    --box-border-color: black;
+    --box-border-color: #000000;
+    --box-radius: 0px;
     --shadow-color: var(--acid-green);
     --leopard-shadow: var(--acid-blue);
+    
+    --body-bg-pattern: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    --concrete-pattern: url('https://www.transparenttextures.com/patterns/concrete-wall.png');
+    --leopard-pattern: url('/img/leopard_bg.png');
 }
 
-/* Gestione Safe Area e margini per schermi mobile */
+/* Safe Area e margini mobile */
 :root {
     --sat: env(safe-area-inset-top, 0px);
     --sab: env(safe-area-inset-bottom, 0px);
 }
-.pt-safe {
-    padding-top: env(safe-area-inset-top, 0px);
-}
-.pb-safe {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-}
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 @media (max-width: 768px) {
-    .pt-safe {
-        padding-top: max(env(safe-area-inset-top, 0px), 36px);
-    }
-    .pb-safe {
-        padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
-    }
+    .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 36px); }
+    .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px); }
 }

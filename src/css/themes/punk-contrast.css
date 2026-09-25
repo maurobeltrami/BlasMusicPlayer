@@ -1,0 +1,139 @@
+/* --- css/themes/punk-contrast.css --- */
+
+/* 1. Card e superfici (testo scuro dentro le card bianche) */
+[data-theme="punk"] .stencil-box,
+[data-theme="punk"] #displayScreen,
+[data-theme="punk"] #libraryAside .bg-box-bg,
+[data-theme="punk"] section.torn-paper,
+[data-theme="punk"] #addToPlaylistModal .bg-box-bg,
+[data-theme="punk"] .playlist-item,
+[data-theme="punk"] #draftTracksList li {
+    --text-main: var(--box-text);
+    --text-muted: var(--box-text-muted);
+    color: var(--box-text);
+}
+
+/* 2. Tasti di Riproduzione Principali (Massimo contrasto e stile punk) */
+[data-theme="punk"] #shuffleBtn,
+[data-theme="punk"] #prevBtn,
+[data-theme="punk"] #nextBtn,
+[data-theme="punk"] #muteToggleBtn {
+    color: #000000 !important;
+    opacity: 1 !important;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+[data-theme="punk"] #shuffleBtn:hover,
+[data-theme="punk"] #prevBtn:hover,
+[data-theme="punk"] #nextBtn:hover,
+[data-theme="punk"] #muteToggleBtn:hover {
+    color: var(--accent-red) !important;
+    transform: scale(1.2);
+}
+[data-theme="punk"] #shuffleBtn.text-theme-accent { color: var(--acid-pink) !important; }
+[data-theme="punk"] #playPauseBtn {
+    background-color: var(--accent-red) !important;
+    color: #FFFFFF !important;
+    border: 3px solid #000000 !important;
+    box-shadow: 3px 3px 0px var(--acid-green) !important;
+}
+[data-theme="punk"] #playPauseBtn:hover {
+    box-shadow: 4px 4px 0px var(--acid-pink) !important;
+    transform: scale(1.08) rotate(-2deg) !important;
+}
+
+/* 3. Barra di Navigazione superiore cromatica */
+[data-theme="punk"] nav {
+    background: linear-gradient(90deg, #1f0033 0%, #320052 50%, #1a002c 100%) !important;
+    border-bottom: 3px solid var(--acid-pink) !important;
+    box-shadow: 0 4px 18px rgba(255, 0, 128, 0.35) !important;
+}
+[data-theme="punk"] nav .nav-btn { color: #F5F5F5 !important; }
+[data-theme="punk"] nav .nav-btn.text-theme-accent {
+    color: var(--acid-green) !important;
+    text-shadow: 2px 2px 0px #000000;
+}
+[data-theme="punk"] nav .nav-btn:hover { color: var(--acid-pink) !important; }
+[data-theme="punk"] #themeSelector {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid var(--acid-green);
+}
+
+/* 4. Display Centrale, Badge Tempo e Switch Modalità */
+[data-theme="punk"] #currentTrack {
+    color: var(--accent-red) !important;
+    text-shadow: 2px 2px 0px #000000 !important;
+}
+[data-theme="punk"] #time-display {
+    background-color: #000000 !important;
+    color: var(--acid-green) !important;
+    border: 2px solid #FFFFFF !important;
+    font-weight: 900;
+}
+[data-theme="punk"] #libraryModeTabs {
+    background-color: #000000 !important;
+    border: 2px solid #FFFFFF !important;
+}
+[data-theme="punk"] #libraryModeTabs button:not(.bg-theme-accent) {
+    color: #FFFFFF !important;
+    background-color: transparent !important;
+}
+[data-theme="punk"] #libraryModeTabs button:not(.bg-theme-accent):hover {
+    background-color: #222222 !important;
+    color: var(--acid-green) !important;
+}
+
+/* 5. Navigazione Cartelle e Viste Studio */
+[data-theme="punk"] #dirUpBtn {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #FFFFFF !important;
+}
+[data-theme="punk"] #currentDirDisplay {
+    color: #FFFFFF !important;
+    background-color: #000000 !important;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+[data-theme="punk"] #view-equalizer { background-color: #120021 !important; }
+[data-theme="punk"] #view-equalizer .bg-theme-bg {
+    background-color: #1a002e !important;
+    border: 3px solid #000000 !important;
+    box-shadow: 5px 5px 0px var(--acid-green) !important;
+}
+[data-theme="punk"] #view-equalizer h3 { color: #FFFFFF !important; border-bottom-color: var(--acid-green) !important; }
+[data-theme="punk"] #view-equalizer span:not(.text-white) { color: #FFFFFF !important; }
+[data-theme="punk"] #bassBoostBtn {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid var(--acid-green) !important;
+}
+[data-theme="punk"] #bassBoostBtn:hover {
+    background-color: var(--accent-red) !important;
+    color: #FFFFFF !important;
+}
+
+/* 6. Playlist, Sticky Player & Modali */
+[data-theme="punk"] #view-playlists { background-color: #120021 !important; }
+[data-theme="punk"] #view-playlists .bg-theme-bg {
+    background-color: #1a002e !important;
+    border: 3px solid #000000 !important;
+    box-shadow: 5px 5px 0px var(--acid-pink) !important;
+}
+[data-theme="punk"] #view-playlists h3 { color: #FFFFFF !important; }
+[data-theme="punk"] #plCurrentDirDisplay { background-color: #000000 !important; color: #FFFFFF !important; }
+[data-theme="punk"] #backToHomeBtn {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+}
+[data-theme="punk"] #backToHomeBtn:hover { background-color: var(--accent-red) !important; color: #FFFFFF !important; }
+[data-theme="punk"] #bottom-player {
+    background: linear-gradient(90deg, #1f0033 0%, #30004d 50%, #1a002c 100%) !important;
+    border-top: 3px solid var(--accent-red) !important;
+}
+[data-theme="punk"] #bottom-player #currentTrackBottom,
+[data-theme="punk"] #bottom-player button { color: #FFFFFF !important; }
+[data-theme="punk"] #bottom-player button:hover { color: var(--acid-pink) !important; }
+[data-theme="punk"] #addToPlaylistModal .bg-theme-bg { background-color: #1a002e !important; }
+[data-theme="punk"] #addToPlaylistModal h3 { color: #FFFFFF !important; }
