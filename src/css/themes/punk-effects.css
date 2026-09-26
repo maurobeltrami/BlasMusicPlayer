@@ -115,8 +115,26 @@
     color: var(--acid-green) !important;
     text-shadow: 3px 3px 0px #000000, 5px 5px 0px var(--acid-green);
 }
+/* Contorno viola per la scritta BLASMUSIC su sfondo bianco (desktop e mobile) */
+[data-theme="punk"] header h1.graffiti-title {
+    -webkit-text-stroke: 2.5px #260042; paint-order: stroke fill;
+    text-shadow: 3px 3px 0px #1a002e, 6px 6px 0px var(--acid-pink) !important;
+}
+[data-theme="punk"] header h1.graffiti-title span.text-theme-accent {
+    -webkit-text-stroke: 2.5px #260042; paint-order: stroke fill;
+    text-shadow: 3px 3px 0px #1a002e, 6px 6px 0px var(--acid-green) !important;
+}
+@media (min-width: 768px) {
+    [data-theme="punk"] header h1.graffiti-title {
+        -webkit-text-stroke: 4px #260042; text-shadow: 4px 4px 0px #1a002e, 8px 8px 0px var(--acid-pink) !important;
+    }
+    [data-theme="punk"] header h1.graffiti-title span.text-theme-accent {
+        -webkit-text-stroke: 4px #260042; text-shadow: 4px 4px 0px #1a002e, 8px 8px 0px var(--acid-green) !important;
+    }
+}
 
 /* 5. Cursori e Progress Bar Skate Verde Acido */
+
 [data-theme="punk"] #progressBar {
     background: linear-gradient(90deg, var(--acid-green), #A6FF00) !important;
     box-shadow: 0 0 12px var(--acid-green) !important;

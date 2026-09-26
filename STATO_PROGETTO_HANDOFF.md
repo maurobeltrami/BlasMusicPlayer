@@ -1,9 +1,9 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 25 Settembre 2026 (Sessione 6)
+> **Data:** 26 Settembre 2026 (Sessione 7)
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
 > **Versione Attuale:** `1.0.1`
-> **Ultimo Aggiornamento:** Fix contrasto tema punk, architettura temi dinamica, release desktop & mobile
+> **Ultimo Aggiornamento:** Contorno viola per BLASMUSIC su sfondo bianco, sincronizzazione release desktop & mobile
 > **Bundle Desktop Pronto:** `./BlasMusicPlayer.dmg` (5.0 MB) e `./BlasMusicPlayer.app` (compilati in release e firmati)
 > **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, v1.0.1 firmato con `blas-release.keystore`)
 > **Guide Disponibili:** `docs/manuali/guida_aggiornamento_android.md` e `docs/manuali/guida_creazione_temi.md`
@@ -135,12 +135,17 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - Sostituito il bordo rigido con un contorno continuo a inchiostro nero (`drop-shadow(1px 0px 0px #000)`) che segue fedelmente ogni micro-sfilacciatura, seguito dal doppio drop-shadow verde acido neon e nero profondo.
    - Tutte le build sincronizzate e pronte: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB inviata al DevBot Telegram ID 77).
    - Verificata la piena aderenza alle regole del progetto e alla regola delle $\le 150$ righe per file.
+23. **Contorno Viola ad Alto Contrasto per Scritta BLASMUSIC (Desktop & Mobile)** ✅
+   - Risolto il problema di contrasto su sfondo bianco della card desktop: la scritta `BLASMUSIC` ora possiede un contorno viola profondo (`-webkit-text-stroke: 4px #260042` su desktop e `2.5px #260042` su mobile).
+   - Impiegato `paint-order: stroke fill;` che renderizza il tratto viola al di sotto del riempimento dei caratteri, mantenendo le lettere ("LAS", "USIC" in bianco e "B", "M" in verde acido neon) nitide e corpose con un perimetro viola netto e ben leggibile anche su sfondi chiari.
+   - Tutte le versioni sincronizzate e ricompilate: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg`) e Mobile Android (`BlasMusicPlayer-release.apk` inviata al DevBot Telegram ID 79).
+   - Modifiche mantenute localmente senza commit/push (in attesa di conferma dell'utente).
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Collaudo su Dispositivo Mobile Reale:** Scaricare l'APK dal bot Telegram `@Maurobeltramidevbot`, installarlo sul telefono e verificare il nuovo effetto foglio strappato e accartocciato sui 4 lati.
-2. **Eventuali Ulteriori Temi:** Utilizzare la guida `docs/manuali/guida_creazione_temi.md` per aggiungere rapidamente altri stili visivi.
+1. **Verifica Visiva:** Testare il contorno viola del logo BLASMUSIC sia su Desktop macOS che su Android tramite l'APK inviato via Telegram.
+2. **Conferma per Commit & Push:** Quando confermato dall'utente, procedere con `git commit` e `git push`.
 
 ---
 
