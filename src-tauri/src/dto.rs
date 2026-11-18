@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct TrackDto {
     pub title: String,
     pub artist: Option<String>,
+    pub album: Option<String>,
     pub path: String,
     pub extension: String,
     pub cover: Option<String>,
@@ -24,6 +25,7 @@ pub struct FileItemDto {
     pub name: String,
     pub title: Option<String>,
     pub artist: Option<String>,
+    pub album: Option<String>,
     pub path: String,
     pub is_dir: bool,
     pub cover: Option<String>,

@@ -1,12 +1,12 @@
 # 📋 Documento di Handoff & Stato del Progetto — BlasMusicPlayer
 
-> **Data:** 24 Settembre 2026 (Sessione 5)
+> **Data:** 18 Novembre 2026
 > **Repository:** https://github.com/maurobeltrami/BlasMusicPlayer.git
-> **Versione Attuale:** `1.0.1`
-> **Ultimo Commit:** chore(release): bump version to 1.0.1 e preparazione pull request
-> **Bundle Desktop Pronto:** `./BlasMusicPlayer.app` (compilato in release, firmato e verificato)
-> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (15 MB, v1.0.1 firmato con `blas-release.keystore`) e `./app-universal-debug.apk`
-> **Guida Android:** `docs/manuali/guida_aggiornamento_android.md`
+> **Versione Attuale:** `1.0.2`
+> **Ultimo Aggiornamento:** Validazione non-distruttiva delle playlist, fallback cross-folder e Self-Healing dei percorsi (`v1.0.2`)
+> **Bundle Desktop Pronto:** `./BlasMusicPlayer.dmg` (5.8 MB) e `./BlasMusicPlayer.app` (compilati in release e firmati ad-hoc)
+> **Pacchetto Android Pronto:** `./BlasMusicPlayer-release.apk` (47 MB universale, v1.0.2 firmato con `blas-release.keystore`)
+> **Guide Disponibili:** `docs/manuali/guida_aggiornamento_android.md` e `docs/manuali/guida_creazione_temi.md`
 
 ---
 
@@ -40,7 +40,8 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
 - `commands.rs` (147 righe): Scansione cartelle (`scan_directory`, `scan_folder_recursive`), navigazione cartelle comuni con aggiunta Documenti (`get_common_dirs`), selezione cartelle asincrona tramite `tauri-plugin-dialog` (`pick_audio_folder`).
 - `Info.plist`: Dichiarazione permessi macOS TCC per accesso sicuro a Documenti, Download, Musica e volumi esterni.
 - `state.rs` (42 righe): Persistenza atomica dello stato applicativo (`app_state.json`) tramite percorsi nativi Tauri (su desktop `~/.config/BlasMusicPlayer`, su Android cartella interna sandboxed).
-- `dto.rs` (38 righe): Strutture dati scambiate tra Rust e frontend.
+- `dto.rs` (40 righe): Strutture dati scambiate tra Rust e frontend.
+- `validator.rs` (140 righe) & `validator_index.rs` (141 righe): Comando IPC asincrono `resolve_tracks_batch` su `spawn_blocking` con controllo `Path::is_file()`, indicizzazione leggera `d_type` con cache TTL (20s) e disambiguazione omonimi per cartella padre.
 
 ### 2. Sottosistema Android Nativo (`src-tauri/gen/android/app/src/main/`)
 - `AudioService.kt` (88 righe): Servizio Foreground Android con `ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` e notifica persistente in `NotificationChannel` dedicato. Impedisce che la CPU vada in deep sleep (Doze Mode) o che il sistema chiuda il processo quando lo schermo si spegne.
@@ -57,20 +58,22 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
   - Accordion a scomparsa per la libreria cartelle (`libraryContent`).
   - Visualizzatore Canvas centrale (`visualizer`) con supporto copertina, oscilloscopio e barre.
 - `src/css/style.css` (40 righe): Box-sizing globale, prevenzione overflow orizzontale, utility `.pt-safe` e `.pb-safe`, stile per range verticali.
-- `src/js/app.js` (131 righe): Entry point principale, router, drag & drop, gestione eventi di risveglio AudioContext e loop visualizzatore 60 FPS.
+- `src/js/app.js` (144 righe): Entry point principale, router, drag & drop, ripristino coda validata all'avvio, risveglio AudioContext e loop visualizzatore 60 FPS.
 - `src/js/core/`:
-  - `mediaLoader.js` (113 righe): Risoluzione URL streaming e copertina, aggiornamento `MediaMetadata`, risveglio preventivo AudioContext in autoPlay.
-  - `audioEngine.js` (140 righe): DSP Web Audio API (filtri EQ 3 bande, compressore dinamico, gain master, analizzatore FFT), `ensureAudioRunning()` e listener di risveglio standby (`setupWakeupListeners`).
-  - `stateManager.js` (117 righe): Sincronizzazione stato tra LocalStorage e persistenza nativa JSON.
-- `src/js/data/playlist.js` (77 righe): Gestione coda di riproduzione attiva, cronologia e shuffle.
+  - `mediaLoader.js` (112 righe): Risoluzione URL streaming e copertina, `MediaMetadata`, `clearLoadedTrack()` e pulizia listener `canplay`.
+  - `trackValidator.js` (64 righe): Validazione asincrona non-distruttiva dei brani in ingresso coda con *Self-Healing* automatico.
+  - `audioEngine.js` (139 righe): DSP Web Audio API (filtri EQ 3 bande, compressore dinamico, gain master, analizzatore FFT), `ensureAudioRunning()` e listener di risveglio standby (`setupWakeupListeners`).
+  - `stateManager.js` (138 righe): Sincronizzazione stato tra LocalStorage e persistenza nativa JSON, incluso `applySelfHealing()`.
+- `src/js/data/playlist.js` (92 righe): Gestione coda di riproduzione attiva (`appendTracks`, `clearPlaylist`), cronologia e shuffle.
+- `src/js/ui/mediaDisplay.js` (54 righe): Aggiornamento e ripristino controlli visivi del brano attivo.
 - `src/js/events/`:
-  - `navigation.js` (145 righe): Navigazione del filesystem e accodamento tracce.
-  - `playlistsManager.js` (125 righe): Gestione caricamento ed eliminazione playlist salvate, avvio modifica nel compositore.
+  - `navigation.js` (148 righe): Navigazione del filesystem e accodamento tracce.
+  - `playlistsManager.js` (146 righe): Gestione caricamento validato, accodamento ed eliminazione playlist salvate, avvio modifica nel compositore.
   - `playlistComposer.js` (143 righe): Compositore unificato per creazione e modifica in-place delle playlist con riordino ▲▼, rinomina, rimozione brani e pulsante annulla.
   - `playlistFolderBrowser.js` (131 righe): Browser cartelle per selezione tracce da aggiungere alle playlist.
   - `playlistModal.js` (110 righe): Modale per aggiungere e rimuovere brani dalle playlist tramite spunte/checkbox.
-  - `playback.js` (111 righe): Controlli play/pause con risveglio asincrono AudioContext, gestione errori, comandi multimediali e scorciatoia `Space`.
-  - `audio.js` (72 righe): Avanzamento continuo traccia (`onended`), barra di avanzamento e recupero audio su `onplaying`.
+  - `playback.js` (132 righe): Controlli play/pause con risveglio asincrono AudioContext, gestione errori, comandi multimediali e scorciatoia `Space`.
+  - `audio.js` (87 righe): Avanzamento continuo traccia (`onended`), salto resiliente su tracce mancanti in coda (`errorStreak`), barra di avanzamento e recupero audio su `onplaying`.
   - `equalizer.js` (67 righe): Slider equalizzatore e compressore.
 
 ---
@@ -106,12 +109,51 @@ Tutti i futuri interventi di codice devono obbligatoriamente rispettare queste r
    - Risolto il difetto visivo su schermi mobile: la lista delle playlist salvate ora sfrutta una riga intera per il titolo e una riga per i bottoni, garantendo la lettura completa del titolo e touch ergonomico.
    - Incrementata la versione di progetto a `1.0.1` (`package.json`, `tauri.conf.json`, `Cargo.toml`, `tauri.properties`).
    - Compilato, verificato e rilasciato l'APK release v1.0.1 (`./BlasMusicPlayer-release.apk`, 15 MB).
+16. **Risoluzione Contrasto Tema Punk & Architettura Temi Modulare** ✅
+   - Risolti i difetti di leggibilità su mobile e desktop: navbar, titolo BLASMUSIC, tab libreria, display tempo, equalizzatore e modali ora hanno contrasto WCAG AA garantito.
+   - Creata architettura a 2 livelli (Canvas vs Card) con variabili semantiche e scoping automatico.
+   - Sostituito l'anti-pattern `body:not([data-theme="punk"])` con registro centralizzato `AVAILABLE_THEMES` in `themeManager.js`.
+   - Creata la guida passo-passo `docs/manuali/guida_creazione_temi.md`.
+17. **Tasti Riproduzione ad Alto Contrasto, Sfondo Punk Cromatico & Invio Telegram** ✅
+   - Risolta la visibilità dei tasti multimediali (#shuffleBtn, #prevBtn, #nextBtn, #muteToggleBtn): icone ora in nero solido `#000000` con contrasto netto sulla card stencil bianca, e tasto Play/Pause con bordo marcato e drop shadow verde acido.
+   - Sfondo punk arricchito cromaticamente: violetto scuro profondo (`#160026`) stratificato con tre gradienti radiali acid spray (Acid Pink, Acid Cyan, Toxic Green) e texture organica di asfalto scuro.
+   - Sincronizzate e ricompilate tutte le build: Desktop macOS (`BlasMusicPlayer.dmg` 5.0 MB, `BlasMusicPlayer.app` firmata ad-hoc) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB).
+   - Inviata con successo l'APK release al DevBot Telegram di Mauro (`@Maurobeltramidevbot`, ID messaggio 71).
+18. **Stile Skate-Punk, Bordi Logori/Strappati, Dettagli Verde Acido & Pagina Playlist** ✅
+   - Risolta l'illeggibilità dei testi nella pagina Playlist: creato il modulo dedicato `src/css/themes/punk-playlists.css` (133 righe). Brani del navigatore cartelle, directory, testi e comandi della bozza ora hanno contrasto massimo (bianco su viola scuro / hover verde acido).
+   - Card delle playlist salvate con badge "X brani" verde acido adesivo (`#CCFF00`, testo nero bold), pulsante "+ Coda" nero con testo verde acido ben visibile, e bottoni Play/Modifica/Elimina ad alta visibilità.
+   - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS e Mobile Android (APK inviato con ID 72).
+19. **Bordi Ultra-Irregolari, Logori e Strappati a Denti di Sega (Skate Fanzine Ripped Paper)** ✅
+   - Sincronizzate e ricompilate tutte le release: Desktop macOS e Mobile Android (APK inviato con ID 73).
+20. **Risoluzione Bordi Desktop (Netti, Solidi, Zero Glitch) & Hover Brani ad Alto Contrasto** ✅
+   - Risolto il difetto dell'hover nero sulle canzoni (sia desktop che mobile): passando il mouse o toccando un brano della coda, lo sfondo nero fa ora risaltare il titolo in **verde acido neon** (`#CCFF00 !important`), numeri e artisti in **bianco puro** (`#FFFFFF !important`), e i comandi in verde acido con hover fucsia, eliminando l'effetto "barra nera illeggibile".
+   - Sincronizzate e ricompilate tutte le versioni: Desktop macOS e Mobile Android (APK inviato con ID 75).
+21. **Perfezionamento Stile Strappato (Skate Fanzine Torn Bottom Edge)** ✅
+   - Sincronizzate e ricompilate entrambe le piattaforme: Desktop macOS e Mobile Android (APK inviato con ID 76).
+22. **Foglio Strappato Casualmente, Disordinato e Accartocciato sui 4 Lati** ✅
+   - Rielaborato completamente l'effetto strappato per ricreare l'aspetto autentico di un foglio di carta strappato casualmente a mano su tutti e 4 i lati, spiegazzato e riaperto.
+   - Creato un `clip-path` asimmetrico e organico sui 4 bordi con ondulazioni disuguali in alto, sfilacciature a destra, strappi profondi in basso e bordi strappati da quaderno/fanzine a sinistra.
+   - Definita una sagoma di strappo complementare per la libreria leopardo per evitare l'effetto clone o copia-incolla tra card adiacenti.
+   - Integrata una texture a sfumature diagonali di pieghe e luci/ombre sovrapposte al pattern cemento (`linear-gradient` a 3 angoli), simulando la tridimensionalità della carta spiegazzata/accartocciata.
+   - Sostituito il bordo rigido con un contorno continuo a inchiostro nero (`drop-shadow(1px 0px 0px #000)`) che segue fedelmente ogni micro-sfilacciatura, seguito dal doppio drop-shadow verde acido neon e nero profondo.
+   - Tutte le build sincronizzate e pronte: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg` 5.0 MB) e Mobile Android (`BlasMusicPlayer-release.apk` 15 MB inviata al DevBot Telegram ID 77).
+   - Verificata la piena aderenza alle regole del progetto e alla regola delle $\le 150$ righe per file.
+23. **Contorno Viola ad Alto Contrasto per Scritta BLASMUSIC (Desktop & Mobile)** ✅
+   - Risolto il problema di contrasto su sfondo bianco della card desktop: la scritta `BLASMUSIC` ora possiede un contorno viola profondo (`-webkit-text-stroke: 4px #260042` su desktop e `2.5px #260042` su mobile).
+   - Impiegato `paint-order: stroke fill;` che renderizza il tratto viola al di sotto del riempimento dei caratteri, mantenendo le lettere ("LAS", "USIC" in bianco e "B", "M" in verde acido neon) nitide e corpose con un perimetro viola netto e ben leggibile anche su sfondi chiari.
+   - Tutte le versioni sincronizzate e ricompilate: Desktop macOS (`BlasMusicPlayer.app` e `BlasMusicPlayer.dmg`) e Mobile Android (`BlasMusicPlayer-release.apk` inviata al DevBot Telegram ID 79).
+   - Modifiche mantenute localmente senza commit/push (in attesa di conferma dell'utente).
+24. **Validazione Non-Distruttiva Playlist, Fallback Cross-Folder & Release `v1.0.2`** ✅
+   - Creato backend [`validator.rs`](file:///Users/mauroi/Documents/blasopen/projects/BlasMusicPlayer/src-tauri/src/validator.rs) + [`validator_index.rs`](file:///Users/mauroi/Documents/blasopen/projects/BlasMusicPlayer/src-tauri/src/validator_index.rs) con comando asincrono `resolve_tracks_batch` (`spawn_blocking`, cache TTL 20s, traversal `d_type` senza parsing ID3, early-exit su `last_folder` → `Music` → `Download` max depth 2).
+   - Implementata validazione lazy lato frontend (`trackValidator.js`, `stateManager.applySelfHealing()`, `mediaDisplay.js`) su Play, `+ Coda`, selettore Home e ripristino coda all'avvio: i brani mancanti vengono esclusi in silenzio senza alterare le playlist salvate, i brani spostati aggiornano path/copertina in `saved_playlists` (*Self-Healing*), e se tutti i brani di una playlist mancano la coda viene svuotata.
+   - Migliorata la gestione errori in `audio.js` per saltare eventuali tracce eliminate mentre sono già in coda senza loop infiniti (`errorStreak < currentPlaylist.length`).
+   - Incrementata la versione a `1.0.2`, compilate e firmate entrambe le build release Desktop macOS (`BlasMusicPlayer.app` + `BlasMusicPlayer.dmg`) e Android (`BlasMusicPlayer-release.apk`), pronte per invio manuale su Telegram.
 
 ---
 
 ## 🎯 Prossimi Passi Consigliati
-1. **Invio e Installazione su Smartphone:** Trasferire `app-universal-debug.apk` sul telefono (tramite Telegram Desktop / Web, cavo USB o AirDrop/condivisione) e procedere all'installazione.
-2. **Collaudo su Dispositivo Mobile Reale:** Verificare la riproduzione in background a schermo spento con `AudioService.kt`, la nuova modale con checkbox e il compositore unificato.
+1. **Invio APK su Telegram:** Inviare manualmente `./BlasMusicPlayer-release.apk` a `@Maurobeltramidevbot` e testare su smartphone la validazione playlist e il ripristino dei brani rilocati.
+2. **Verifica Release GitHub `v1.0.2`:** Controllare l'esecuzione del workflow `.github/workflows/release.yml` su GitHub Actions.
 
 ---
 

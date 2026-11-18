@@ -11,7 +11,8 @@ Il nucleo di **BlasMusicPlayer v1.0** adotta un'architettura ibrida ad altissime
 ### 🦀 Backend Nativo: Rust & Tauri 2.0
 * **Tauri 2.0:** Framework desktop leggero che utilizza il motore WebKit nativo del sistema operativo (WKWebView su macOS) senza impacchettare Chromium. Garantisce consumi di RAM minimi (30-50 MB) ed eseguibili nativi compatti.
 * **Rust 2021 Edition:** Gestione deterministica e sicura della memoria, scansione multithread del filesystem ad altissima velocità e comunicazione IPC tipizzata.
-* **Lofty Crate:** Libreria Rust ad alte prestazioni per il parsing binario a basso livello dei metadati audio (ID3v1, ID3v2, Vorbis Comments, FLAC metadata, cover art APIC).
+* **Tokio (`spawn_blocking`) & Cache TTL in RAM (`validator.rs`, `validator_index.rs`):** Validazione batch asincrona non-distruttiva delle playlist fuori dal thread UI, indicizzazione leggera via `file_type()`/`d_type` senza decodifica ID3 e risoluzione automatica dei percorsi spostati (*Self-Healing*).
+* **Audiotags Crate:** Libreria Rust ad alte prestazioni per il parsing binario a basso livello dei metadati audio (ID3v1, ID3v2, Vorbis Comments, FLAC metadata, cover art APIC).
 * **Base64 Crate:** Serializzazione delle copertine binarie in URI Base64 sicuri confinati in memoria RAM.
 * **Tauri Plugin Dialog:** Interazione nativa con i selettori di cartelle e file del sistema operativo.
 
@@ -30,6 +31,7 @@ Il nucleo di **BlasMusicPlayer v1.0** adotta un'architettura ibrida ad altissime
   * Utilizzo di `window.localStorage` combinato alla persistenza su file atomico JSON (`state.rs`).
   * Compositore unificato `playlistComposer.js` con algoritmo di riordino swap $O(1)$, rinomina e deduplicazione.
   * Modale rapida `playlistModal.js` per aggiungere/rimuovere al volo brani della coda alle playlist con spunte istantanee.
+  * Validazione asincrona non-distruttiva `trackValidator.js` con *Self-Healing* automatico dei brani rilocati e gestione pulita di `mediaDisplay.js`.
 
 ### 📱 Sottosistema Mobile Android Nativo (Kotlin + Foreground Service)
 * **AudioService.kt:** Servizio Foreground Android con `ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` e notifica persistente in `NotificationChannel` dedicato. Impedisce il deep sleep (Doze Mode) della CPU a schermo spento.

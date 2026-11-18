@@ -21,7 +21,26 @@
 /* Override per Punk Mode */
 [data-theme="punk"] #playlist .playlist-item.active {
     background-color: var(--acid-green);
-    color: black; /* Better contrast on acid green */
+    color: black;
     border-left-color: var(--acid-pink);
     box-shadow: 0 4px 6px -1px var(--acid-green), 0 2px 4px -2px var(--acid-green);
 }
+
+/* Hover ad alto contrasto per Punk Mode (testo verde acido e bianco su nero) */
+[data-theme="punk"] #playlist .playlist-item:hover:not(.active) {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-left-color: var(--acid-green) !important;
+    box-shadow: 2px 2px 0px var(--acid-green);
+}
+[data-theme="punk"] #playlist .playlist-item:hover:not(.active) span {
+    color: #FFFFFF !important;
+}
+[data-theme="punk"] #playlist .playlist-item:hover:not(.active) span.font-semibold {
+    color: var(--acid-green) !important;
+}
+[data-theme="punk"] #playlist .playlist-item:hover:not(.active) button {
+    color: var(--acid-green) !important;
+    opacity: 1 !important;
+}
+

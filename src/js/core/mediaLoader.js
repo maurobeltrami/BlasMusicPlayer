@@ -2,8 +2,18 @@
 import * as pl from '../data/playlist.js';
 import * as stateManager from './stateManager.js';
 import { initAudio, ensureAudioRunning } from './audioEngine.js';
+import { setPlayIcons, renderTrackDisplay, resetTrackDisplay } from '../ui/mediaDisplay.js';
 
 let cachedBaseOrigin = null;
+let pendingCanPlayHandler = null;
+
+// Rimuove eventuale listener canplay pendente da un tentativo precedente fallito
+function clearPendingCanPlay(audioPlayer) {
+    if (pendingCanPlayHandler && audioPlayer) {
+        audioPlayer.removeEventListener('canplay', pendingCanPlayHandler);
+        pendingCanPlayHandler = null;
+    }
+}
 
 export async function initStreamBase() {
     if (cachedBaseOrigin) return cachedBaseOrigin;
@@ -35,19 +45,35 @@ function resolveCoverUrl(coverPath, trackPath) {
 }
 
 function updateMediaSession(track, coverSrc) {
-    if (!('mediaSession' in navigator) || !track) return;
+    if (!track) return;
+    const title = track.title || 'Sconosciuto';
+    const artist = (track.artist && track.artist !== 'Locale') ? track.artist : 'BlasMusic';
     try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: track.title || 'Sconosciuto',
-            artist: (track.artist && track.artist !== 'Locale') ? track.artist : 'BlasMusic',
-            album: 'BlasMusicPlayer',
-            artwork: coverSrc ? [{ src: coverSrc, sizes: '512x512', type: 'image/jpeg' }] : []
-        });
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title, artist, album: 'BlasMusicPlayer',
+                artwork: coverSrc ? [{ src: coverSrc, sizes: '512x512', type: 'image/jpeg' }] : []
+            });
+        }
+        window.AndroidMediaBridge?.updateMetadata(title, artist, 'BlasMusicPlayer', 0);
     } catch (_) {}
+}
+
+// Ripulisce lo stato audio e visivo quando la coda resta vuota (es. tutti i brani assenti)
+export function clearLoadedTrack(audioPlayer) {
+    clearPendingCanPlay(audioPlayer);
+    if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer.removeAttribute('src');
+        audioPlayer.load();
+    }
+    pl.setCoverUrl(null);
+    resetTrackDisplay();
 }
 
 export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) {
     if (pl.currentPlaylist.length === 0) return;
+    clearPendingCanPlay(audioPlayer);
     pl.setCurrentTrackIndex(index);
     stateManager.saveQueueState(pl.currentPlaylist, pl.currentTrackIndex);
     const track = pl.getCurrentTrack();
@@ -62,51 +88,24 @@ export async function loadTrack(audioPlayer, index, autoPlay, renderUICallback) 
     const coverSrc = resolveCoverUrl(track.cover, track.path);
     pl.setCoverUrl(coverSrc);
     updateMediaSession(track, coverSrc);
-
-    const coverThumbBottom = document.getElementById('coverThumbBottom');
-    if (coverThumbBottom) {
-        if (coverSrc) {
-            coverThumbBottom.onload = () => coverThumbBottom.classList.remove('hidden');
-            coverThumbBottom.onerror = () => coverThumbBottom.classList.add('hidden');
-            coverThumbBottom.src = coverSrc;
-        } else {
-            coverThumbBottom.classList.add('hidden');
-            coverThumbBottom.src = '';
-        }
-    }
-
-    const trackDisplay = document.getElementById('currentTrack');
-    const trackDisplayBottom = document.getElementById('currentTrackBottom');
-    const artistStr = (track.artist && track.artist !== 'Locale') ? ` - ${track.artist}` : '';
-    const label = `${track.title}${artistStr}`;
-
-    if (trackDisplay) trackDisplay.textContent = label;
-    if (trackDisplayBottom) trackDisplayBottom.textContent = label;
-
-    const playIcon = document.getElementById('playPauseIcon');
-    const playIconBottom = document.getElementById('playPauseIconBottom');
-
-    const updatePlayUI = (playing) => {
-        pl.setPlaying(playing);
-        const [oldIcon, newIcon] = playing ? ['fa-play', 'fa-pause'] : ['fa-pause', 'fa-play'];
-        if (playIcon) playIcon.classList.replace(oldIcon, newIcon);
-        if (playIconBottom) playIconBottom.classList.replace(oldIcon, newIcon);
-    };
+    renderTrackDisplay(track, coverSrc);
 
     if (autoPlay) {
         initAudio(audioPlayer).then(() => ensureAudioRunning()).catch(() => {});
         const p = audioPlayer.play();
         if (p !== undefined) {
-            p.then(() => updatePlayUI(true)).catch((err) => {
+            p.then(() => setPlayIcons(true)).catch((err) => {
                 console.warn("Riproduzione immediata in attesa:", err);
-                audioPlayer.addEventListener('canplay', async () => {
+                pendingCanPlayHandler = async () => {
+                    pendingCanPlayHandler = null;
                     await ensureAudioRunning();
-                    audioPlayer.play().then(() => updatePlayUI(true)).catch(e => console.warn("Retry play:", e));
-                }, { once: true });
+                    audioPlayer.play().then(() => setPlayIcons(true)).catch(e => console.warn("Retry play:", e));
+                };
+                audioPlayer.addEventListener('canplay', pendingCanPlayHandler, { once: true });
             });
         }
     } else {
-        updatePlayUI(false);
+        setPlayIcons(false);
     }
 
     if (renderUICallback) renderUICallback();

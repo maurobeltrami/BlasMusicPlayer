@@ -1,5 +1,7 @@
 import { formatTime, getClientX } from '../utils/helpers.js';
 import * as audioEngine from '../core/audioEngine.js';
+import * as pl from '../data/playlist.js';
+import { setPlayIcons } from '../ui/mediaDisplay.js';
 
 export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
     audioPlayer.ontimeupdate = () => {
@@ -19,6 +21,14 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
         }
     };
 
+    audioPlayer.ondurationchange = () => {
+        if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+            try {
+                window.AndroidMediaBridge?.updatePlaybackState(!audioPlayer.paused, Math.floor((audioPlayer.currentTime || 0) * 1000));
+            } catch (_) {}
+        }
+    };
+
     let errorStreak = 0;
 
     audioPlayer.onended = () => {
@@ -33,14 +43,19 @@ export function setupAudioEvents(audioPlayer, loadNextTrackCallback) {
     };
 
     audioPlayer.onerror = () => {
-        // Ignora l'errore di abort (code 1) che si verifica al cambio normale di src
-        if (audioPlayer.error?.code === 1) return;
+        // Ignora l'errore di abort (code 1) o lo svuotamento esplicito della coda
+        if (audioPlayer.error?.code === 1 || !audioPlayer.getAttribute('src') || pl.currentPlaylist.length === 0) return;
         console.warn("Errore HTML5 Audio:", audioPlayer.error?.code, audioPlayer.error?.message);
         errorStreak++;
-        if (errorStreak < 5) {
+        const maxErrors = Math.max(1, pl.currentPlaylist.length);
+        if (errorStreak < maxErrors) {
             setTimeout(() => {
                 loadNextTrackCallback();
-            }, 1000);
+            }, 400);
+        } else {
+            // Tutti i brani in coda non sono riproducibili: arresto pulito senza loop infiniti
+            errorStreak = 0;
+            setPlayIcons(false);
         }
     };
 

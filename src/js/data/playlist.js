@@ -13,6 +13,21 @@ export function setPlaylists(tracks) {
     originalPlaylistOrder = [...tracks];
 }
 
+// Accoda tracce mantenendo allineato l'ordine originale per lo shuffle
+export function appendTracks(tracks) {
+    tracks.forEach(t => {
+        currentPlaylist.push(t);
+        originalPlaylistOrder.push(t);
+    });
+}
+
+// Svuota completamente la coda di riproduzione attiva
+export function clearPlaylist() {
+    currentPlaylist = [];
+    originalPlaylistOrder = [];
+    currentTrackIndex = 0;
+}
+
 export function updatePlaylistFromFilter(tracks) {
     currentPlaylist = [...tracks];
 }

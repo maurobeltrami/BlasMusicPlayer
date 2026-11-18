@@ -1,110 +1,146 @@
-/* --- css/themes/punk.css --- */
-
-/* --- DIRTY PUNK ADDITIONS --- */
-
-/* Torn Paper Effect */
-.torn-paper {
-    position: relative;
-    border: none !important;
-    filter: drop-shadow(4px 4px 0px var(--box-border-color));
+/* --- css/themes/punk-effects.css --- */
+/* Sfondo cromatico punk ad alta energia: viola notturno con spray acidi */
+[data-theme="punk"] body, body[data-theme="punk"] {
+    background-color: #160026 !important;
+    background-image: 
+        radial-gradient(ellipse 600px 400px at 85% 10%, rgba(255, 0, 128, 0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 550px 450px at 15% 45%, rgba(0, 255, 255, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 700px 500px at 75% 85%, rgba(204, 255, 0, 0.20) 0%, transparent 70%),
+        url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    background-attachment: fixed;
 }
 
-.torn-paper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--box-bg);
-    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%,
-            0% 95%, 2% 90%, 0% 85%, 3% 80%, 0% 75%, 2% 70%, 0% 65%, 3% 60%, 0% 55%, 2% 50%, 0% 45%, 3% 40%, 0% 35%, 2% 30%, 0% 25%, 3% 20%, 0% 15%, 2% 10%, 0% 5%);
-    z-index: -1;
-    border: var(--box-border-width) solid var(--box-border-color);
-}
-
-.torn-top {
-    clip-path: polygon(0% 5%, 5% 0%, 10% 5%, 15% 0%, 20% 5%, 25% 0%, 30% 5%, 35% 0%, 40% 5%, 45% 0%, 50% 5%, 55% 0%, 60% 5%, 65% 0%, 70% 5%, 75% 0%, 80% 5%, 85% 0%, 90% 5%, 95% 0%, 100% 5%,
-            100% 100%, 0% 100%);
-}
-
-/* Tape Effect */
-.tape {
-    position: absolute;
-    width: 100px;
-    height: 30px;
-    background-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    transform: rotate(-3deg);
-    border-left: 2px dashed rgba(0, 0, 0, 0.1);
-    border-right: 2px dashed rgba(0, 0, 0, 0.1);
-    z-index: 50;
-    backdrop-filter: blur(2px);
-}
-
-.tape::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255, 255, 255, 0.3) 3px);
-}
-
-/* --- RANCID 'WOLVES' STYLE --- */
-
-/* Graffiti Title */
-.graffiti-title {
-    font-family: var(--font-title);
-    color: var(--accent-red);
-    text-shadow: 2px 2px 0px var(--text-main);
-    transform: rotate(-2deg);
-}
-
-/* Distressed Typewriter Text */
-.typewriter-text {
-    font-family: var(--font-primary);
-    color: var(--text-main);
-}
-
-/* Stencil/Spray Paint Box */
-.stencil-box {
+/* 1. Foglio Strappato Casualmente e Accartocciato su tutti e 4 i lati */
+.stencil-box { position: relative; }
+[data-theme="punk"] .stencil-box,
+[data-theme="punk"] .torn-paper {
     background-color: var(--box-bg);
-    border: var(--box-border-width) solid var(--box-border-color);
-    box-shadow: 5px 5px 0px var(--shadow-color);
-    background-image: var(--concrete-pattern);
+    background-image: 
+        linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 22%, rgba(0,0,0,0.07) 25%, transparent 32%),
+        linear-gradient(225deg, transparent 42%, rgba(0,0,0,0.10) 47%, rgba(255,255,255,0.22) 49%, transparent 56%),
+        linear-gradient(45deg, transparent 68%, rgba(0,0,0,0.06) 74%, rgba(255,255,255,0.14) 76%, transparent 84%),
+        var(--concrete-pattern);
+    border: none !important;
+    border-radius: 0px !important;
+    padding: 1.25rem 1.25rem 1.75rem 1.25rem !important;
+    clip-path: polygon(
+        0% 6px, 4% 2px, 8% 7px, 14% 3px, 19% 8px, 25% 2px, 31% 6px, 37% 3px,
+        44% 8px, 50% 2px, 56% 7px, 63% 3px, 69% 8px, 75% 2px, 81% 6px, 88% 3px,
+        94% 7px, 98% 2px, 100% 8px,
+        calc(100% - 3px) 12%, 100% 19%, calc(100% - 6px) 27%, 100% 35%,
+        calc(100% - 3px) 43%, calc(100% - 7px) 51%, 100% 59%, calc(100% - 4px) 67%,
+        100% 75%, calc(100% - 7px) 83%, 100% 91%, calc(100% - 3px) 96%,
+        calc(100% - 8px) 100%, 93% calc(100% - 5px), 86% calc(100% - 10px),
+        80% calc(100% - 3px), 73% calc(100% - 9px), 67% calc(100% - 4px),
+        60% calc(100% - 11px), 54% calc(100% - 3px), 47% calc(100% - 9px),
+        41% calc(100% - 4px), 34% calc(100% - 11px), 28% calc(100% - 3px),
+        21% calc(100% - 9px), 15% calc(100% - 4px), 8% calc(100% - 10px),
+        2% calc(100% - 3px), 0% calc(100% - 9px),
+        3px 93%, 0% 85%, 6px 77%, 1px 69%, 5px 61%, 0% 53%,
+        6px 45%, 1px 37%, 5px 29%, 0% 21%, 5px 13%, 1px 6%
+    ) !important;
+    filter: 
+        drop-shadow(1px 0px 0px #000000)
+        drop-shadow(-1px 0px 0px #000000)
+        drop-shadow(0px 1px 0px #000000)
+        drop-shadow(0px -1px 0px #000000)
+        drop-shadow(4px 4px 0px var(--acid-green))
+        drop-shadow(9px 9px 0px #000000) !important;
 }
 
-/* Spray Paint Accent */
-.spray-accent {
-    position: relative;
-    z-index: 1;
+/* Strappo casuale complementare per la libreria leopardo */
+[data-theme="punk"] #libraryAside.leopard-bg {
+    clip-path: polygon(
+        0% 4px, 5% 7px, 11% 2px, 17% 6px, 23% 3px, 30% 8px, 36% 2px, 43% 6px,
+        49% 3px, 56% 8px, 62% 2px, 69% 7px, 75% 3px, 82% 8px, 88% 2px, 95% 6px, 100% 3px,
+        calc(100% - 5px) 11%, 100% 20%, calc(100% - 4px) 29%, 100% 38%,
+        calc(100% - 6px) 47%, 100% 56%, calc(100% - 3px) 65%, 100% 74%,
+        calc(100% - 7px) 83%, 100% 92%, calc(100% - 4px) 97%,
+        calc(100% - 6px) 100%, 94% calc(100% - 4px), 87% calc(100% - 9px),
+        81% calc(100% - 2px), 74% calc(100% - 8px), 68% calc(100% - 4px),
+        61% calc(100% - 10px), 55% calc(100% - 3px), 48% calc(100% - 9px),
+        42% calc(100% - 3px), 35% calc(100% - 10px), 29% calc(100% - 4px),
+        22% calc(100% - 9px), 16% calc(100% - 3px), 9% calc(100% - 10px),
+        3% calc(100% - 4px), 0% calc(100% - 7px),
+        5px 91%, 1px 83%, 6px 75%, 0% 67%, 5px 59%, 1px 51%,
+        6px 43%, 0% 35%, 5px 27%, 1px 19%, 6px 11%, 0% 5%
+    ) !important;
 }
 
-.spray-accent::after {
+/* 2. Nastro Adesivo da Skate (Duct Tape Verde Acido con Strappo Dentellato) */
+[data-theme="punk"] .stencil-box::after,
+[data-theme="punk"] .torn-paper::after {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 110%;
-    height: 110%;
-    background: var(--accent-red);
-    z-index: -1;
-    filter: blur(4px);
-    opacity: 0.2;
-    border-radius: 50%;
+    top: -11px;
+    right: 28px;
+    width: 78px;
+    height: 22px;
+    background-color: var(--acid-green);
+    opacity: 0.95;
+    transform: rotate(3deg);
+    clip-path: polygon(
+        0% 0%, 100% 0%, 96% 25%, 100% 50%, 95% 75%, 100% 100%,
+        0% 100%, 4% 75%, 0% 50%, 5% 25%
+    );
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    z-index: 40;
+}
+[data-theme="punk"] #view-playlists::after { left: 28px; right: auto; transform: rotate(-3deg); }
+
+/* 3. Display Centrale e Visualizzatore */
+[data-theme="punk"] #displayScreen {
+    border: 3px solid #000000 !important;
+    border-radius: 0px !important;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.85), 4px 4px 0px var(--acid-green) !important;
+}
+[data-theme="punk"] #visualizerContainer {
+    border: 3px solid var(--acid-green) !important;
+    border-radius: 2px !important;
+    box-shadow: 0 0 14px rgba(204, 255, 0, 0.35) !important;
 }
 
-/* High Contrast Filter for Images */
-.street-filter {
-    filter: grayscale(100%) contrast(170%) brightness(120%);
+/* 4. Graffiti Title con doppio drop-shadow punk */
+.graffiti-title { font-family: var(--font-title); color: var(--accent-red); }
+[data-theme="punk"] .graffiti-title {
+    font-family: var(--font-title);
+    color: #FFFFFF;
+    text-shadow: 3px 3px 0px #000000, 5px 5px 0px var(--acid-pink);
+    transform: rotate(-1.5deg);
+}
+[data-theme="punk"] .graffiti-title span.text-theme-accent {
+    color: var(--acid-green) !important;
+    text-shadow: 3px 3px 0px #000000, 5px 5px 0px var(--acid-green);
+}
+/* Contorno viola per la scritta BLASMUSIC su sfondo bianco (desktop e mobile) */
+[data-theme="punk"] header h1.graffiti-title {
+    -webkit-text-stroke: 2.5px #260042; paint-order: stroke fill;
+    text-shadow: 3px 3px 0px #1a002e, 6px 6px 0px var(--acid-pink) !important;
+}
+[data-theme="punk"] header h1.graffiti-title span.text-theme-accent {
+    -webkit-text-stroke: 2.5px #260042; paint-order: stroke fill;
+    text-shadow: 3px 3px 0px #1a002e, 6px 6px 0px var(--acid-green) !important;
+}
+@media (min-width: 768px) {
+    [data-theme="punk"] header h1.graffiti-title {
+        -webkit-text-stroke: 4px #260042; text-shadow: 4px 4px 0px #1a002e, 8px 8px 0px var(--acid-pink) !important;
+    }
+    [data-theme="punk"] header h1.graffiti-title span.text-theme-accent {
+        -webkit-text-stroke: 4px #260042; text-shadow: 4px 4px 0px #1a002e, 8px 8px 0px var(--acid-green) !important;
+    }
 }
 
-/* Concrete Background */
-.concrete-bg {
-    background-color: #eee;
-    background-image: var(--concrete-pattern);
-}
+/* 5. Cursori e Progress Bar Skate Verde Acido */
 
+[data-theme="punk"] #progressBar {
+    background: linear-gradient(90deg, var(--acid-green), #A6FF00) !important;
+    box-shadow: 0 0 12px var(--acid-green) !important;
+}
+[data-theme="punk"] input[type="range"]::-webkit-slider-thumb {
+    background: var(--acid-green) !important;
+    border: 2px solid #000000 !important;
+    transform: scale(1.15);
+}
