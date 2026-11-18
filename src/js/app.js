@@ -5,6 +5,7 @@ import * as pl from './data/playlist.js';
 import * as mediaLoader from './core/mediaLoader.js';
 import * as uiRenderer from './ui/playlistRenderer.js';
 import * as stateManager from './core/stateManager.js';
+import { resolveTracksForQueue } from './core/trackValidator.js';
 import { setupRouter } from './ui/router.js';
 import { initTheme } from './ui/themeManager.js';
 import { setupAudioEvents } from './events/audio.js';
@@ -61,16 +62,24 @@ window.addEventListener('DOMContentLoaded', async () => {
     setupRouter();
     setupEqualizer();
     setupPlaylistModal();
-    plManager = await setupPlaylistsManager(loadTrackCallback, renderUICallback);
+    plManager = await setupPlaylistsManager(loadTrackCallback, renderUICallback, () => mediaLoader.clearLoadedTrack(audioPlayer));
 
-    // Ripristino coda e traccia precedente all'avvio
+    // Ripristino coda e traccia precedente all'avvio con validazione non-distruttiva
     if (initialState?.current_queue?.length > 0) {
-        pl.setPlaylists(initialState.current_queue);
-        if (typeof initialState.current_track_index === 'number') {
-            pl.setCurrentTrackIndex(initialState.current_track_index);
+        const oldIdx = typeof initialState.current_track_index === 'number' ? initialState.current_track_index : 0;
+        const oldTargetPath = initialState.current_queue[oldIdx]?.path;
+        const { tracks: validQueue, mapOldToNew } = await resolveTracksForQueue(initialState.current_queue);
+        if (validQueue.length > 0) {
+            const targetPath = mapOldToNew.get(oldTargetPath) || oldTargetPath;
+            const restoredIdx = targetPath ? validQueue.findIndex(t => t.path === targetPath) : -1;
+            pl.setPlaylists(validQueue);
+            pl.setCurrentTrackIndex(restoredIdx >= 0 ? restoredIdx : 0);
+            renderUICallback();
+            loadTrackCallback(pl.currentTrackIndex, false);
+        } else {
+            pl.clearPlaylist();
+            renderUICallback();
         }
-        renderUICallback();
-        loadTrackCallback(pl.currentTrackIndex, false);
     }
 
     await setupNavigation(loadTrackCallback, renderUICallback);

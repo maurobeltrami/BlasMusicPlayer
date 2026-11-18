@@ -5,7 +5,7 @@
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-HTML5%20%2F%20CSS3-yellowgreen.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows%20%7C%20Android-lightgrey.svg)
-![Version](https://img.shields.io/badge/Version-1.0.1-blue.svg)
+![Version](https://img.shields.io/badge/Version-1.0.2-blue.svg)
 ![Zero-Terminal](https://img.shields.io/badge/Zero--Terminal-100%25%20Compliant-brightgreen.svg)
 
 **BlasMusicPlayer** è un riproduttore musicale desktop moderno, nativo, ultra-leggero e rigorosamente conforme ai principi **Local-First & Zero-Terminal** dell'ecosistema **[BlasOpen](../../COSTITUZIONE.md)**.

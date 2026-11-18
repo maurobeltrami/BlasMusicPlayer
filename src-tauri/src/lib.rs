@@ -3,6 +3,8 @@ mod dto;
 mod metadata;
 mod server;
 mod state;
+pub mod validator;
+pub mod validator_index;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -20,6 +22,7 @@ pub fn run() {
             commands::pick_audio_folder,
             state::load_app_state,
             state::save_app_state,
+            validator::resolve_tracks_batch,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

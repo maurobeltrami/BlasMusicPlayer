@@ -1,11 +1,12 @@
 // events/playlistsManager.js - Gestione creazione, selezione e ascolto delle playlist
 import * as pl from '../data/playlist.js';
 import * as stateManager from '../core/stateManager.js';
+import { resolveTracksForQueue } from '../core/trackValidator.js';
 import { navigateTo } from '../ui/router.js';
 import { setupPlaylistComposer, loadPlaylistForEditing } from './playlistComposer.js';
 import { setupPlaylistFolderBrowser } from './playlistFolderBrowser.js';
 
-export async function setupPlaylistsManager(loadTrackCallback, renderUICallback) {
+export async function setupPlaylistsManager(loadTrackCallback, renderUICallback, clearTrackCallback) {
     const savedPlaylistSelector = document.getElementById('savedPlaylistSelector');
     const loadSelectedPlaylistBtn = document.getElementById('loadSelectedPlaylistBtn');
     const goToPlaylistsBtn  = document.getElementById('goToPlaylistsBtn');
@@ -15,6 +16,26 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
     const queueTracksCount  = document.getElementById('queueTracksCount');
 
     let isUpdatingSelector = false;
+    let activeLoadToken = 0;
+
+    // Valida in background i brani della playlist prima di caricarli nella coda attiva
+    const activateValidatedPlaylist = async (tracks, goHome = false, selectedName = null) => {
+        const token = ++activeLoadToken;
+        const { tracks: valid } = await resolveTracksForQueue(tracks);
+        if (token !== activeLoadToken) return;
+        if (valid.length === 0) {
+            pl.clearPlaylist();
+            if (clearTrackCallback) clearTrackCallback();
+            renderUICallback();
+            if (goHome) navigateTo('view-home');
+            return;
+        }
+        pl.setPlaylists(valid);
+        renderUICallback();
+        loadTrackCallback(0, true);
+        if (goHome) navigateTo('view-home');
+        if (selectedName && savedPlaylistSelector) savedPlaylistSelector.value = selectedName;
+    };
 
     async function refreshPlaylistsUI() {
         const playlists = await pl.getSavedPlaylists();
@@ -74,17 +95,14 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
                 `;
 
                 li.querySelector('.play-pl-btn').onclick = () => {
-                    if (p.tracks.length > 0) {
-                        pl.setPlaylists(p.tracks);
-                        renderUICallback();
-                        loadTrackCallback(0, true);
-                        navigateTo('view-home');
-                        if (savedPlaylistSelector) savedPlaylistSelector.value = p.name;
-                    }
+                    activateValidatedPlaylist(p.tracks, true, p.name);
                 };
-                li.querySelector('.queue-pl-btn').onclick = () => {
-                    p.tracks.forEach(t => pl.currentPlaylist.push(t));
-                    renderUICallback();
+                li.querySelector('.queue-pl-btn').onclick = async () => {
+                    const { tracks: valid } = await resolveTracksForQueue(p.tracks);
+                    if (valid.length > 0) {
+                        pl.appendTracks(valid);
+                        renderUICallback();
+                    }
                     refreshPlaylistsUI();
                 };
                 li.querySelector('.edit-pl-btn').onclick = () => {
@@ -105,11 +123,7 @@ export async function setupPlaylistsManager(loadTrackCallback, renderUICallback)
         if (isUpdatingSelector || !savedPlaylistSelector || !savedPlaylistSelector.value) return;
         const playlists = await pl.getSavedPlaylists();
         const selected  = playlists.find(p => p.name === savedPlaylistSelector.value);
-        if (selected && selected.tracks.length > 0) {
-            pl.setPlaylists(selected.tracks);
-            renderUICallback();
-            loadTrackCallback(0, true);
-        }
+        if (selected) await activateValidatedPlaylist(selected.tracks, false);
     };
 
     if (loadSelectedPlaylistBtn) loadSelectedPlaylistBtn.onclick = loadFromSelector;

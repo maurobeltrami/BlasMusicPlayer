@@ -115,3 +115,24 @@ export async function saveQueueState(queue, trackIndex) {
         current_track_index: trackIndex
     });
 }
+
+// Aggiorna in silenzio path e cover dei soli brani ritrovati in una nuova cartella (Self-Healing)
+export async function applySelfHealing(relocatedMap) {
+    if (!relocatedMap || relocatedMap.size === 0) return false;
+    let changed = false;
+    const playlists = (state.saved_playlists || []).map(pl => {
+        let plChanged = false;
+        const tracks = (pl.tracks || []).map(t => {
+            const healed = relocatedMap.get(t.path);
+            if (!healed) return t;
+            plChanged = true;
+            changed = true;
+            return { ...t, path: healed.path, cover: healed.cover ?? null };
+        });
+        return plChanged ? { ...pl, tracks } : pl;
+    });
+    if (changed) {
+        await saveAppState({ saved_playlists: playlists });
+    }
+    return changed;
+}
